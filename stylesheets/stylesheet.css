@@ -65,11 +65,21 @@ a {
 
 @media screen and (min-width: 42em) and (max-width: 64em) {
   .page-header {
-    padding: 2rem 3rem; } }
+    padding: 2rem 3rem; } 
+
+  .page-header img {
+    width: 100%;
+	height: auto; }
+}
 
 @media screen and (max-width: 42em) {
   .page-header {
-    padding: 2rem 1rem; } }
+    padding: 2rem 1rem; } 
+
+  .page-header img {
+    width: 100%;
+	height: auto; }
+}
 
 .project-name {
   margin-top: 0;
