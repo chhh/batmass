@@ -76,7 +76,7 @@ a {
 @media screen and (max-width: 450px) {
   .page-header img {
     width: 100%;
-	height: auto; }
+    height: auto; }
 }
 
 .project-name {
