@@ -73,7 +73,7 @@ a {
     padding: 2rem 1rem; } 
 }
 
-@media screen and (max-width: 450px) {
+@media screen and (max-width: 500px) {
   .page-header img {
     width: 100%;
     height: auto; }
