@@ -21,3 +21,4 @@ The only 2 parameters that you mgiht want to change after installing/unzipping i
 These parameters are stored in `<install_path>/etc/batmass.conf`<br/>
 - To change the memory limit, change `default_options` parameter, look for `-J-Xmx` in its value string. The default is `-J-Xmx4G`, which means 4Gb max will be allowed and if your machine does not have enough free memory, the JVM (Java Virtual Machine) might fail to start.<br/>
 - If you can't start the application and you are sure you have enough memory and a valid JRE installation, then try uncommenting `jdkhome` in batmass.conf. Even though named 'jdk..' it's actually the path to your JRE. E.g. use `jdkhome="C:\Program Files\Java\jre1.8.0_31"` on Windows.
+- **Windows users**, if you've isntalled BatMass on your system drive in the default folder (most commonly `C:\Program Files\batmass`), you might need to run text editor as administrator, otherwise you won't be able to save changes made to `batmass.conf`.
