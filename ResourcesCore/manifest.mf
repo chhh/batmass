@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+OpenIDE-Module: umich.ms.batmass.resources.core
+OpenIDE-Module-Localizing-Bundle: umich/ms/batmass/resources/core/Bundle.properties
+OpenIDE-Module-Specification-Version: 1.0
+

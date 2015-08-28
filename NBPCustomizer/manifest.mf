@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+OpenIDE-Module: umich.ms.batmass.nbpcustomizer
+OpenIDE-Module-Layer: umich/ms/batmass/nbpcustomizer/layer.xml
+OpenIDE-Module-Localizing-Bundle: umich/ms/batmass/nbpcustomizer/Bundle.properties
+OpenIDE-Module-Specification-Version: 1.0
+

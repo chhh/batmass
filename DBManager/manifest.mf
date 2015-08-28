@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+OpenIDE-Module: umich.ms.batmass.db
+OpenIDE-Module-Install: umich/ms/batmass/db/options/OptionsInstaller.class
+OpenIDE-Module-Localizing-Bundle: umich/ms/batmass/db/Bundle.properties
+OpenIDE-Module-Specification-Version: 1.0
+

@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+AutoUpdate-Show-In-Client: true
+OpenIDE-Module: umich.ms.batmass.data.core
+OpenIDE-Module-Localizing-Bundle: umich/ms/batmass/data/core/Bundle.properties
+OpenIDE-Module-Specification-Version: 1.0
+

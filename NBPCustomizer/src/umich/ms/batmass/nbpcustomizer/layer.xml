@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE filesystem PUBLIC "-//NetBeans//DTD Filesystem 1.2//EN" "http://www.netbeans.org/dtds/filesystem-1_2.dtd">
+<filesystem>
+    <folder name="Actions">
+        <folder name="Project">
+            <file name="org-netbeans-modules-project-ui-BuildMainProject.instance_hidden"/>
+            <file name="org-netbeans-modules-project-ui-BuildProject.instance_hidden"/>
+            <file name="org-netbeans-modules-project-ui-CleanMainProject.instance_hidden"/>
+            <file name="org-netbeans-modules-project-ui-CleanProject.instance_hidden"/>
+            <file name="org-netbeans-modules-project-ui-CompileSingle.instance_hidden"/>
+            <file name="org-netbeans-modules-project-ui-JavadocProject.instance_hidden"/>
+            <file name="org-netbeans-modules-project-ui-NewFile$WithSubMenu.instance_hidden"/>
+            <file name="org-netbeans-modules-project-ui-NewFile.instance_hidden"/>
+            <file name="org-netbeans-modules-project-ui-RebuildProject.instance_hidden"/>
+            <file name="org-netbeans-modules-project-ui-Rerun.instance_hidden"/>
+            <file name="org-netbeans-modules-project-ui-RunMainProject.instance_hidden"/>
+            <file name="org-netbeans-modules-project-ui-RunProject.instance_hidden"/>
+            <file name="org-netbeans-modules-project-ui-RunSingle.instance_hidden"/>
+            <file name="org-netbeans-modules-project-ui-SetMainProject.instance_hidden"/>
+            <file name="org-netbeans-modules-project-ui-SyncEditorWithViewsAction.instance_hidden"/>
+            <file name="org-netbeans-modules-project-ui-TestProject.instance_hidden"/>
+            <file name="org-netbeans-modules-project-ui-TestSingle.instance_hidden"/>
+            <file name="org-netbeans-modules-project-ui-actions-OpenSubprojects.instance_hidden"/>
+            <file name="org-netbeans-modules-project-ui-actions-StopBuildingAction.instance_hidden"/>
+        </folder>
+    </folder>
+    <folder name="Menu">
+        <file name="BuildProject_hidden"/>
+        <file name="Refactoring_hidden"/>
+        <file name="RunProject_hidden"/>
+        <file name="Source_hidden"/>
+        <file name="Spacer.instance_hidden"/>
+        <file name="org-netbeans-modules-quicksearch-QuickSearchAction.shadow_hidden"/>
+    </folder>
+    <folder name="Toolbars">
+        <file name="Build_hidden"/>
+        <file name="Debug_hidden"/>
+    </folder>
+</filesystem>

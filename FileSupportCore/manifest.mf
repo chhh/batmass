@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+AutoUpdate-Show-In-Client: true
+OpenIDE-Module: umich.ms.batmass.filesupport.core
+OpenIDE-Module-Layer: umich/ms/batmass/filesupport/core/layer.xml
+OpenIDE-Module-Localizing-Bundle: umich/ms/batmass/filesupport/core/Bundle.properties
+OpenIDE-Module-Specification-Version: 1.0
+

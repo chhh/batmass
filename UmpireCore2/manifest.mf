@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+AutoUpdate-Show-In-Client: true
+OpenIDE-Module: umich.ms.umpire.core2
+OpenIDE-Module-Localizing-Bundle: umich/ms/umpire/core2/Bundle.properties
+OpenIDE-Module-Specification-Version: 1.0
+
