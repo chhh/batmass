@@ -1,6 +1,0 @@
-Manifest-Version: 1.0
-OpenIDE-Module: umich.ms.batmass.project
-OpenIDE-Module-Install: umich/ms/batmass/project/Installer.class
-OpenIDE-Module-Localizing-Bundle: umich/ms/batmass/project/Bundle.properties
-OpenIDE-Module-Specification-Version: 1.0
-
