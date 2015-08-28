@@ -22,9 +22,11 @@ import umich.ms.fileio.exceptions.FileParsingException;
 import umich.ms.util.IntervalST;
 
 /**
- *
+ * @deprecated There is now just one single Spectrum panel
  * @author dmitriya
  */
+@Deprecated
+@SuppressWarnings({"rawtypes"})
 public class SpectrumPanelAndUmpireFeaturesAdapter extends SpectrumPanelAdapter {
 
     IntervalST st;

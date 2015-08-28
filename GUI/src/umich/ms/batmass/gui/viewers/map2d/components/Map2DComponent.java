@@ -24,6 +24,7 @@ import org.openide.util.LookupEvent;
 import org.openide.util.LookupListener;
 import org.openide.util.NbBundle;
 import umich.ms.batmass.data.core.lcms.features.Features;
+import umich.ms.batmass.data.core.lcms.features.ILCMSFeature2D;
 import umich.ms.batmass.gui.core.api.BMComponentJPanel;
 import umich.ms.batmass.gui.core.api.comm.eventbus.ViewerLinkSupport;
 import umich.ms.batmass.gui.viewers.map2d.actions.GoToAction;
@@ -127,6 +128,7 @@ public class Map2DComponent extends BMComponentJPanel {
     private class FeaturesResultListener implements LookupListener {
 
         @Override
+        @SuppressWarnings({"unchecked"})
         public void resultChanged(LookupEvent ev) {
             Collection<? extends Features> features = featureLkpResult.allInstances();
             if (features.isEmpty()) {
@@ -139,7 +141,7 @@ public class Map2DComponent extends BMComponentJPanel {
                         + " how to render several sets of features at once");
             }
 
-            Features feats = features.iterator().next();
+            Features<ILCMSFeature2D<?>> feats = features.iterator().next();
             map2DPanel.setFeatures(feats);
             map2DPanel.initMap();
             revalidate();
