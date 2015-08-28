@@ -289,77 +289,78 @@ public final class BaseMap2D {
 
                 // boost if present in previous/next scan
                 // boost if present in previous/next scan// boost if present in previous/next scan// boost if present in previous/next scan// boost if present in previous/next scan// boost if present in previous/next scan
-                double curIntensity = intensities[i];
-                final int maxScanSpan = 2000;
-                int numScansDisplayed = scansByRtSpanAtMsLevel.size();
-                if (false && numScansDisplayed <= maxScanSpan) {
-                    double maxIntInVicinity;
-                    double intensityUpdateFactor = 1;
-                    double dm, dmPpm, dmUpdateFactor;
-                    int maxIntIdx;
-                    double[] curInts, curMzs;
+//                double curIntensity = intensities[i];
+//                final int maxScanSpan = 2000;
+//                int numScansDisplayed = scansByRtSpanAtMsLevel.size();
+//                if (false && numScansDisplayed <= maxScanSpan) {
+//                    double maxIntInVicinity;
+//                    double intensityUpdateFactor = 1;
+//                    double dm, dmPpm, dmUpdateFactor;
+//                    int maxIntIdx;
+//                    double[] curInts, curMzs;
+//
+//                    final int scanNumShift = 1;
+//                    final double ppmTolerance = 15d;
+//
+//                    if (scan.getNum() % 1000 == 0) {
+//                        System.out.printf("Averaging for scan %d\n", scan.getNum());
+//                    }
+//                    scansToAverage[0] = mapNum2scan.get(scan.getNum() - scanNumShift*2);
+//                    scansToAverage[1] = mapNum2scan.get(scan.getNum() - scanNumShift);
+//                    scansToAverage[2] = mapNum2scan.get(scan.getNum() + scanNumShift);
+//                    scansToAverage[3] = mapNum2scan.get(scan.getNum() + scanNumShift*2);
+//                    double curMass = masses[i];
+//
+//                    for (IScan avgScan : scansToAverage) {                        
+//                        if (avgScan == null) {
+//                            continue;
+//                        }
+//                        ISpectrum s = avgScan.getSpectrum();
+//                        if (s == null) {
+//                            continue;
+//                        }
+//                        int[] mzIdxs = s.findMzIdxsWithinPpm(curMass, ppmTolerance);
+//                        dm = Double.NEGATIVE_INFINITY;
+//                        dmUpdateFactor = 1;
+//                        intensityUpdateFactor = 1;
+//                        if (mzIdxs != null) {
+//                            curInts = s.getIntensities();
+//                            curMzs = s.getMZs();
+//                            maxIntIdx = -1;
+//                            maxIntInVicinity = Double.NEGATIVE_INFINITY;
+//                            for (int j = mzIdxs[0]; j <= mzIdxs[1]; j++) {
+//                                if (curInts[j] > maxIntInVicinity) {
+//                                    maxIntIdx = j;
+//                                }
+//                            }
+//                            if (maxIntIdx != -1) {
+//                                intensityUpdateFactor = curInts[maxIntIdx];
+//                                dm = Math.abs(curMass - curMzs[maxIntIdx]);
+//
+//                                dmPpm = dm / (curMass / 1e6d);
+//                                if (dmPpm > ppmTolerance) {
+//                                    dmUpdateFactor = 0d;
+//                                    throw new IllegalStateException("dmUpdateFactor set to zero, should not happen");
+//                                } else {
+//                                    dmUpdateFactor = (1 - Math.pow(dmPpm / ppmTolerance, 2d));
+//                                }
+//                            } else {
+//                                throw new IllegalStateException("Strange condition, should never be triggered");
+//                            }
+//                        } else {
+//                            // if masses in the vicinity not found, then penalize
+//                            // TODO: this should be dependent on the chosen distribution for mass deviations
+//                            //       see dmFactor
+//                            intensityUpdateFactor = 1;
+//                            dmUpdateFactor = (1 - Math.pow(0.5d, 2d));
+//                        }
+//                        
+//                        curIntensity = curIntensity * (intensityUpdateFactor * dmUpdateFactor);
+//                    }
+//                }
 
-                    final int scanNumShift = 1;
-                    final double ppmTolerance = 15d;
-
-                    if (scan.getNum() % 1000 == 0) {
-                        System.out.printf("Averaging for scan %d\n", scan.getNum());
-                    }
-                    scansToAverage[0] = mapNum2scan.get(scan.getNum() - scanNumShift*2);
-                    scansToAverage[1] = mapNum2scan.get(scan.getNum() - scanNumShift);
-                    scansToAverage[2] = mapNum2scan.get(scan.getNum() + scanNumShift);
-                    scansToAverage[3] = mapNum2scan.get(scan.getNum() + scanNumShift*2);
-                    double curMass = masses[i];
-
-                    for (IScan avgScan : scansToAverage) {                        
-                        if (avgScan == null) {
-                            continue;
-                        }
-                        ISpectrum s = avgScan.getSpectrum();
-                        if (s == null) {
-                            continue;
-                        }
-                        int[] mzIdxs = s.findMzIdxsWithinPpm(curMass, ppmTolerance);
-                        dm = Double.NEGATIVE_INFINITY;
-                        dmUpdateFactor = 1;
-                        intensityUpdateFactor = 1;
-                        if (mzIdxs != null) {
-                            curInts = s.getIntensities();
-                            curMzs = s.getMZs();
-                            maxIntIdx = -1;
-                            maxIntInVicinity = Double.NEGATIVE_INFINITY;
-                            for (int j = mzIdxs[0]; j <= mzIdxs[1]; j++) {
-                                if (curInts[j] > maxIntInVicinity) {
-                                    maxIntIdx = j;
-                                }
-                            }
-                            if (maxIntIdx != -1) {
-                                intensityUpdateFactor = curInts[maxIntIdx];
-                                dm = Math.abs(curMass - curMzs[maxIntIdx]);
-
-                                dmPpm = dm / (curMass / 1e6d);
-                                if (dmPpm > ppmTolerance) {
-                                    dmUpdateFactor = 0d;
-                                    throw new IllegalStateException("dmUpdateFactor set to zero, should not happen");
-                                } else {
-                                    dmUpdateFactor = (1 - Math.pow(dmPpm / ppmTolerance, 2d));
-                                }
-                            } else {
-                                throw new IllegalStateException("Strange condition, should never be triggered");
-                            }
-                        } else {
-                            // if masses in the vicinity not found, then penalize
-                            // TODO: this should be dependent on the chosen distribution for mass deviations
-                            //       see dmFactor
-                            intensityUpdateFactor = 1;
-                            dmUpdateFactor = (1 - Math.pow(0.5d, 2d));
-                        }
-                        
-                        curIntensity = curIntensity * (intensityUpdateFactor * dmUpdateFactor);
-                    }
-                }
-
-                addPeak(x, y, curIntensity);
+//                addPeak(x, y, curIntensity);
+                addPeak(x, y, intensities[i]);
 //                if (curIntensity > 1e6) {
 //                    addPeak(x, y, curIntensity);
 //                }
