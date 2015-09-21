@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package umich.ms.batmass.filesupport.files.types.xcms.peaks.data;
+package umich.ms.batmass.filesupport.files.types.xcms.peaks.data.model;
 
 /**
  *
@@ -24,6 +24,21 @@ public class XCMSPeak {
     protected String isotopes;
     protected String adduct;
     protected int pcgroup;
+
+    /** Values <0 mean unknown. */
+    protected int isotopeNum = -1;
+
+    @Override
+    public String toString() {
+        return "XCMSPeak{" +
+                "rowNum=" + rowNum +
+                ", mz=" + mz +
+                ", rt=" + rt +
+                ", into=" + into +
+                ", isotopes='" + isotopes + '\'' +
+                ", pcgroup=" + pcgroup +
+                '}';
+    }
 
     public int getRowNum() {
         return rowNum;
@@ -128,6 +143,12 @@ public class XCMSPeak {
     public void setPcgroup(int pcgroup) {
         this.pcgroup = pcgroup;
     }
-    
-    
+
+    public int getIsotopeNum() {
+        return isotopeNum;
+    }
+
+    public void setIsotopeNum(int isotopeNum) {
+        this.isotopeNum = isotopeNum;
+    }
 }

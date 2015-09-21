@@ -76,4 +76,9 @@ public class MzXmlAsLCMSTypeResolver extends AbstractFileTypeResolver {
     public String getIconPath() {
         return ICON_BASE_PATH;
     }
+
+    @Override
+    public boolean isFileOnly() {
+        return true;
+    }
 }

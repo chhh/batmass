@@ -8,6 +8,7 @@ package umich.ms.batmass.filesupport.files.types.umpire;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.nio.file.FileSystemNotFoundException;
+import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Locale;
@@ -77,6 +78,7 @@ public class SerFSAsFeaturesTypeResolver extends AbstractFileTypeResolver {
             }
         } catch (FileSystemNotFoundException | IllegalArgumentException ex) {
             // we don't care if errors occur here, just return false
+            System.err.printf("Bad path given to SerFSFeaturesTypeResolver: %s\n", path);
         }
 
         return false;
@@ -87,11 +89,6 @@ public class SerFSAsFeaturesTypeResolver extends AbstractFileTypeResolver {
         return SUPPORTED_EXTS;
     }
 
-//    @Override
-//    public boolean getSupportsFolders() {
-//        return true;
-//    }
-
     @Override
     public ImageIcon getIcon() {
         return ICON;
@@ -100,5 +97,10 @@ public class SerFSAsFeaturesTypeResolver extends AbstractFileTypeResolver {
     @Override
     public String getIconPath() {
         return ICON_BASE_PATH;
+    }
+
+    @Override
+    public boolean isFileOnly() {
+        return false;
     }
 }

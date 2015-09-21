@@ -143,6 +143,7 @@ public class Map2DTopComponent extends BMTopComponent implements Map2DZoomEventL
 
     
     /**
+     * @deprecated This is not used anywhere anymore, I guess it's safe to delete this one.
      * TODO: this has not been tested. The idea is that if the TC is still in the
      * process of being opened, then the map2DPanel might not yet have been created.
      * If so, we just set PUF for this TC, and it will automatically supply PUF
@@ -152,6 +153,7 @@ public class Map2DTopComponent extends BMTopComponent implements Map2DZoomEventL
      * MOST LIKELY THIS WON'T WORK AS EXPECTED.
      * @param puf 
      */
+    @Deprecated
     public void overlayFeatures(ProcessingUmpireFeatures puf) {
         this.puf = puf;
         if (mapComponent != null) {

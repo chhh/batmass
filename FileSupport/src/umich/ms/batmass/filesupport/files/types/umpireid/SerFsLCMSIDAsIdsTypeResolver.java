@@ -72,4 +72,9 @@ public class SerFsLCMSIDAsIdsTypeResolver extends AbstractFileTypeResolver {
         }
         return path.endsWith(FILE_NAME_ENDING_LO_CASE);
     }
+
+    @Override
+    public boolean isFileOnly() {
+        return true;
+    }
 }

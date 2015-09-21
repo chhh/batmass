@@ -35,8 +35,12 @@ public class BMFileView extends FileView {
     @Override
     public Icon getIcon(File f) {
         String fNameLoCase = f.getAbsolutePath().toLowerCase(Locale.ENGLISH);
+        if (f.isHidden())
+            return super.getIcon(f);
         for (FileTypeResolver resolver : resolvers) {
-            if (resolver.accepts(fNameLoCase, false)) {
+            if (f.isDirectory() && resolver.isFileOnly())
+                continue;
+            if (resolver.accepts(fNameLoCase, true)) {
                 return resolver.getIcon();
             }
         }

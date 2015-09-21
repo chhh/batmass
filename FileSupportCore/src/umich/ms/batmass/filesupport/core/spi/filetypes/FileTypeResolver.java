@@ -43,6 +43,12 @@ public interface FileTypeResolver {
     boolean accepts(String path, boolean isPathLowerCase);
     
     /**
+     * Reports if this resolver supports only single files, or can accept whole directories.
+     * @return 
+     */
+    boolean isFileOnly();
+    
+    /**
      * Category of the file. E.g. LCMSFiles or PeptideIdentifications
      * @return 
      */

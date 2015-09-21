@@ -6,22 +6,24 @@
 
 package umich.ms.batmass.filesupport.files.types.xcms.peaks;
 
-import java.io.File;
-import java.io.FilenameFilter;
-import java.nio.file.FileSystemNotFoundException;
+import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Locale;
 import javax.swing.ImageIcon;
 import org.netbeans.api.annotations.common.StaticResource;
 import org.openide.util.ImageUtilities;
+import umich.ms.batmass.filesupport.core.annotations.FileTypeResolverRegistration;
 import umich.ms.batmass.filesupport.core.spi.filetypes.AbstractFileTypeResolver;
-import umich.ms.batmass.filesupport.files.types.umpire.SerFSAsFeaturesTypeResolver;
 
 /**
  *
  * @author Dmitry Avtonomov
  */
+@FileTypeResolverRegistration(
+        fileCategory = XCMSCsvPeaksTypeResolver.CATEGORY,
+        fileType = XCMSCsvPeaksTypeResolver.TYPE
+)
 public class XCMSCsvPeaksTypeResolver extends AbstractFileTypeResolver {
  private static final XCMSCsvPeaksTypeResolver INSTANCE = new XCMSCsvPeaksTypeResolver();
 
@@ -31,7 +33,7 @@ public class XCMSCsvPeaksTypeResolver extends AbstractFileTypeResolver {
 
     public static final String CATEGORY = "features";
     public static final String TYPE = "xcms";
-    protected static final String[] SUPPORTED_EXTS = {"xcms.csv"};
+    protected static final String[] SUPPORTED_EXTS = {".xcms.csv"};
     protected static final String[] SUPPORTED_EXTS_LOWER_CASE;
     static {
         SUPPORTED_EXTS_LOWER_CASE = new String[SUPPORTED_EXTS.length];
@@ -56,11 +58,18 @@ public class XCMSCsvPeaksTypeResolver extends AbstractFileTypeResolver {
 
     @Override
     public boolean accepts(String path, boolean isPathLowerCase) {
-        Path pathAbs = Paths.get(path).toAbsolutePath();
-        for (String ext : SUPPORTED_EXTS_LOWER_CASE) {
-            if (pathAbs.toString().toLowerCase().endsWith(ext))
-                return true;
+        try {
+            Path pathAbs = Paths.get(path).toAbsolutePath();
+            for (String ext : SUPPORTED_EXTS_LOWER_CASE) {
+                if (pathAbs.toString().toLowerCase().endsWith(ext)) {
+                    return true;
+                }
+            }
+        } catch (InvalidPathException ex) {
+            // don't need to do anything
+            System.err.printf("Bad path given to XCMSCsvPeaksTypeResolver: %s\n", path);
         }
+
         
         return false;
     }
@@ -78,5 +87,10 @@ public class XCMSCsvPeaksTypeResolver extends AbstractFileTypeResolver {
     @Override
     public String getIconPath() {
         return ICON_BASE_PATH;
+    }
+
+    @Override
+    public boolean isFileOnly() {
+        return true;
     }
 }

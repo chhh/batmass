@@ -39,7 +39,7 @@ public abstract class AbstractFileTypeResolver implements FileTypeResolver {
         }
         return false;
     }
-
+    
     @Override
     public boolean matches(FileTypeResolver other) {
         if (!this.getCategory().equals(CATEGORY_ANY) && !other.getCategory().equals(CATEGORY_ANY)) {

@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package umich.ms.batmass.filesupport.files.types.xcms.peaks.data;
+package umich.ms.batmass.filesupport.files.types.xcms.peaks.data.model;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -12,11 +12,14 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
+import org.apache.commons.csv.QuoteMode;
 import org.openide.util.Exceptions;
 
 /**
@@ -37,9 +40,23 @@ public class XCMSPeaks {
     public boolean add(XCMSPeak e) {
         return peaks.add(e);
     }
-    
-    
-    
+
+    public void add(int index, XCMSPeak element) {
+        peaks.add(index, element);
+    }
+
+    public XCMSPeak get(int index) {
+        return peaks.get(index);
+    }
+
+    public int size() {
+        return peaks.size();
+    }
+
+    public Iterator<XCMSPeak> iterator() {
+        return peaks.iterator();
+    }
+
     /**
      * Parse XCMS peaks from the file, which you can create from R after running
      * XCMS feature finding. <br/>
@@ -48,17 +65,22 @@ public class XCMSPeaks {
      * {@code peaks <- ixs@peaks[1:7108,1:9]} <br/>
      * {@code write.table(peaks, sep = "\t",file = "D:/projects/XCMS/peaks.xcms.csv")}
      * @param path
-     * @return 
+     * @return
      */
     public static XCMSPeaks create(Path path) {
         if (!Files.exists(path))
             throw new IllegalArgumentException("File path for XCMS peaks does not exist.");
-        
+
         XCMSPeaks peaks = new XCMSPeaks();
         try {
             BufferedReader reader = new BufferedReader(new FileReader(path.toFile()));
             String[] header = {};
-            CSVFormat format = CSVFormat.newFormat(',').withHeader().withIgnoreSurroundingSpaces().withAllowMissingColumnNames();
+            CSVFormat format = CSVFormat.newFormat(',')
+                    .withHeader()
+                    .withIgnoreSurroundingSpaces()
+                    .withAllowMissingColumnNames()
+                    .withQuoteMode(QuoteMode.NON_NUMERIC)
+                    .withQuote('"');
             CSVParser parser = new CSVParser(reader, format);
             String val;
             for (final CSVRecord r : parser) {
@@ -91,7 +113,7 @@ public class XCMSPeaks {
                 p.setPcgroup(Integer.parseInt(val));
                 peaks.add(p);
             }
-            
+
         } catch (FileNotFoundException ex) {
             Exceptions.printStackTrace(ex);
         } catch (IOException ex) {
