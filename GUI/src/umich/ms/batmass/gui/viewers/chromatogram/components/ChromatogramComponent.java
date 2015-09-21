@@ -125,6 +125,12 @@ public class ChromatogramComponent extends BMComponentJPanel {
         }
         this.mainPanel.add(newChromatogramPanel);
         this.chromoPanel = newChromatogramPanel;
+        if (view.getMzLo() != null && view.getMzHi() != null) {
+            this.infoLabel.setText(String.format(
+                "XIC: [%.4f - %.4f] @ [%.2f - %.2f]",  view.getMzLo(), view.getMzHi(), view.getRtLo(), view.getRtHi()));
+        } else {
+            this.infoLabel.setText("");
+        }
         this.revalidate();
     }
 
@@ -377,6 +383,8 @@ public class ChromatogramComponent extends BMComponentJPanel {
 
         setLayout(new java.awt.BorderLayout());
 
+        mainPanel.setMinimumSize(new java.awt.Dimension(50, 50));
+        mainPanel.setOpaque(false);
         mainPanel.setLayout(new java.awt.BorderLayout());
         add(mainPanel, java.awt.BorderLayout.CENTER);
 
@@ -404,22 +412,22 @@ public class ChromatogramComponent extends BMComponentJPanel {
                 .addComponent(comboPlotType, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(10, 10, 10)
                 .addComponent(btnReset)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(infoPanelLayout.createSequentialGroup()
-                .addGap(113, 113, 113)
-                .addComponent(infoLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 245, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(infoLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 251, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
         infoPanelLayout.setVerticalGroup(
             infoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(infoPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(infoLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 0, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(infoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(comboPlotType, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnReset))
-                .addGap(5, 11, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, infoPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(infoLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         add(infoPanel, java.awt.BorderLayout.SOUTH);
