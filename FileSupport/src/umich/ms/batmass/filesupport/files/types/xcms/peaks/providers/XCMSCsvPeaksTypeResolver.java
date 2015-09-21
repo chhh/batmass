@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package umich.ms.batmass.filesupport.files.types.xcms.peaks;
+package umich.ms.batmass.filesupport.files.types.xcms.peaks.providers;
 
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
@@ -58,18 +58,16 @@ public class XCMSCsvPeaksTypeResolver extends AbstractFileTypeResolver {
 
     @Override
     public boolean accepts(String path, boolean isPathLowerCase) {
-        try {
-            Path pathAbs = Paths.get(path).toAbsolutePath();
-            for (String ext : SUPPORTED_EXTS_LOWER_CASE) {
-                if (pathAbs.toString().toLowerCase().endsWith(ext)) {
-                    return true;
-                }
-            }
-        } catch (InvalidPathException ex) {
-            // don't need to do anything
-            System.err.printf("Bad path given to XCMSCsvPeaksTypeResolver: %s\n", path);
+        if (path.contains("peaklist")) {
+            int a = 1;
         }
-
+        if (!isPathLowerCase)
+            path = path.toLowerCase();
+        for (String ext : SUPPORTED_EXTS_LOWER_CASE) {
+            if (path.endsWith(ext)) {
+                return true;
+            }
+        }
         
         return false;
     }

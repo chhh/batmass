@@ -4,13 +4,15 @@
  * and open the template in the editor.
  */
 
-package umich.ms.batmass.filesupport.files.types.xcms.peaks;
+package umich.ms.batmass.filesupport.files.types.xcms.peaks.providers;
 
 import java.net.URI;
+import org.openide.util.Utilities;
 import org.openide.util.lookup.InstanceContent;
 import umich.ms.batmass.filesupport.core.annotations.NodeCapabilityRegistration;
 import umich.ms.batmass.filesupport.core.spi.nodes.AbstractCapabilityProvider;
 import umich.ms.batmass.filesupport.core.types.descriptor.FileDescriptor;
+import umich.ms.batmass.filesupport.files.types.xcms.peaks.data.XCMSFeaturesTableModelData;
 
 /**
  *
@@ -24,9 +26,11 @@ public class XCMSCsvDataProvider extends AbstractCapabilityProvider {
 
     @Override
     public void addCapabilitiesToLookup(InstanceContent ic, FileDescriptor desc) {
-        URI uri = desc.getPath().toFile().toURI();
+        URI uri = Utilities.toURI(desc.getPath().toFile());
+        XCMSFeaturesDataSource source = new XCMSFeaturesDataSource(uri);
         
-        
+        XCMSFeaturesTableModelData data = new XCMSFeaturesTableModelData(source);
+        ic.add(data);
     }
 
 }

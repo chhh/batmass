@@ -4,10 +4,8 @@
  * and open the template in the editor.
  */
 
-package umich.ms.batmass.filesupport.files.types.xcms.peaks.data.model;
+package umich.ms.batmass.filesupport.files.types.xcms.peaks.model;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;

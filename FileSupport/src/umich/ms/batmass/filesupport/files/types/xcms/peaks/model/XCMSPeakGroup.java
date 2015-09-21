@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package umich.ms.batmass.filesupport.files.types.xcms.peaks.data.model;
+package umich.ms.batmass.filesupport.files.types.xcms.peaks.model;
 
 import java.util.ArrayList;
 import java.util.Collection;

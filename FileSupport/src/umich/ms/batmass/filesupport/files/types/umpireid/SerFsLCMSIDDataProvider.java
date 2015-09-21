@@ -6,6 +6,7 @@
 package umich.ms.batmass.filesupport.files.types.umpireid;
 
 import java.net.URI;
+import org.openide.util.Utilities;
 import org.openide.util.lookup.InstanceContent;
 import umich.ms.batmass.filesupport.core.annotations.NodeCapabilityRegistration;
 import umich.ms.batmass.filesupport.core.spi.nodes.AbstractCapabilityProvider;
@@ -27,7 +28,7 @@ public class SerFsLCMSIDDataProvider extends AbstractCapabilityProvider {
     @Override
     public void addCapabilitiesToLookup(InstanceContent ic, FileDescriptor desc) {
 
-        URI uri = desc.getPath().toFile().toURI();
+        URI uri = Utilities.toURI(desc.getPath().toFile());
         UmpireIdSource source = new UmpireIdSource(uri);
 
         UmpireIdData dataUmpireId = new UmpireIdData(source);

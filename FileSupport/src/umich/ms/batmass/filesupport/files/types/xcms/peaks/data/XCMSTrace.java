@@ -22,7 +22,7 @@ public class XCMSTrace extends AbstractShapedLCMSTrace {
         this.mzLo = mzLo;
         this.mzHi = mzHi;
         this.spread = mzHi - mzLo;
-        this.shape = new Rectangle2D.Double(mzLo, rtLo, mzHi-mzLo, rtHi-rtLo);
+        this.shape = new Rectangle2D.Double(mzLo, rtHi, mzHi-mzLo, rtHi-rtLo);
     }
     
 }

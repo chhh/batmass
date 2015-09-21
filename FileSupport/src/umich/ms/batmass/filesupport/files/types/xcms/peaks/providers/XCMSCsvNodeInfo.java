@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package umich.ms.batmass.filesupport.files.types.xcms.peaks;
+package umich.ms.batmass.filesupport.files.types.xcms.peaks.providers;
 
 import umich.ms.batmass.filesupport.core.annotations.NodeInfoRegistration;
 import umich.ms.batmass.filesupport.core.spi.filetypes.FileTypeResolver;
