@@ -1,5 +1,5 @@
 # assuming you're in BatMass directory (create one locally if you don't yet have one)
-cur_dir_name=${PWD##*/} 
+cur_dir_name=${PWD##*/}
 repo_hostname="141.214.4.18"
 repo_port="12022"
 repo_user="dmitriya"
@@ -12,7 +12,7 @@ if [ $cur_dir_name != "BatMass" ]; then
 fi
 
 
-echo 
+echo
 echo =================================
 echo
 
@@ -27,7 +27,7 @@ cd MSFTBX
 git for-each-ref --sort=-committerdate refs/heads/
 
 
-echo 
+echo
 echo =================================
 echo
 
@@ -42,7 +42,7 @@ cd BatMassLibs
 git for-each-ref --sort=-committerdate refs/heads/
 
 
-echo 
+echo
 echo =================================
 echo
 
@@ -57,44 +57,27 @@ cd BatMassExternalSuite
 git for-each-ref --sort=-committerdate refs/heads/
 
 
-echo 
+echo
 echo =================================
 echo
 
 
 cd ..
 echo "Current dir: " `pwd`
-local_path=./NBP_Harness/nbp801_dist
+local_path="./NBP_Harness"
 repo_path=$repo_path_stub/NBP_Harness/nbp801_dist
-scp_command_params="-r -P $repo_port $repo_path $local_path"
+scp_command_params="-r -P$repo_port $repo_user@$repo_hostname:/repos/batmass/NBP_Harness ."
+
 echo "Copying the Platform and Harness (scp $scp_command_params)"
 if [ -d $local_path ]
 then
 	echo "Local path: '$local_path' already exists, won't copy from remote."
 else
-	mkdir -p $local_path
 	scp $scp_command_params
 fi
 
-echo 
-echo =================================
+
 echo
-
-
-echo "Current dir: " `pwd`
-local_path=./NBP_Harness/nbp802_dist
-repo_path=$repo_path_stub/NBP_Harness/nbp802_dist
-scp_command_params="-r -P $repo_port $repo_path $local_path"
-echo "Copying the Platform and Harness (scp $scp_command_params)"
-if [ -d $local_path ]
-then
-	echo "Local path: '$local_path' already exists, won't copy from remote."
-else
-	mkdir -p $local_path
-	scp $scp_command_params
-fi
-
-echo 
 echo =================================
 echo
 
