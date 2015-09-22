@@ -7,8 +7,12 @@
 package umich.ms.batmass.filesupport.files.types.xcms.peaks.model;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -97,6 +101,18 @@ public class XCMSPeakGroups {
             }
         }
 
+        // sort clusters with isotopes by isotope number or mass
+        Set<Map.Entry<Integer, XCMSPeakGroup>> entrySet = map.entrySet();
+        for (Map.Entry<Integer, XCMSPeakGroup> entry : entrySet) {
+            XCMSPeakGroup group = entry.getValue();
+            List<XCMSPeak> peaksInGroup = group.getPeaks();
+            Collections.sort(peaksInGroup, new Comparator<XCMSPeak>() {
+                @Override public int compare(XCMSPeak o1, XCMSPeak o2) {
+                    return Double.compare(o1.mzMin, o2.mzMin);
+                }
+            });
+        }
+        
         return groups;
     }
 }

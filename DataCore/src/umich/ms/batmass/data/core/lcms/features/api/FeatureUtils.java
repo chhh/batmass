@@ -21,6 +21,11 @@ public class FeatureUtils {
 
 
     public static Rectangle geometryAwtToRtree(Rectangle2D rect) {
+        // this is how those coordinates are considered in the Geometries.rectangle() factory method.
+        //double x1 = rect.getMinX();
+        //double x2 = rect.getMaxX();
+        //double y1 = rect.getY();
+        //double y2 = rect.getMaxY();
         return Geometries.rectangle(rect.getMinX(), rect.getY(), rect.getMaxX(), rect.getMaxY());
     }
 
