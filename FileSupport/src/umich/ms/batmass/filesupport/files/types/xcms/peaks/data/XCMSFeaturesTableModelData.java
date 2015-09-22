@@ -29,7 +29,7 @@ public class XCMSFeaturesTableModelData extends FeatureTableModelData<XCMSFeatur
                     + "Use .load(Object user) on this object first.");
         }
         
-        return new XCMSFeaturesTableModel();
+        return new XCMSFeaturesTableModel(data.getMs1().getList());
     }
 
 }

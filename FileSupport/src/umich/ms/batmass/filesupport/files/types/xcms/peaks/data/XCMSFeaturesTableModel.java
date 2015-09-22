@@ -6,61 +6,135 @@
 
 package umich.ms.batmass.filesupport.files.types.xcms.peaks.data;
 
-import javax.swing.event.TableModelListener;
-import javax.swing.table.TableModel;
+import java.util.List;
+import javax.swing.table.AbstractTableModel;
+import umich.ms.batmass.filesupport.files.types.xcms.peaks.model.XCMSPeak;
+import umich.ms.batmass.filesupport.files.types.xcms.peaks.model.XCMSPeakGroup;
+import umich.ms.batmass.gui.core.api.data.MzRtRegion;
+import umich.ms.batmass.gui.core.components.featuretable.AbstractFeatureTableModel;
 
 /**
  *
  * @author Dmitry Avtonomov
  */
-class XCMSFeaturesTableModel implements TableModel {
+class XCMSFeaturesTableModel extends AbstractFeatureTableModel {
 
-    public XCMSFeaturesTableModel() {
+   List<XCMSFeature> features;
+    
+    protected String[] colNames = {
+        /* 0 */ "Mono m/z",
+        /* 1 */ "m/z min",
+        /* 2 */ "m/z max",
+        /* 3 */ "Num isotopes",
+        /* 4 */ "RT",
+        /* 5 */ "RT min",
+        /* 6 */ "RT max",
+        /* 7 */ "Total intensity",
+        /* 8 */ "Max intensity",
+        /* 9 */ "pcgroup"
+    };
+    protected Class[] colTypes = {
+        /* 0 */ Double.class,
+        /* 1 */ Double.class,
+        /* 2 */ Double.class,
+        /* 3 */ Integer.class,
+        /* 4 */ Double.class,
+        /* 5 */ Double.class,
+        /* 6 */ Double.class,
+        /* 7 */ Double.class,
+        /* 8 */ Double.class,
+        /* 9 */ Integer.class,
+    };
+    
+    public XCMSFeaturesTableModel(List<XCMSFeature> features) {
+        this.features = features;
     }
 
     @Override
     public int getRowCount() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return features.size();
     }
 
     @Override
     public int getColumnCount() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return colNames.length;
     }
 
     @Override
     public String getColumnName(int columnIndex) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return colNames[columnIndex];
     }
 
     @Override
     public Class<?> getColumnClass(int columnIndex) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return colTypes[columnIndex];
     }
 
     @Override
     public boolean isCellEditable(int rowIndex, int columnIndex) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return false;
     }
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        XCMSFeature f = features.get(rowIndex);
+        XCMSPeakGroup g = f.getGroup();
+        XCMSPeak p = g.get(0);
+        switch (columnIndex) {
+            case 0:
+                return p.getMz();
+            case 1:
+                return p.getMzMin();
+            case 2:
+                return g.get(g.size()-1).getMzMax();
+            case 3:
+                return g.size();
+            case 4:
+                return p.getRt();
+            case 5:
+                return p.getRtMin();
+            case 6:
+                return p.getRtMax();
+            case 7:
+                return p.getInto();
+            case 8:
+                return p.getMaxo();
+            case 9:
+                return p.getPcgroup();
+        }
+        return null;
     }
 
     @Override
     public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Not editable.");
     }
 
     @Override
-    public void addTableModelListener(TableModelListener l) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public MzRtRegion rowToRegion(int row) {
+        if (row < 0 || row >= features.size())
+            throw new IllegalStateException(String.format("Conversion from illegal row index was requested, no such row index: [%s]", row));
+        XCMSFeature f = features.get(row);
+        if (f == null) {
+            throw new IllegalStateException(String.format("Should not happen, row index was ok, but the feature at this id was null."));
+        }
+        List<XCMSPeak> peaks = f.getGroup().getPeaks();
+        double mzLo = Double.POSITIVE_INFINITY;
+        double mzHi = Double.NEGATIVE_INFINITY;
+        double rtLo = Double.POSITIVE_INFINITY;
+        double rtHi = Double.NEGATIVE_INFINITY;
+        for (XCMSPeak peak : peaks) {
+            if (peak.getMzMin() < mzLo)
+                mzLo = peak.getMzMin();
+            if (peak.getMzMax() > mzHi)
+                mzHi = peak.getMzMax();
+            if (peak.getRtMin() < rtLo)
+                rtLo = peak.getRtMin();
+            if (peak.getRtMax() > rtHi)
+                rtHi = peak.getRtMax();
+        }
+       return new MzRtRegion(mzLo-1, mzHi+1, rtLo-1, rtHi+1);
     }
-
-    @Override
-    public void removeTableModelListener(TableModelListener l) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
+    
+    
 }

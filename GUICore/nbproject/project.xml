@@ -162,6 +162,7 @@
                 <package>umich.ms.batmass.gui.core.awt</package>
                 <package>umich.ms.batmass.gui.core.components.base</package>
                 <package>umich.ms.batmass.gui.core.components.chromatogram</package>
+                <package>umich.ms.batmass.gui.core.components.featuretable</package>
                 <package>umich.ms.batmass.gui.core.components.plots</package>
                 <package>umich.ms.batmass.gui.core.components.spectrum</package>
                 <package>umich.ms.batmass.gui.core.components.util</package>
