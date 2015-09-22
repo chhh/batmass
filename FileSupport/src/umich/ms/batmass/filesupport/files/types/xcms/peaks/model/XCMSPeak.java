@@ -21,9 +21,9 @@ public class XCMSPeak {
     protected double into;
     protected double maxo;
     protected String sample;
-    protected String isotopes;
-    protected String adduct;
-    protected int pcgroup;
+    protected String isotopes = "";
+    protected String adduct = "";
+    protected int pcgroup = -1;
 
     /** Values <0 mean unknown. */
     protected int isotopeNum = -1;

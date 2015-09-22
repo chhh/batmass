@@ -7,12 +7,10 @@
 package umich.ms.batmass.filesupport.files.types.xcms.peaks.model;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -20,7 +18,6 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 import org.apache.commons.csv.QuoteMode;
-import org.openide.util.Exceptions;
 
 /**
  *
@@ -104,15 +101,37 @@ public class XCMSPeaks {
             p.setMaxo(Double.parseDouble(val));
             val = r.get("sample");
             p.setSample(val);
-            val = r.get("isotopes");
-            p.setIsotopes(val);
-            val = r.get("adduct");
-            p.setAdduct(val);
-            val = r.get("pcgroup");
-            p.setPcgroup(Integer.parseInt(val));
+            
+            // these are optional and are only added by further R package 
+            // called 'CAMERA' processing
+            try {
+                val = getRecordValueForColName(r, "isotopes");
+                p.setIsotopes(val);
+            } catch (IllegalArgumentException e) {
+            }
+            try {
+                val = r.get("adduct");
+                p.setAdduct(val);
+            } catch (IllegalArgumentException e) {
+                p.setAdduct("");
+            }
+            try {
+                val = r.get("pcgroup");
+                p.setPcgroup(Integer.parseInt(val));
+            } catch (IllegalArgumentException e) {
+            }
+            
             peaks.add(p);
         }
         
         return peaks;
+    }
+    
+    private static String getRecordValueForColName(CSVRecord r, String colName) {
+        try {
+            return r.get(colName);
+        } catch (IllegalArgumentException | IllegalStateException e) {
+            return null;
+        }
     }
 }
