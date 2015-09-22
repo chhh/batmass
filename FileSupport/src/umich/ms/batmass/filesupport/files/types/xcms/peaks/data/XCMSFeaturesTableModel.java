@@ -7,7 +7,6 @@
 package umich.ms.batmass.filesupport.files.types.xcms.peaks.data;
 
 import java.util.List;
-import javax.swing.table.AbstractTableModel;
 import umich.ms.batmass.filesupport.files.types.xcms.peaks.model.XCMSPeak;
 import umich.ms.batmass.filesupport.files.types.xcms.peaks.model.XCMSPeakGroup;
 import umich.ms.batmass.gui.core.api.data.MzRtRegion;
@@ -133,7 +132,7 @@ class XCMSFeaturesTableModel extends AbstractFeatureTableModel {
             if (peak.getRtMax() > rtHi)
                 rtHi = peak.getRtMax();
         }
-       return new MzRtRegion(mzLo-1, mzHi+1, rtLo-1, rtHi+1);
+        return new MzRtRegion(mzLo-0.5, mzHi+0.5, rtLo-0.5, rtHi+0.5);
     }
     
     

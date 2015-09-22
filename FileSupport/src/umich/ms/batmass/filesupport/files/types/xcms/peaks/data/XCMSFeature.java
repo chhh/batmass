@@ -54,7 +54,8 @@ public class XCMSFeature extends AbstractLCMSFeature2D<XCMSTrace>{
     }
     
     private static double convertTime(double timeInSec) {
-        return timeInSec / 60d;
+        return timeInSec; // changed back to no-op implementation
+        //return timeInSec / 60d;
     }
 
     @Override

@@ -76,24 +76,33 @@ public class XCMSPeak {
         return rt;
     }
 
+    /**
+     * @param rt in seconds, as is the default XCMS output.
+     */
     public void setRt(double rt) {
-        this.rt = rt;
+        this.rt = rt / 60d;
     }
 
     public double getRtMin() {
         return rtMin;
     }
 
+    /**
+     * @param rtMin in seconds, as is the default XCMS output.
+     */
     public void setRtMin(double rtMin) {
-        this.rtMin = rtMin;
+        this.rtMin = rtMin / 60d;
     }
 
     public double getRtMax() {
         return rtMax;
     }
 
+    /**
+     * @param rtMax in seconds, as is the default XCMS output.
+     */
     public void setRtMax(double rtMax) {
-        this.rtMax = rtMax;
+        this.rtMax = rtMax / 60d;
     }
 
     public double getInto() {

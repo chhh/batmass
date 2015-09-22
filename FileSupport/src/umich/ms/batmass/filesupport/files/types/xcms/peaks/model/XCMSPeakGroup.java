@@ -7,7 +7,6 @@
 package umich.ms.batmass.filesupport.files.types.xcms.peaks.model;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
@@ -18,6 +17,8 @@ import java.util.List;
  */
 public class XCMSPeakGroup {
     List<XCMSPeak> peaks;
+    double mzLo;
+    double mzHi;
     Integer charge = null;
     Integer xcmsIsotopeGroupId = null;
 
@@ -43,14 +44,6 @@ public class XCMSPeakGroup {
         return peaks.get(index);
     }
 
-    public boolean addAll(Collection<? extends XCMSPeak> c) {
-        return peaks.addAll(c);
-    }
-
-    public boolean addAll(int index, Collection<? extends XCMSPeak> c) {
-        return peaks.addAll(index, c);
-    }
-
     public boolean add(XCMSPeak xcmsPeak) {
         return peaks.add(xcmsPeak);
     }
@@ -59,10 +52,10 @@ public class XCMSPeakGroup {
         peaks.add(index, element);
     }
 
-    public XCMSPeak remove(int index) {
-        return peaks.remove(index);
-    }
-
+    /**
+     * Do not modify the returned list!
+     * @return 
+     */
     public List<XCMSPeak> getPeaks() {
         return peaks;
     }

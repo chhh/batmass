@@ -71,7 +71,7 @@ public class FeatureTable extends ETable {
                         region = new MzRtRegion(mzLo, mzHi, rtLo, rtHi);
                     } else if (FeatureTable.this.getModel() instanceof FeatureTableModel) {
                         FeatureTableModel model = (FeatureTableModel)FeatureTable.this.getModel();
-                        region = model.rowToRegion(row);
+                        region = model.rowToRegion(table.convertRowIndexToModel(row));
                     }
                     if (region != null) {
                         getBusHandler().featureClicked(region);
