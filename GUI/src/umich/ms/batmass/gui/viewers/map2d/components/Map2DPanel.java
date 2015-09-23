@@ -496,7 +496,7 @@ public class Map2DPanel extends JPanel {
                 
                 Rectangle featureRect = baseMap.convertMzRtBoxToPixelCoords(box.x1(), box.x2(), box.y1() + rtSpan, box.y2() + rtSpan, 0d);
                 g.setColor(feature.getColor());
-                g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, 0.3f));
+                g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, 0.15f));
                 g.fill(featureRect);
                 g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP));
                 g.draw(featureRect);

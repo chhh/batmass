@@ -67,13 +67,16 @@ public class XCMSPeakGroups {
     public static XCMSPeakGroups create(XCMSPeaks peaks) {
         TreeMap<Integer, XCMSPeakGroup> map = new TreeMap<>();
         XCMSPeakGroups groups = new XCMSPeakGroups();
-
         for (XCMSPeak peak : peaks.getPeaks()) {
-            Matcher m = RE_XCMS_ISOTOPES.matcher(peak.getIsotopes());
+            String isotopes = peak.getIsotopes();
+            Matcher m = null;
+            if (isotopes != null && !isotopes.isEmpty()) {
+                m = RE_XCMS_ISOTOPES.matcher(isotopes);
+            }
             String clusterId, isotopeNumber, chargeCount, chargeSign;
             int id, zSign, isoNum, z;
             XCMSPeakGroup group;
-            if (m.find()) {
+            if (m != null && m.find()) {
                 // this line in csv file had info about isotopes
                 clusterId = m.group(RE_GRP_CLUSTERID);
                 isotopeNumber = m.group(RE_GRP_ISOTOPENUM);

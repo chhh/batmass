@@ -115,6 +115,7 @@ public class Map2DZoomLevel {
 
         double base = org.apache.commons.math3.util.FastMath.exp((FastMath.log(max) - FastMath.log(minNonZero)) / targetRange);
         return new RangeNormalizerImplLog(base);
+//        return new RangeNormalizerImplDoNothing();
 
         // TODO: replaced this version, which was not doing any normalization in the intensity
         // range was smaller than the defined threshold, with the above two lines (i.e. the
