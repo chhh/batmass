@@ -60,7 +60,13 @@ public class AbstractLCMSTrace implements ILCMSTrace {
 
     @Override
     public Shape getShape() {
-        throw new UnsupportedOperationException("This implementation does not support shapes for LCMSTraces.");
+        throw new UnsupportedOperationException(
+            "This implementation does not support shapes for LCMSTraces. "
+            + "Most likely you get this error because you extended AbstractLCMSFeature2D "
+            + "and did not override its #createBoundsFromTraces() method, which "
+            + "calls LCMSTrace#getShape() internally. The solution is to override "
+            + "#createBoundsFromTraces(), see example at "
+            + "umich.ms.batmass.filesupport.files.types.umpire.data.features.UmpireFeature");
     }
 
 }

@@ -7,6 +7,7 @@
 package umich.ms.batmass.filesupport.files.types.agilent.cef.model;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -19,13 +20,17 @@ public class AgilentCompound {
     protected double rt;
     protected int abMax;
     protected int abTot;
-    
+
     protected double rtLo;
     protected double rtHi;
     List<AgilentMSPeak> peaks;
 
     public AgilentCompound() {
         peaks = new ArrayList(2);
+    }
+
+    public boolean addAll(Collection<? extends AgilentMSPeak> c) {
+        return peaks.addAll(c);
     }
 
     public double getMass() {
@@ -91,7 +96,7 @@ public class AgilentCompound {
     public boolean add(AgilentMSPeak e) {
         return peaks.add(e);
     }
-    
+
     public AgilentCompound cloneWithoutPeaks() {
         AgilentCompound c = new AgilentCompound();
         c.setAbMax(abMax);

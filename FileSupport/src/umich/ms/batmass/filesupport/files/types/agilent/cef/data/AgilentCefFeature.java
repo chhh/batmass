@@ -4,65 +4,67 @@
  * and open the template in the editor.
  */
 
-package umich.ms.batmass.filesupport.files.types.xcms.peaks.data;
+package umich.ms.batmass.filesupport.files.types.agilent.cef.data;
 
 import java.awt.Color;
 import java.awt.geom.Rectangle2D;
 import umich.ms.batmass.data.core.lcms.features.AbstractLCMSFeature2D;
 import umich.ms.batmass.data.core.lcms.features.AbstractLCMSTrace;
-import static umich.ms.batmass.data.core.lcms.features.ILCMSFeature2D.CHARGE_UNKNOWN;
-import umich.ms.batmass.filesupport.files.types.xcms.peaks.model.XCMSPeak;
-import umich.ms.batmass.filesupport.files.types.xcms.peaks.model.XCMSPeakGroup;
+import umich.ms.batmass.filesupport.files.types.agilent.cef.model.AgilentCompound;
+import umich.ms.batmass.filesupport.files.types.agilent.cef.model.AgilentMSPeak;
 
 /**
  *
  * @author Dmitry Avtonomov
  */
-public class XCMSFeature extends AbstractLCMSFeature2D<XCMSTrace>{
-    protected XCMSPeakGroup group;
+public class AgilentCefFeature extends AbstractLCMSFeature2D<AbstractLCMSTrace>{
+    protected AgilentCompound compund;
 
-    public XCMSFeature(XCMSTrace[] traces, int charge) {
+    public AgilentCefFeature(AbstractLCMSTrace[] traces, int charge) {
         super(traces, charge);
     }
 
-    public XCMSFeature(XCMSTrace[] traces) {
+    public AgilentCefFeature(AbstractLCMSTrace[] traces) {
         super(traces);
     }
 
-    public XCMSPeakGroup getGroup() {
-        return group;
+    public AgilentCompound getCompund() {
+        return compund;
     }
 
-    public void setGroup(XCMSPeakGroup group) {
-        this.group = group;
+    public void setCompund(AgilentCompound compund) {
+        this.compund = compund;
     }
     
-    public static XCMSFeature create(XCMSPeakGroup group) {
-         int numTraces = group.size();
-
-        XCMSTrace[] traces = new XCMSTrace[numTraces];
-        for (int i = 0; i < traces.length; i++) {
-            XCMSPeak p = group.getPeaks().get(i);
-            traces[i] = new XCMSTrace(p.getMz(), convertTime(p.getRtMin()), convertTime(p.getRtMax()), p.getMzMin(), p.getMzMax());
+    public static AgilentCefFeature create(AgilentCompound ac) {
+        int numTraces = ac.size();
+        
+        AbstractLCMSTrace[] tr = new AbstractLCMSTrace[numTraces];
+        for (int i = 0; i < tr.length; i++) {
+            AgilentMSPeak peak = ac.getPeaks().get(i);
+            tr[i] = new AbstractLCMSTrace(peak.getMz(), ac.getRtLo(), ac.getRtHi());
         }
-        int charge = group.getCharge() == null ? CHARGE_UNKNOWN : group.getCharge();
         
-        XCMSFeature feature = new XCMSFeature(traces, charge);
-        feature.group = group;
+        int z = ac.getPeaks().get(0).getZ();
+        if (z == AgilentMSPeak.CHARGE_UNKNOWN) {
+            z = CHARGE_UNKNOWN;
+        }
         
-        return feature;
+        AgilentCefFeature acf = new AgilentCefFeature(tr, z);
+        acf.setCompund(ac);
+        return acf;
     }
     
-    private static double convertTime(double timeInSec) {
-        return timeInSec; // changed back to no-op implementation
-        //return timeInSec / 60d;
-    }
-
     @Override
     public Color getColor() {
-        return traces.length > 1 ? Color.MAGENTA : Color.RED;
+        return compund.size() > 1 ? Color.MAGENTA : Color.RED;
     }
     
+    /**
+     * Overriding this method, because we don't store shapes/bounds for LCMS Traces
+     * in Umpire Features.
+     * @return
+     */
     @Override
     protected Rectangle2D.Double createBoundsFromTraces() {
         int traceNumLo, traceNumHi;
@@ -85,5 +87,4 @@ public class XCMSFeature extends AbstractLCMSFeature2D<XCMSTrace>{
 
         return new Rectangle2D.Double(mzLo, rtHi, mzHi - mzLo, rtHi - rtLo);
     }
-
 }

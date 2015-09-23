@@ -50,7 +50,7 @@ public class UmpireFeature extends AbstractLCMSFeature2D<AbstractLCMSTrace> {
         }
 
         int charge = pc.Charge;
-        if (charge < 1) {
+        if (charge == 0) {
             charge = CHARGE_UNKNOWN;
         }
 

@@ -26,6 +26,17 @@ import umich.ms.fileio.filetypes.agilent.cef.jaxb.Spectrum;
  * @author Dmitry Avtonomov
  */
 public class AgilentCefFile {
+    public static String GRP_MOL_IDENTITY = "grp_id";
+    public static String GRP_M_COUNT = "grp_m_cnt";
+    public static String GRP_Z_COUNT = "grp_z_cnt";
+    public static String GRP_Z_CARRIER = "grp_z_crr";
+    public static String GRP_ADDUCT = "grp_add";
+    public static String GRP_ISOTOPE_NUM = "grp_iso_n";
+
+//    public static Pattern RE_PEAK_DESCRIPTION = Pattern.compile(String.format(
+//            "(?<%1$s>(?<%2$s>\\d*?M\\+(?<%3$s>\\d*?)(?<%4$s>[a-zA-Z\\d]+?)\\+?(?<%5s>\\[[^\\]]+?\\])\\+?(?<%6$s>\\d*)))",
+//            GRP_MOL_IDENTITY, GRP_M_COUNT, GRP_Z_COUNT, GRP_Z_CARRIER, GRP_ADDUCT, GRP_ISOTOPE_NUM));
+
     Path path;
 
     public AgilentCefFile(Path path) {
@@ -40,7 +51,7 @@ public class AgilentCefFile {
         try {
             if (!Files.exists(path))
                 throw new IllegalStateException("File path for Agilent .cef does not exist.");
-            
+
             AgilentCompounds comps = new AgilentCompounds();
             // declaring what to parse
             JAXBContext ctx = JAXBContext.newInstance(CEF.class);
@@ -49,7 +60,7 @@ public class AgilentCefFile {
             Object unmarshalled = unmarshaller.unmarshal(path.toFile());
             // use the unmarshalled object
             CEF cef = (CEF) unmarshalled;
-            
+
             List<Compound> compList = cef.getCompoundList().getCompound();
             Location l;
             Spectrum s;
@@ -79,12 +90,8 @@ public class AgilentCefFile {
                 }
                 comps.add(ac);
             }
-            
-            AgilentCompounds compsSplitByAdduct = new AgilentCompounds();
-            for (AgilentCompound ac : comps.getCompounds()) {
-                
-            }
-            return compsSplitByAdduct;
+
+            return comps;
         } catch (JAXBException ex) {
             throw new IOException(ex);
         }

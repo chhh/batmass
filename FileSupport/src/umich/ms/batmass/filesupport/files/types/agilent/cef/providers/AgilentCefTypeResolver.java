@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package umich.ms.batmass.filesupport.files.types.xcms.peaks.providers;
+package umich.ms.batmass.filesupport.files.types.agilent.cef.providers;
 
 import java.util.Locale;
 import javax.swing.ImageIcon;
@@ -18,19 +18,19 @@ import umich.ms.batmass.filesupport.core.spi.filetypes.AbstractFileTypeResolver;
  * @author Dmitry Avtonomov
  */
 @FileTypeResolverRegistration(
-        fileCategory = XCMSCsvPeaksTypeResolver.CATEGORY,
-        fileType = XCMSCsvPeaksTypeResolver.TYPE
+        fileCategory = AgilentCefTypeResolver.CATEGORY,
+        fileType = AgilentCefTypeResolver.TYPE
 )
-public class XCMSCsvPeaksTypeResolver extends AbstractFileTypeResolver {
-    private static final XCMSCsvPeaksTypeResolver INSTANCE = new XCMSCsvPeaksTypeResolver();
+public class AgilentCefTypeResolver extends AbstractFileTypeResolver {
+    private static final AgilentCefTypeResolver INSTANCE = new AgilentCefTypeResolver();
 
     @StaticResource
     public static final String ICON_BASE_PATH = "umich/ms/batmass/filesupport/resources/features_16.png";
     public static final ImageIcon ICON = ImageUtilities.loadImageIcon(ICON_BASE_PATH, false);
 
     public static final String CATEGORY = "features";
-    public static final String TYPE = "xcms";
-    protected static final String[] SUPPORTED_EXTS = {".xcms.csv"};
+    public static final String TYPE = "agilent-cef";
+    protected static final String[] SUPPORTED_EXTS = {".cef"};
     protected static final String[] SUPPORTED_EXTS_LOWER_CASE;
     static {
         SUPPORTED_EXTS_LOWER_CASE = new String[SUPPORTED_EXTS.length];
@@ -39,7 +39,7 @@ public class XCMSCsvPeaksTypeResolver extends AbstractFileTypeResolver {
         }
     }
 
-    public static XCMSCsvPeaksTypeResolver getInstance() {
+    public static AgilentCefTypeResolver getInstance() {
         return INSTANCE;
     }
 

@@ -105,11 +105,6 @@ class XCMSFeaturesTableModel extends AbstractFeatureTableModel {
     }
 
     @Override
-    public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
-        throw new UnsupportedOperationException("Not editable.");
-    }
-
-    @Override
     public MzRtRegion rowToRegion(int row) {
         if (row < 0 || row >= features.size())
             throw new IllegalStateException(String.format("Conversion from illegal row index was requested, no such row index: [%s]", row));

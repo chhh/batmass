@@ -17,5 +17,11 @@ public abstract class AbstractFeatureTableModel extends AbstractTableModel imple
 
     public AbstractFeatureTableModel() {
     }
+
+    @Override
+    public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
+        throw new UnsupportedOperationException("Not editable.");
+    }
+    
     
 }
