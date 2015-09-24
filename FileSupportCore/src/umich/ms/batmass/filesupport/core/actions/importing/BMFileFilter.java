@@ -28,6 +28,8 @@ public abstract class BMFileFilter extends javax.swing.filechooser.FileFilter {
     
     @Override
     public boolean accept(File f) {
+        if (f.isDirectory())
+            return true;
         return fileFilter.accept(f);
     }
     
