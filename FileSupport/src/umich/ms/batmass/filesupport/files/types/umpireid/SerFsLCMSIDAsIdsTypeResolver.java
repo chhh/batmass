@@ -1,8 +1,12 @@
 package umich.ms.batmass.filesupport.files.types.umpireid;
 
 import javax.swing.ImageIcon;
+import org.apache.commons.io.IOCase;
+import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.netbeans.api.annotations.common.StaticResource;
 import org.openide.util.ImageUtilities;
+import umich.ms.batmass.filesupport.core.actions.importing.BMFileFilter;
+import umich.ms.batmass.filesupport.core.actions.importing.BMSuffixFileFilter;
 import umich.ms.batmass.filesupport.core.annotations.FileTypeResolverRegistration;
 import umich.ms.batmass.filesupport.core.spi.filetypes.AbstractFileTypeResolver;
 
@@ -22,28 +26,14 @@ public class SerFsLCMSIDAsIdsTypeResolver extends AbstractFileTypeResolver {
     @StaticResource
     public static final String ICON_BASE_PATH = "umich/ms/batmass/filesupport/resources/id_icon_16.png";
     public static final ImageIcon ICON = ImageUtilities.loadImageIcon(ICON_BASE_PATH, false);
-
-
-    protected static final String[] SUPPORTED_EXTS = {"serFS"};
-    protected static final String FILE_NAME_ENDING_LO_CASE = "_lcmsid.serfs";
-    protected static final String[] SUPPORTED_EXTS_LOWER_CASE;
-    static {
-        SUPPORTED_EXTS_LOWER_CASE = toLowerCaseExts(SUPPORTED_EXTS);
-    }
-
+    protected static final String EXT = "_lcmsid.serfs";
+    protected static final String DESCRIPTION = "DIA Umpire detected features. serFS files in a folder.";
+    protected static final String SHORT_DESC = ".serFS in dir";
+    protected static final BMFileFilter FILE_FILTER = new BMSuffixFileFilter(EXT, SHORT_DESC, DESCRIPTION);
+    
     public static SerFsLCMSIDAsIdsTypeResolver getInstance() {
         return INSTANCE;
     }
-
-    @Override
-    public String[] getSupportedExtensions() {
-        return SUPPORTED_EXTS;
-    }
-
-//    @Override
-//    public boolean getSupportsFolders() {
-//        return false;
-//    }
 
     @Override
     public String getCategory() {
@@ -66,15 +56,12 @@ public class SerFsLCMSIDAsIdsTypeResolver extends AbstractFileTypeResolver {
     }
 
     @Override
-    public boolean accepts(String path, boolean isPathLowerCase) {
-        if (!isPathLowerCase) {
-            path = path.toLowerCase();
-        }
-        return path.endsWith(FILE_NAME_ENDING_LO_CASE);
+    public boolean isFileOnly() {
+        return true;
     }
 
     @Override
-    public boolean isFileOnly() {
-        return true;
+    public BMFileFilter getFileFilter() {
+        return FILE_FILTER;
     }
 }

@@ -6,10 +6,14 @@
 
 package umich.ms.batmass.filesupport.files.types.agilent.cef.providers;
 
-import java.util.Locale;
+import java.io.File;
 import javax.swing.ImageIcon;
+import org.apache.commons.io.IOCase;
+import org.apache.commons.io.filefilter.FileFilterUtils;
+import org.apache.commons.io.filefilter.IOFileFilter;
 import org.netbeans.api.annotations.common.StaticResource;
 import org.openide.util.ImageUtilities;
+import umich.ms.batmass.filesupport.core.actions.importing.BMFileFilter;
 import umich.ms.batmass.filesupport.core.annotations.FileTypeResolverRegistration;
 import umich.ms.batmass.filesupport.core.spi.filetypes.AbstractFileTypeResolver;
 
@@ -30,15 +34,10 @@ public class AgilentCefTypeResolver extends AbstractFileTypeResolver {
 
     public static final String CATEGORY = "features";
     public static final String TYPE = "agilent-cef";
-    protected static final String[] SUPPORTED_EXTS = {".cef"};
-    protected static final String[] SUPPORTED_EXTS_LOWER_CASE;
-    static {
-        SUPPORTED_EXTS_LOWER_CASE = new String[SUPPORTED_EXTS.length];
-        for (int i = 0; i < SUPPORTED_EXTS.length; i++) {
-            SUPPORTED_EXTS_LOWER_CASE[i] = SUPPORTED_EXTS[i].toLowerCase(Locale.ENGLISH);
-        }
-    }
-
+    protected static final String EXT = ".cef";
+    protected static final BMFileFilter FILE_FILTER = new AgilentCefFileFilter();
+    protected static final String DESCRIPTION = "Agilent .cef files from MassHunter MFE";
+    
     public static AgilentCefTypeResolver getInstance() {
         return INSTANCE;
     }
@@ -54,24 +53,6 @@ public class AgilentCefTypeResolver extends AbstractFileTypeResolver {
     }
 
     @Override
-    public boolean accepts(String path, boolean isPathLowerCase) {
-        if (!isPathLowerCase)
-            path = path.toLowerCase();
-        for (String ext : SUPPORTED_EXTS_LOWER_CASE) {
-            if (path.endsWith(ext)) {
-                return true;
-            }
-        }
-        
-        return false;
-    }
-
-    @Override
-    public String[] getSupportedExtensions() {
-        return SUPPORTED_EXTS;
-    }
-
-    @Override
     public ImageIcon getIcon() {
         return ICON;
     }
@@ -84,5 +65,27 @@ public class AgilentCefTypeResolver extends AbstractFileTypeResolver {
     @Override
     public boolean isFileOnly() {
         return true;
+    }
+
+    @Override
+    public BMFileFilter getFileFilter() {
+        return FILE_FILTER;
+    }
+
+    public static class AgilentCefFileFilter extends BMFileFilter {
+
+        public AgilentCefFileFilter() {
+            super(FileFilterUtils.suffixFileFilter(EXT, IOCase.INSENSITIVE));
+        }
+
+        @Override
+        public String getShortDescription() {
+            return EXT;
+        }
+
+        @Override
+        public String getDescription() {
+            return DESCRIPTION;
+        }
     }
 }

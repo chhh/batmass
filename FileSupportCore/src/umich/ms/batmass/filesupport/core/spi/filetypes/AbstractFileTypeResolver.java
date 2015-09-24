@@ -5,7 +5,6 @@
  */
 package umich.ms.batmass.filesupport.core.spi.filetypes;
 
-import java.io.File;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -14,31 +13,6 @@ import java.util.Objects;
  * @author Dmitry Avtonomov
  */
 public abstract class AbstractFileTypeResolver implements FileTypeResolver {
-    
-    protected boolean accepts(String[] acceptedExtsLoCase, String fileName, boolean isFileNameLoCase) {
-        if (!isFileNameLoCase) {
-            fileName = fileName.toLowerCase(Locale.ENGLISH);
-        }
-        for (String ext : acceptedExtsLoCase) {
-            if (fileName.endsWith(ext)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    protected boolean accepts(String[] acceptedExtsLoCase, File file) {
-        if (file.isDirectory()) {
-            return false;
-        }
-        String fileName = file.getName().toLowerCase(Locale.ENGLISH);
-        for (String ext : acceptedExtsLoCase) {
-            if (fileName.endsWith(ext)) {
-                return true;
-            }
-        }
-        return false;
-    }
     
     @Override
     public boolean matches(FileTypeResolver other) {

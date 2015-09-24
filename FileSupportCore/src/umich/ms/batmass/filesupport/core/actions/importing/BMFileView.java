@@ -40,7 +40,7 @@ public class BMFileView extends FileView {
         for (FileTypeResolver resolver : resolvers) {
             if (f.isDirectory() && resolver.isFileOnly())
                 continue;
-            if (resolver.accepts(fNameLoCase, true)) {
+            if (resolver.getFileFilter().accept(f)) {
                 return resolver.getIcon();
             }
         }

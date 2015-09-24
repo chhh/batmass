@@ -7,6 +7,7 @@ package umich.ms.batmass.filesupport.core.spi.filetypes;
 
 import javax.swing.ImageIcon;
 import org.openide.nodes.AbstractNode;
+import umich.ms.batmass.filesupport.core.actions.importing.BMFileFilter;
 
 /**
  * Maps a file-type to a specific category.<br/>
@@ -23,24 +24,12 @@ public interface FileTypeResolver {
     
     /** This path is where NodeInfos should be registered. */
     public static final String LAYER_REGISTRATION_PATH = "BatMass/FileTypeResolvers";
-
+    
     /**
-     * This array won't be used for anything important, but it will be used, 
-     * when creating a file chooser for the corresponding importing action,
-     * in order to make nicely looking file-filters.
+     * THe filter that will be used in FileChooser for this resolver.
      * @return 
      */
-    String[] getSupportedExtensions();
-    
-    //boolean getSupportsFolders();
-    
-    /**
-     * Checks if this NodeProvider handles the given file.
-     * @param path path to the file
-     * @param isPathLowerCase is the path you provided already lower-case?
-     * @return
-     */
-    boolean accepts(String path, boolean isPathLowerCase);
+    public BMFileFilter getFileFilter();
     
     /**
      * Reports if this resolver supports only single files, or can accept whole directories.

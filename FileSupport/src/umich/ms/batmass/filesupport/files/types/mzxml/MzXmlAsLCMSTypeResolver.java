@@ -5,10 +5,13 @@
  */
 package umich.ms.batmass.filesupport.files.types.mzxml;
 
-import java.util.Locale;
 import javax.swing.ImageIcon;
+import org.apache.commons.io.IOCase;
+import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.netbeans.api.annotations.common.StaticResource;
 import org.openide.util.ImageUtilities;
+import umich.ms.batmass.filesupport.core.actions.importing.BMFileFilter;
+import umich.ms.batmass.filesupport.core.actions.importing.BMSuffixFileFilter;
 import umich.ms.batmass.filesupport.core.annotations.FileTypeResolverRegistration;
 import umich.ms.batmass.filesupport.core.spi.filetypes.AbstractFileTypeResolver;
 
@@ -29,14 +32,10 @@ public class MzXmlAsLCMSTypeResolver extends AbstractFileTypeResolver {
     
     public static final String CATEGORY = "lcms";
     public static final String TYPE = "mzxml";
-    protected static final String[] SUPPORTED_EXTS = {"mzXML"};
-    protected static final String[] SUPPORTED_EXTS_LOWER_CASE;
-    static {
-        SUPPORTED_EXTS_LOWER_CASE = new String[SUPPORTED_EXTS.length];
-        for (int i = 0; i < SUPPORTED_EXTS.length; i++) {
-            SUPPORTED_EXTS_LOWER_CASE[i] = SUPPORTED_EXTS[i].toLowerCase(Locale.ENGLISH);
-        }
-    }
+    protected static final String EXT = ".mzXML";
+    protected static final String SHORT_DESC = ".mzXML";
+    protected static final String DESCRIPTION = "mzXML files";
+    protected static final BMFileFilter FILE_FILTER = new BMSuffixFileFilter(EXT, SHORT_DESC, DESCRIPTION);
 
     public static MzXmlAsLCMSTypeResolver getInstance() {
         return INSTANCE;
@@ -53,21 +52,6 @@ public class MzXmlAsLCMSTypeResolver extends AbstractFileTypeResolver {
     }
     
     @Override
-    public boolean accepts(String path, boolean isPathLowerCase) {
-        return this.accepts(SUPPORTED_EXTS_LOWER_CASE, path, isPathLowerCase);
-    }
-
-    @Override
-    public String[] getSupportedExtensions() {
-        return SUPPORTED_EXTS;
-    }
-
-//    @Override
-//    public boolean getSupportsFolders() {
-//        return false;
-//    }
-
-    @Override
     public ImageIcon getIcon() {
         return ICON;
     }
@@ -80,5 +64,10 @@ public class MzXmlAsLCMSTypeResolver extends AbstractFileTypeResolver {
     @Override
     public boolean isFileOnly() {
         return true;
+    }
+
+    @Override
+    public BMFileFilter getFileFilter() {
+        return FILE_FILTER;
     }
 }

@@ -16,6 +16,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -26,6 +27,8 @@ import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.io.filefilter.IOFileFilter;
+import org.apache.commons.io.filefilter.OrFileFilter;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.filesystems.FileChooserBuilder;
@@ -154,7 +157,7 @@ public abstract class ImportFileByCategory
         folder = folders.iterator().next();
 
         // this step polls the available parsers
-        List<FileFilter> fileFilters = createFileFilters(getFileCategory());
+        List<BMFileFilter> fileFilters = createFileFilters(getFileCategory());
 
         // build the file chooser
         FileChooserBuilder fcBuilder = new FileChooserBuilder(this.getClass())
@@ -207,36 +210,60 @@ public abstract class ImportFileByCategory
         }
     }
 
-    private List<FileFilter> createFileFilters(String category) {
-        Set<String> allExts = FileTypeResolverUtils.getExtsSupportedByAllResolvers(category);
-        LinkedList<FileFilter> filters = new LinkedList<>();
+    private List<BMFileFilter> createFileFilters(String category) {
+        List<FileTypeResolver> resolvers = FileTypeResolverUtils.getTypeResolvers(category);
         String baseDesc = getCategoryDisplayName();
-
-        if (allExts.isEmpty()) {
-            filters.add(new FileNameExtensionFilter(baseDesc + " (No resolvers installed)", "unidentified"));
+        LinkedList<BMFileFilter> filters = new LinkedList<>();
+        if (resolvers.isEmpty()) {
+            filters.add(new BMFileFilter(null) {
+                @Override public String getShortDescription() {
+                    return  "UNDEFINED";
+                }
+                @Override public String getDescription() {
+                    return "No resolvers were found for this filetype category";
+                }
+            });
             return filters;
         }
-
-
-        String[] allExtsArr = allExts.toArray(new String[allExts.size()]);
-        Arrays.sort(allExtsArr);
-
-        // separate filters for each extension
-        for (String ext : allExtsArr)
-            filters.add(new FileNameExtensionFilter(ext, ext));
+        
+        for (FileTypeResolver resolver : resolvers) {
+            filters.add(resolver.getFileFilter());
+        }
+        
+        List<String> shortDescs = new ArrayList<>(filters.size());
+        for (BMFileFilter bmff : filters) {
+            shortDescs.add(bmff.getShortDescription());
+        }
+        Collections.sort(shortDescs);
 
         // creating the composite filter for all recognized files
         StringBuilder sb = new StringBuilder();
         sb.append(baseDesc).append(" (");
-        sb.append(allExtsArr[0]);
-        if (allExtsArr.length > 1) {
-            for (int i = 1; i < allExtsArr.length; i++) {
-                sb.append(", ").append(allExtsArr[i]);
+        sb.append(shortDescs.get(0));
+        if (shortDescs.size() > 1) {
+            for (int i = 1; i < shortDescs.size(); i++) {
+                sb.append(", ").append(shortDescs.get(i));
             }
         }
         sb.append(")");
-        FileNameExtensionFilter filterAllExts = new FileNameExtensionFilter(sb.toString(), allExtsArr);
-        filters.addFirst(filterAllExts);
+        
+        List<IOFileFilter> ioFileFilters = new ArrayList<>(filters.size());
+        for (BMFileFilter bmff : filters) {
+            ioFileFilters.add(bmff.getFileFilter());
+        }
+        
+        OrFileFilter orFileFilter = new OrFileFilter(ioFileFilters);
+        final String allFiltersDesc = sb.toString();
+        BMFileFilter combinedFilter = new BMFileFilter(orFileFilter) {
+            @Override public String getShortDescription() {
+                return allFiltersDesc;
+            }
+            
+            @Override public String getDescription() {
+                return "Any supported file";
+            }
+        };
+        filters.addFirst(combinedFilter);
         return filters;
     }
 

@@ -8,13 +8,11 @@ package umich.ms.batmass.filesupport.files.types.umpire;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.nio.file.FileSystemNotFoundException;
-import java.nio.file.InvalidPathException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Locale;
 import javax.swing.ImageIcon;
+import org.apache.commons.io.filefilter.IOFileFilter;
 import org.netbeans.api.annotations.common.StaticResource;
 import org.openide.util.ImageUtilities;
+import umich.ms.batmass.filesupport.core.actions.importing.BMFileFilter;
 import umich.ms.batmass.filesupport.core.annotations.FileTypeResolverRegistration;
 import umich.ms.batmass.filesupport.core.spi.filetypes.AbstractFileTypeResolver;
 
@@ -35,14 +33,10 @@ public class SerFSAsFeaturesTypeResolver extends AbstractFileTypeResolver {
 
     public static final String CATEGORY = "features";
     public static final String TYPE = "umpire";
-    protected static final String[] SUPPORTED_EXTS = {"serFS"};
-    protected static final String[] SUPPORTED_EXTS_LOWER_CASE;
-    static {
-        SUPPORTED_EXTS_LOWER_CASE = new String[SUPPORTED_EXTS.length];
-        for (int i = 0; i < SUPPORTED_EXTS.length; i++) {
-            SUPPORTED_EXTS_LOWER_CASE[i] = SUPPORTED_EXTS[i].toLowerCase(Locale.ENGLISH);
-        }
-    }
+    protected static final String EXT = ".mzXML";
+    protected static final BMFileFilter FILE_FILTER = new UmpireSerFsFileFilter();
+    protected static final String DESCRIPTION = "DIA Umpire detected features. serFS files in a folder.";
+    protected static final String SHORT_DESC = ".serFS in dir";
 
     public static SerFSAsFeaturesTypeResolver getInstance() {
         return INSTANCE;
@@ -59,37 +53,6 @@ public class SerFSAsFeaturesTypeResolver extends AbstractFileTypeResolver {
     }
 
     @Override
-    public boolean accepts(String path, boolean isPathLowerCase) {
-        try {
-            Path pathAbs = Paths.get(path).toAbsolutePath();
-
-            File dir = pathAbs.toFile();
-            //check for serfs files
-            if (dir.isDirectory()) {
-                String[] list = dir.list(new FilenameFilter() {
-                    @Override
-                    public boolean accept(File dir, String name) {
-                        return name.toLowerCase().endsWith("peakcluster.serfs");
-                    }
-                });
-                if (list.length >= 1) {
-                    return true;
-                }
-            }
-        } catch (FileSystemNotFoundException | IllegalArgumentException ex) {
-            // we don't care if errors occur here, just return false
-            System.err.printf("Bad path given to SerFSFeaturesTypeResolver: %s\n", path);
-        }
-
-        return false;
-    }
-
-    @Override
-    public String[] getSupportedExtensions() {
-        return SUPPORTED_EXTS;
-    }
-
-    @Override
     public ImageIcon getIcon() {
         return ICON;
     }
@@ -102,5 +65,55 @@ public class SerFSAsFeaturesTypeResolver extends AbstractFileTypeResolver {
     @Override
     public boolean isFileOnly() {
         return false;
+    }
+
+    @Override
+    public BMFileFilter getFileFilter() {
+        return FILE_FILTER;
+    }
+    
+    public static class UmpireSerFsFileFilter extends BMFileFilter {
+
+        public UmpireSerFsFileFilter() {
+            super(new IOFileFilter() {
+
+                @Override
+                public boolean accept(File dir) {
+                    try {
+                        //check for serfs files
+                        if (dir.isHidden())
+                            return false;
+                        if (dir.isDirectory()) {
+                            String[] list = dir.list(new FilenameFilter() {
+                                @Override public boolean accept(File dir, String name) {
+                                    return name.toLowerCase().endsWith("peakcluster.serfs");
+                                }
+                            });
+                            if (list != null && list.length >= 1) {
+                                return true;
+                            }
+                        }
+                    } catch (FileSystemNotFoundException | IllegalArgumentException ex) {
+                        // we don't care if errors occur here, just return false
+                        System.err.printf("Bad path given to SerFSFeaturesTypeResolver: %s\n", dir.getAbsolutePath());
+                    }
+                    return false;
+                }
+
+                @Override
+                public boolean accept(File dir, String name) {
+                    // this only accepts directories
+                    return false;
+                }
+            });
+        }
+
+        @Override public String getShortDescription() {
+            return SHORT_DESC;
+        }
+
+        @Override public String getDescription() {
+            return DESCRIPTION;
+        }
     }
 }

@@ -5,6 +5,7 @@
  */
 package umich.ms.batmass.filesupport.core.api;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -61,8 +62,9 @@ public abstract class FileTypeResolverUtils {
         Lookup lkp = LookupUtils.getLookupForPath(layerPath);
         List<FileTypeResolver> found = new ArrayList<>();
         Collection<? extends FileTypeResolver> resolvers = lkp.lookupAll(FileTypeResolver.class);
+        File file = new File(fileName);
         for (FileTypeResolver resolver : resolvers) {
-            if (resolver.accepts(fileNameLoCase, true)) {
+            if (resolver.getFileFilter().accept(file)) {
                 found.add(resolver);
             }    
         }
@@ -87,8 +89,9 @@ public abstract class FileTypeResolverUtils {
         Lookup lkp = LookupUtils.getLookupForPath(layerPath);
         List<FileTypeResolver> found = new ArrayList<>();
         Collection<? extends FileTypeResolver> resolvers = lkp.lookupAll(FileTypeResolver.class);
+        File file = new File(filePath);
         for (FileTypeResolver resolver : resolvers) {
-            if (resolver.accepts(fileNameLoCase, true)) {
+            if (resolver.getFileFilter().accept(file)) {
                 found.add(resolver);
             }
         }
@@ -148,23 +151,5 @@ public abstract class FileTypeResolverUtils {
         }
 
         return found;
-    }
-
-    /**
-     * Utility method, that aggregates file extensions supported by all installed
-     * resolvers. Used for generating file-filters for file-chooser.
-     * @param fileCategory
-     * @return
-     */
-    public static Set<String> getExtsSupportedByAllResolvers(String fileCategory) {
-        List<FileTypeResolver> resolvers = getTypeResolvers(fileCategory);
-        
-        Set<String> supportedExts = new HashSet<>(resolvers.size());
-        for (FileTypeResolver resolver : resolvers) {
-            supportedExts.addAll(Arrays.asList(resolver.getSupportedExtensions()));
-        }
-        
-        return supportedExts;
-    }
-    
+    }    
 }
