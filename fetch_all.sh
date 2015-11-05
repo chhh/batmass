@@ -23,6 +23,7 @@ cd BatMassExternalSuite
 echo `pwd` 
 git fetch --all
 git pull --ff-only
+cd ..
 
 echo 
 echo =================================
@@ -32,6 +33,7 @@ cd MSFTBX
 echo `pwd` 
 git fetch --all
 git pull --ff-only
+cd ..
 
 echo 
 echo =================================
