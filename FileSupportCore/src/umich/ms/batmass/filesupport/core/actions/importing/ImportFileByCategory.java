@@ -14,18 +14,15 @@ import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JFileChooser;
 import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileFilter;
-import javax.swing.filechooser.FileNameExtensionFilter;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.io.filefilter.IOFileFilter;
 import org.apache.commons.io.filefilter.OrFileFilter;
@@ -252,6 +249,9 @@ public abstract class ImportFileByCategory
             ioFileFilters.add(bmff.getFileFilter());
         }
         
+        // add a filter that allows showing directories when "all supported files" option in the filechooser is selected
+        ioFileFilters.add(new BMDirectoryFileFilter().getFileFilter());
+
         OrFileFilter orFileFilter = new OrFileFilter(ioFileFilters);
         final String allFiltersDesc = sb.toString();
         BMFileFilter combinedFilter = new BMFileFilter(orFileFilter) {

@@ -7,7 +7,6 @@
 package umich.ms.batmass.filesupport.core.actions.importing;
 
 import java.io.File;
-import org.apache.commons.io.filefilter.IOFileFilter;
 
 /**
  * This is to be used by FileTypeResolvers, use ApacheCommons IO FileFilters
@@ -16,13 +15,13 @@ import org.apache.commons.io.filefilter.IOFileFilter;
  * @author Dmitry Avtonomov
  */
 public abstract class BMFileFilter extends javax.swing.filechooser.FileFilter {
-    protected IOFileFilter fileFilter;
+    protected org.apache.commons.io.filefilter.IOFileFilter fileFilter;
 
-    public BMFileFilter(IOFileFilter ff) {
+    public BMFileFilter(org.apache.commons.io.filefilter.IOFileFilter ff) {
         this.fileFilter = ff;
     }
 
-    public IOFileFilter getFileFilter() {
+    public org.apache.commons.io.filefilter.IOFileFilter getFileFilter() {
         return fileFilter;
     }
     
