@@ -1151,10 +1151,14 @@ public class Map2DPanel extends JPanel {
                 brcY = mapYlen - 1;
             }
 
-            double sum = 0;
+            double sum = 0, max = 0, val;
             for (int y = brcY; y <= tlcY; y++) {
                 for (int x = tlcX; x <= brcX; x++) {
-                    sum = sum + map[y][x];
+                    val = map[y][x];
+                    sum = sum + val;
+                    if (max < val) {
+                        max = val;
+                    }
                 }
             }
 
@@ -1175,8 +1179,8 @@ public class Map2DPanel extends JPanel {
                 sb.append(String.format("=%.0fppm", ppm));
             }
             sb.append("), ");
-            sb.append(String.format("rt: %.2f - %.2f (%.2f), ab: %,.0f",
-                    zoomBoxMzRt.getRtLo(), zoomBoxMzRt.getRtHi(), zoomBoxMzRt.getRtSpan(), sum));
+            sb.append(String.format("rt: %.2f - %.2f (%.2f), ab: %,.0f (max: %,.0f)",
+                    zoomBoxMzRt.getRtLo(), zoomBoxMzRt.getRtHi(), zoomBoxMzRt.getRtSpan(), sum, max));
             tooltipText = sb.toString();
 
 //            tooltipText = String.format("mz: %.2f - %.2f (%.4f), "

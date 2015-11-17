@@ -200,10 +200,10 @@ public class FileDescriptorNode extends DataNode {
                 return desc.getPath().toAbsolutePath().toString();
             }
         };
-        PropertySupport.ReadOnly<Long> propSize = new PropertySupport.ReadOnly<Long>(
-                "file_size", Long.class, "Size of original file", "The size of the file this descriptor links to") {
-            @Override public Long getValue() throws IllegalAccessException, InvocationTargetException {
-                return desc.getSize();
+        PropertySupport.ReadOnly<String> propSize = new PropertySupport.ReadOnly<String>(
+                "file_size", String.class, "Size of original file", "The size of the file this descriptor links to") {
+            @Override public String getValue() throws IllegalAccessException, InvocationTargetException {
+                return String.format("%,.2f MB", (double)(desc.getSize()) / (1024 * 1024));
             }
         };
         

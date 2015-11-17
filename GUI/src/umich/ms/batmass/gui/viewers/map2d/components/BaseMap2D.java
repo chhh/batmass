@@ -369,7 +369,7 @@ public final class BaseMap2D {
             if (hasProfile && doProfileModeGapFilling) {
                 double pixelSizeMz = getMzSpan() / availableWidth;
                 if (pixelSizeMz < 0.01) {
-                    fillProfileGaps(0, y);
+                    fillProfileGaps(0, y, pixelSizeMz);
                 }
             }
         }
@@ -546,24 +546,25 @@ public final class BaseMap2D {
         return null;
     }
 
-    private void fillProfileGaps(int targetRepeatLength, int y) {
+    private void fillProfileGaps(int targetRepeatLength, int y, double pixelSize) {
         int curRepeatSize = 0;
-        double prevNonZeroVal = 0;
+        double prevNonZeroVal = 0, curNonZeroVal = 0;
         int prevNonZeroIdx = 0;
-        double curNonZeroVal = 0;
         for (int j = 0; j < width; j++) {
             if (map[y][j] == 0) {
                 curRepeatSize++;
             } else {
-                curNonZeroVal = map[y][j];
-                if (curRepeatSize != 0 && curRepeatSize > targetRepeatLength && prevNonZeroVal != 0) {
-                    // we have found an appropriate repeat
-                    // do linear interpolation
-                    int cnt = 0;
-                    double stepSize = (curNonZeroVal - prevNonZeroVal) / (curRepeatSize+1);
-                    for (int idx = j-1; idx >= prevNonZeroIdx ; idx--) {
-                        cnt++;
-                        map[y][idx] = map[y][j] - stepSize * cnt;
+                if (pixelSize * curRepeatSize < 0.01) {
+                    curNonZeroVal = map[y][j];
+                    if (curRepeatSize != 0 && curRepeatSize > targetRepeatLength && prevNonZeroVal != 0) {
+                        // we have found an appropriate repeat
+                        // do linear interpolation
+                        int cnt = 0;
+                        double stepSize = (curNonZeroVal - prevNonZeroVal) / (curRepeatSize+1);
+                        for (int idx = j-1; idx >= prevNonZeroIdx ; idx--) {
+                            cnt++;
+                            map[y][idx] = map[y][j] - stepSize * cnt;
+                        }
                     }
                 }
                 curRepeatSize = 0;
