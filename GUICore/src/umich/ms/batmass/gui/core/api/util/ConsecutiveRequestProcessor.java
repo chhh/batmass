@@ -22,25 +22,16 @@ public abstract class ConsecutiveRequestProcessor {
     }
 
     /**
-     * Post a job to our separate single-threaded job queue
-     * possibly starting a simple indeterminate progress bar
+     * Post a job to our separate single-threaded job queue possibly starting a 
+     * simple indeterminate progress bar.
      * @param r the Runnable task to be performed
-     * @param jobName
+     * @param jobName to be displayed in the progress bar
      * @return Task handle to which you can attach a taskFinished() listener
      */
     public static RequestProcessor.Task post(Runnable r, String jobName) {
         RequestProcessor.Task task = rp.post(r);
-//        final RequestProcessor.Task task = rp.create(r);
         if (jobName != null) {
-            Cancellable can = new Cancellable() {
-                @Override
-                public boolean cancel() {
-                    Thread.currentThread().interrupt();
-                    return true;
-                }
-            };
-//            final ProgressHandle ph = ProgressHandleFactory.createHandle(jobName, task);
-            final ProgressHandle ph = ProgressHandleFactory.createHandle(jobName, can);
+            final ProgressHandle ph = ProgressHandle.createHandle(jobName);
             task.addTaskListener(new TaskListener() {
                 @Override
                 public void taskFinished(Task task) {
@@ -50,7 +41,33 @@ public abstract class ConsecutiveRequestProcessor {
             // start the progresshandle the progress UI will show 500ms after
             ph.start();
             ph.switchToIndeterminate();
-//            task.schedule(0);
+        }
+        return task;
+    }
+    
+    /**
+     * Post a job to our separate single-threaded job queue possibly starting a 
+     * simple indeterminate progress bar and allowing to cancel the job.
+     * It's up to you to provide an implementation of Cancellable.
+     * @param run the Runnable task to be performed
+     * @param cancel will be called when the user clicks red cross to cancel the 
+     *               task
+     * @param jobName to be displayed in the progress bar
+     * @return Task handle to which you can attach a taskFinished() listener
+     */
+    public static RequestProcessor.Task post(Runnable run, Cancellable cancel, String jobName) {
+        RequestProcessor.Task task = rp.post(run);
+        if (jobName != null) {
+            final ProgressHandle ph = ProgressHandle.createHandle(jobName, cancel);
+            task.addTaskListener(new TaskListener() {
+                @Override
+                public void taskFinished(Task task) {
+                    ph.finish();
+                }
+            });
+            // start the progresshandle the progress UI will show 500ms after
+            ph.start();
+            ph.switchToIndeterminate();
         }
         return task;
     }

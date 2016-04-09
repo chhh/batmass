@@ -18,6 +18,7 @@ import javax.swing.Action;
 import javax.swing.ImageIcon;
 import javax.swing.KeyStroke;
 import org.netbeans.api.annotations.common.StaticResource;
+import org.netbeans.api.progress.BaseProgressUtils;
 import org.netbeans.api.progress.ProgressHandle;
 import org.netbeans.api.progress.ProgressHandleFactory;
 import org.netbeans.api.progress.ProgressUtils;
@@ -140,8 +141,8 @@ public class UpdateMapAction extends AbstractAction {
 
             String dialogTitle = "Loading data";
             String progressHandleName = "Updating currently loaded spectra";
-            final ProgressHandle ph = ProgressHandleFactory.createHandle(progressHandleName);
-            ProgressUtils.runOffEventThreadWithProgressDialog(loadData, dialogTitle, ph, false, 0, 300);
+            final ProgressHandle ph = ProgressHandle.createHandle(progressHandleName);
+            BaseProgressUtils.runOffEventThreadWithProgressDialog(loadData, dialogTitle, ph, false, 0, 300);
             ph.start();
 
         } else {

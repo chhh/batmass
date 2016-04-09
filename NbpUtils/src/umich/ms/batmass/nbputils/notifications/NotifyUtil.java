@@ -30,7 +30,7 @@ public class NotifyUtil {
      * @param clear
     */
     public static void show(String title, String message, MessageType type, ActionListener actionListener, boolean clear) {
-        Notification n = (Notification) NotificationDisplayer.getDefault().notify(title, type.getIcon(), message, actionListener);
+        Notification n = NotificationDisplayer.getDefault().notify(title, type.getIcon(), message, actionListener);
         if(clear == true)
             n.clear();
     }

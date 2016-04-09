@@ -11,6 +11,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicBoolean;
+import org.netbeans.api.progress.BaseProgressUtils;
 import org.netbeans.api.progress.ProgressHandle;
 import org.netbeans.api.progress.ProgressHandleFactory;
 import org.netbeans.api.progress.ProgressUtils;
@@ -77,7 +78,7 @@ public class TreeTableTopComponent extends BMTopComponent {
         };
 
         String progressHandleName = data.getSource().getOriginURI().toString();
-        final ProgressHandle ph = ProgressHandleFactory.createHandle(progressHandleName);
+        final ProgressHandle ph = ProgressHandle.createHandle(progressHandleName);
         
 
         // the loading step, off-EDT
@@ -99,7 +100,7 @@ public class TreeTableTopComponent extends BMTopComponent {
 
         SwingHelper.invokeOnEDTSynch(preDataLoaded);
         String dialogTitle = "Loading data";
-        ProgressUtils.runOffEventThreadWithProgressDialog(loadData, dialogTitle, ph, false, 0, 300);
+        BaseProgressUtils.runOffEventThreadWithProgressDialog(loadData, dialogTitle, ph, false, 0, 300);
         ph.start();
 
     }

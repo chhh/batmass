@@ -18,6 +18,7 @@ import javax.swing.InputMap;
 import javax.swing.JComponent;
 import javax.swing.event.UndoableEditEvent;
 import org.netbeans.api.annotations.common.StaticResource;
+import org.netbeans.api.progress.BaseProgressUtils;
 import org.netbeans.api.progress.ProgressHandle;
 import org.netbeans.api.progress.ProgressHandleFactory;
 import org.netbeans.api.progress.ProgressUtils;
@@ -110,7 +111,7 @@ public class Map2DTopComponent extends BMTopComponent implements Map2DZoomEventL
 
 
         String progressHandleName = data.getSource().getName();
-        final ProgressHandle ph = ProgressHandleFactory.createHandle(progressHandleName);
+        final ProgressHandle ph = ProgressHandle.createHandle(progressHandleName);
         
         
         final Runnable loadData = new Runnable() {
@@ -128,7 +129,7 @@ public class Map2DTopComponent extends BMTopComponent implements Map2DZoomEventL
 
         SwingHelper.invokeOnEDTSynch(preDataLoaded);
         String dialogTitle = "Loading data";
-        ProgressUtils.runOffEventThreadWithProgressDialog(loadData, dialogTitle, 
+        BaseProgressUtils.runOffEventThreadWithProgressDialog(loadData, dialogTitle, 
                 ph, false, 0, 300);
         ph.start();
         // this dims the whole UI and shows a progress bar in the middle
@@ -194,7 +195,7 @@ public class Map2DTopComponent extends BMTopComponent implements Map2DZoomEventL
 
 
         String progressHandleName = data.getSource().getOriginURI().toString();
-        final ProgressHandle ph = ProgressHandleFactory.createHandle(progressHandleName);
+        final ProgressHandle ph = ProgressHandle.createHandle(progressHandleName);
         
         
         final Runnable loadData = new Runnable() {
@@ -213,7 +214,7 @@ public class Map2DTopComponent extends BMTopComponent implements Map2DZoomEventL
 
         SwingHelper.invokeOnEDTSynch(preDataLoaded);
         String dialogTitle = "Loading data";
-        ProgressUtils.runOffEventThreadWithProgressDialog(loadData, dialogTitle, 
+        BaseProgressUtils.runOffEventThreadWithProgressDialog(loadData, dialogTitle, 
                 ph, false, 0, 300);
         ph.start();
     }
