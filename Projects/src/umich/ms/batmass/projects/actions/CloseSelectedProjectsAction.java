@@ -12,8 +12,6 @@ import javax.swing.AbstractAction;
 import org.netbeans.api.project.Project;
 import org.netbeans.api.project.ui.OpenProjects;
 import org.openide.awt.ActionID;
-import org.openide.awt.ActionReference;
-import org.openide.awt.ActionReferences;
 import org.openide.awt.ActionRegistration;
 import org.openide.awt.DynamicMenuContent;
 import org.openide.util.NbBundle.Messages;

@@ -26,7 +26,7 @@ public class AgilentCompound {
     List<AgilentMSPeak> peaks;
 
     public AgilentCompound() {
-        peaks = new ArrayList(2);
+        peaks = new ArrayList<>(2);
     }
 
     public boolean addAll(Collection<? extends AgilentMSPeak> c) {
