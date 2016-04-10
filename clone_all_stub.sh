@@ -1,13 +1,15 @@
 # assuming you're in BatMass directory (create one locally if you don't yet have one)
 cur_dir_name=${PWD##*/}
-repo_hostname="141.214.4.18"
-repo_port="12022"
-repo_user="dmitriya"
-repo_path_stub=ssh://$repo_user@$repo_hostname:$repo_port/repos/batmass
+repo_hostname=""
+repo_port=""
+repo_user=""
+repo_path_on_remote=""   # absolute path on the remote server hosting the repositories
+local_enclosing_dir="" # the name of the local directory where all repositories sit side by side
+repo_path_stub=ssh://$repo_user@$repo_hostname:$repo_port$repo_path_on_remote
 
 echo "Current dir: " `pwd`
-if [ $cur_dir_name != "BatMass" ]; then
-	echo "You must be in BatMass directory to execute this script."
+if [ $cur_dir_name != $local_enclosing_dir ]; then
+	echo "You must be in $local_enclosing_dir directory to execute this script."
 	exit 1
 fi
 
@@ -17,7 +19,20 @@ echo =================================
 echo
 
 
-cd ..
+echo "Current dir: " `pwd`
+repo_path=$repo_path_stub/BatMass.git
+echo Cloning repo from: $repo_path
+#mkdir BatMass
+git clone $repo_path
+cd BatMass
+git for-each-ref --sort=-committerdate refs/heads/
+
+
+echo
+echo =================================
+echo
+
+
 echo "Current dir: " `pwd`
 repo_path=$repo_path_stub/MSFTBX.git
 echo Cloning repo from: $repo_path
@@ -49,11 +64,11 @@ echo
 
 cd ..
 echo "Current dir: " `pwd`
-repo_path=$repo_path_stub/BatMassExternalSuite.git
+repo_path=$repo_path_stub/BatMassExt.git
 echo Cloning repo from: $repo_path
-#mkdir BatMassExternalSuite
+#mkdir BatMassExt
 git clone $repo_path
-cd BatMassExternalSuite
+cd BatMassExt
 git for-each-ref --sort=-committerdate refs/heads/
 
 
@@ -65,8 +80,8 @@ echo
 cd ..
 echo "Current dir: " `pwd`
 local_path="./NBP_Harness"
-repo_path=$repo_path_stub/NBP_Harness/nbp801_dist
-scp_command_params="-r -P$repo_port $repo_user@$repo_hostname:/repos/batmass/NBP_Harness ."
+repo_path=$repo_path_stub/NBP_Harness/nb81_dist
+scp_command_params="-r -P$repo_port $repo_user@$repo_hostname:$repo_path_on_remote/NBP_Harness ."
 
 echo "Copying the Platform and Harness (scp $scp_command_params)"
 if [ -d $local_path ]

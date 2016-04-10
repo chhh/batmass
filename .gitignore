@@ -9,3 +9,6 @@
 
 **/.idea/workspace.xml
 /dist/
+
+fetch_all.sh
+clone_all.sh
