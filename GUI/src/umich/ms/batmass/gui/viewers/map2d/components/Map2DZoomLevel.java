@@ -113,7 +113,7 @@ public class Map2DZoomLevel {
     private Map2DZoomLevel.RangeNormalizer createNormalizer(double minNonZero, double max) {
         double curRange = max - minNonZero;
 
-        double base = org.apache.commons.math3.util.FastMath.exp((FastMath.log(max) - FastMath.log(minNonZero)) / targetRange);
+        double base = FastMath.exp((FastMath.log(max) - FastMath.log(minNonZero)) / targetRange);
         return new RangeNormalizerImplLog(base);
 //        return new RangeNormalizerImplDoNothing();
 
