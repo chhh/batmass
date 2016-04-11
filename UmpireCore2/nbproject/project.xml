@@ -33,6 +33,7 @@
                 <package>MSUmpire.mzXMLWrapper</package>
                 <package>MSUmpire.spectrumparser</package>
                 <package>Utility</package>
+                <package>org.apache.avalon.framework.activity</package>
                 <package>org.apache.log4j</package>
             </public-packages>
             <class-path-extension>
