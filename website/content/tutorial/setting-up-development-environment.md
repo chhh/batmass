@@ -58,7 +58,7 @@ has been recognized as containing _platform_ files.
 * Click _Next_, change the platform name to `nb-batmass` (__This is very
   important!__) as it is and click _Finish_.
 * You should now see the newly created _platform_ in the list, like this:  
-![NetBeans platform added](img/nb-platform-created.png)
+![NetBeans platform added](/images/setting-up-development-environment/nb-platform-created.png)
 * Change the tab to _Harness_ and make sure to switch the radio button to
 _Harness supplied with Platform_.
 * Change the tab to _Sources_ and add the path to _.zip_ file
@@ -106,14 +106,14 @@ You now have all the source code and libraries necessary to build BatMass.
 * `Main Menu -> File -> Open Project`
 * Holding down <kbd>Ctrl</kbd> select the 4 cloned projects, and open them (see
 image below)
-![Open Cloned Projects](img/netbeans-opening-projects.png)  
+![Open Cloned Projects](/images/setting-up-development-environment/netbeans-opening-projects.png)  
 * Check the bottom right corner of the IDE for a progress bar, it might take a
 while to index the projects.
 * Right click `BatMass` project, select `Properties` in the context menu.
 * Select `Libraries` in the _Categories_ list on the left.
 * Make sure that drop-down _NetBeans Platform_ is set to `nb-batmass` as in
 the image below, if this shows some other platform, switch to `nb-batmass`  
-![Make sure opened projects are set to use the provided platform](img/netbeans-project-batmass-check-library-settings.png)
+![Make sure opened projects are set to use the provided platform](/images/setting-up-development-environment/netbeans-project-batmass-check-library-settings.png)
   * If you see some errors in the _Project Properties_ window (e.g. saying that
     some module lacks some dependencies, and the _Resolve_ button is inactive),
     please contact us.
