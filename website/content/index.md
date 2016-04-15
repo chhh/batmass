@@ -31,6 +31,11 @@ Here's a short demo video of BatMass in action.
 The layout of windows is free and customizable by dragging.
 ![Free window layoyt](/images/about-batmass/free-layout.png)
 
+Compare multiple experiments at once. The bottom-middle run in this figure is a blank (no sample was injected), while the other 5 were runs with some sample. Amazing how much stuff comes from the background.
+![Multi experiment comparison in Map2D](/images/about-batmass/comparison-6-runs-1-blank.png)
+
+And here are the same runs but zoomed in to a small region of m/z and retentino time. Look at the color-marked regions. Let's just accept that zero-values are a thing, there is no need to try extracting noise to do gap-filling in data.
+![Multi experiment comparison in Map2D zoomed](/images/about-batmass/comparison-6-runs-1-blank-02-zoom-marked.png)
 
 
 ## Contacts
