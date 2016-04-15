@@ -1,15 +1,23 @@
 ---
 weight: -30
-date: 2016-04-14T00:32:00-04:00
+date: 2016-04-14T00:33:00-04:00
 title: Developing the first plugin
 menu:
   main:
     parent: Tutorials
     identifier: "Developing the first plugin"
-    weight: 20
+    weight: 30
 ---
 
-This guide will quickly step you through the installation, creation of a project and viewing mzML/mzXML files.
+In this guide we will develop a new module for BatMass that will add support for a new file format for detected LC/MS features.  
+We will need to:  
+
+- Create a parser for the file
+- Add recognition support for the new file type
+- Add support for importing the file into a project
+- Add basic support for viewing the data in tabular viewer
+- Add support for overlay of data over Map2D
+- Add the feature that will allow us to double click a row in the table and automatically zoom into the region of interest in Map2D.
 
 ## Installation
 Download the latest release for your platform from [GitHub](https://github.com/chhh/batmass/releases/latest).  

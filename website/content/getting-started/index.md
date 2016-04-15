@@ -64,13 +64,13 @@ The image can be zoomed and panned using the mouse and keyboard.
 
 - **Drag to zoom**. Press the left mouse button (`LMB`) and drag.
 - **Zoom in/out with mouse wheel**. Using the mouse wheel with <kbd>Shift</kbd> or <kbd>Alt</kbd> modifiers will restrict zooming to only m/z or RT direction (the mnemonic rule is that the <kbd>Shift</kbd> key is streched out horizontally, so it corresponds to m/z direction, which is horizontal in charts).
-- **Go To Dialog**. If you are interested in a particular location, you can use this dialog to type in the coordinates. While a chart has focus, press <kbd>Ctrl</kbd>+<kbd>G</kbd> or click the magnifying glass icon (![Link icon](/images/getting-started/icon_zoom.png)).
+- **Go To Dialog**. If you are interested in a particular location, you can use this dialog to type in the coordinates. While a chart has focus, press <kbd>Ctrl</kbd>+<kbd>G</kbd> or click the magnifying glass icon ![Link icon](/images/getting-started/icon_zoom.png).
 - **Panning**. Hold <kbd>Ctrl</kbd> while dragging the mouse to pan the view.
 - **Restricted panning**. Using the same modifier keys (<kbd>Shift</kbd> or <kbd>Alt</kbd>) panning can be restricted to only one direction.
 - **Zoom out to original full overview**. <kbd>Ctrl+Alt+Shift</kbd>+`LMB click` will un-zoom the image completely, bringing you to the view of the whole experiment.
 - If you accidentally zoom to wrong location use the `Undo` button in the main toolbar.
-- If you are viewing DIA (Data Independent Acquisition) data, the toolbar of the 2D viewer should have drop-down menus for MS level and precursor windows in case of MS<sup>2</sup>.
+- If you are viewing DIA (Data Independent Acquisition) data, the toolbar of the 2D viewer should have drop-down menus for MS level and precursor windows in case of MS<sup>2</sup>. After you change the MS level or precursor window in the drop-down, you'll need to click the Refresh icon ![Refresh icon](/images/getting-started/icon_update.png).
 
 
 ## Linking viewers
-Multiple viewers can be linked together by dragging and dropping the link icon (![Link icon](/images/getting-started/icon_link.png)) from the viewer toolbar to another viewer's link icon. You can do this for multiple viewers of different types to assemble thme into groups. Clicking on the link icon will highlight the other viewer windows which are currently in in the same linked group, i.e. all synchronized, their borders will be highlighted by the same color. By clicking the unlink button in the viewer's toolbar (![Link icon](/images/getting-started/icon_unlink.png)), you can remove viewers from the group.
+Multiple viewers can be linked together by dragging and dropping the link icon ![Link icon](/images/getting-started/icon_link.png) from the viewer toolbar to another viewer's link icon. You can do this for multiple viewers of different types to assemble thme into groups. Clicking on the link icon will highlight the other viewer windows which are currently in in the same linked group, i.e. all synchronized, their borders will be highlighted by the same color. By clicking the unlink button in the viewer's toolbar ![Link icon](/images/getting-started/icon_unlink.png), you can remove viewers from the group.

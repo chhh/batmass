@@ -7,7 +7,7 @@ title: Contact information
 Please use the [bug tracker](https://github.com/chhh/batmass/issues) to request additional functionality or report bugs.
 
 ## Referencing the work
-The paper is due to be accepted.
+The paper is due to be published.
 
 ## General inquiries
 Alexey Nesvizhskii, Ph.D.  (University of Michigan, Ann Arbor)  
