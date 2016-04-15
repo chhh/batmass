@@ -43,8 +43,33 @@ Go to `Main menu -> New project`, select any project type when presented with a 
 
 The project should now appear in the _Project Explorer_ tab on the left. Expand the project's node and right click `LC/MS Files` node, choose `Import LC/MS Files`. You can select multiple files at once by holding <kbd>Shift</kbd> or <kbd>Ctrl</kbd>, you can also restrict the files that are being shown to a particular format using the drop-down menu on the bottom of the file-chooser.
 
+{{< note title="Memory usage" >}}
+For opening large LC/MS runs in Map 2D viewer BatMass requires enough memory to load the whole MS level in memory (MS<sup>1</sup> or MS<sup>2</sup> or a single 'swath'/'window' of MS<sup>2</sup> in case of DIA), the default configuration file is set to use 4GB of RAM maximum. This has two implications:
+
+ - If your machine does not have enough available RAM you might not be able to run the program at all. E.g. MS<sup>1</sup> only run of 10GB on a machine with 4GB RAM (You should still be able to view spectra though).
+ - To open larger experiments (multi-gigabyte mzML/mzXML files) you might want to set larger memory limit in the configuration file discussed above.
+{{< /note >}}
+
+
 ## Viewer controls
-Main controls for...
+Open one of the files in the 2D viewer by right clicking and `View -> 2D Map` as shown below.  
+
+![Open a file as a 2D Map](/images/getting-started/view-file.png)  
+
+File parsing might take some time, when it's done you should see something akin to the following.  
+
+![Map 2D viewer](/images/getting-started/standard-lcms-run-map2d.png)  
+
+The image can be zoomed and panned using the mouse and keyboard.
+
+- **Drag to zoom**. Press the left mouse button (`LMB`) and drag.
+- **Zoom in/out with mouse wheel**. Using the mouse wheel with <kbd>Shift</kbd> or <kbd>Alt</kbd> modifiers will restrict zooming to only m/z or RT direction.
+- **Panning**. Hold <kbd>Ctrl</kbd> while dragging the mouse to pan the view.  
+- **Zoom out to original full overview**. <kbd>Ctrl+Alt+Shift</kbd>+`LMB click` will un-zoom the image completely, bringing you to the view of the whole experiment.
+- If you accidentally zoom to wrong location use the `Undo` button in the main toolbar.
+- If you are interested in a particular location, you can use the `GoTo` dialog, which can be brought up by clicking the magnifying glass icon in the toolbar of the viewer or by pressing <kbd>Ctrl+G</kbd>.
+- If you are viewing DIA (Data Independent Acquisition) data, the toolbar of the 2D viewer should have drop-down menus for MS level and precursor windows in case of MS<sup>2</sup>.
+
 
 ## Linking viewers
-Drag and drop...
+Multiple viewers can be linked together by dragging and dropping the link icon (![Link icon](/images/getting-started/icon_link.png)) from the viewer toolbar to another viewer's link icon. You can do this for multiple viewers of different types to assemble thme into groups. Clicking on the link icon will highlight the other viewer windows which are currently in in the same linked group, i.e. all synchronized, their borders will be highlighted by the same color. By clicking the unlink button in the viewer's toolbar (![Link icon](/images/getting-started/icon_unlink.png)), you can remove viewers from the group.
