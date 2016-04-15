@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+  
+  
+  
+  
+   <html class="no-js"> 
+
+  <head lang="en-us">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1">
+    <title>Using data access library - BatMass</title>
+    <meta name="generator" content="Hugo 0.15" />
+
+    
+    <meta name="description" content="Mass spectrometry data visualization">
+    
+    <link rel="canonical" href="http://batmass.org/tutorial/data-access-layer/">
+    
+    <meta name="author" content="Dmitry Avtonomov">
+    
+
+    <meta property="og:url" content="http://batmass.org/tutorial/data-access-layer/">
+    <meta property="og:title" content="BatMass">
+    <meta property="og:image" content="http://batmass.org/images/bm-icon-512.png">
+    <meta name="apple-mobile-web-app-title" content="BatMass">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <link rel="shortcut icon" type="image/x-icon" href="http://batmass.org/images/favicon.ico">
+    <link rel="icon" type="image/x-icon" href="http://batmass.org/images/favicon.ico">
+
+    <style>
+      @font-face {
+        font-family: 'Icon';
+        src: url('http://batmass.org/fonts/icon.eot?52m981');
+        src: url('http://batmass.org/fonts/icon.eot?#iefix52m981')
+               format('embedded-opentype'),
+             url('http://batmass.org/fonts/icon.woff?52m981')
+               format('woff'),
+             url('http://batmass.org/fonts/icon.ttf?52m981')
+               format('truetype'),
+             url('http://batmass.org/fonts/icon.svg?52m981#icon')
+               format('svg');
+        font-weight: normal;
+        font-style: normal;
+      }
+    </style>
+
+    <link rel="stylesheet" href="http://batmass.org/stylesheets/application.css">
+    <link rel="stylesheet" href="http://batmass.org/stylesheets/palettes.css">
+    <link rel="stylesheet" href="http://batmass.org/stylesheets/highlight/highlight.css">
+
+    
+    
+    
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Ubuntu:400,700|Ubuntu%2bMono">
+    <style>
+      body, input {
+        font-family: 'Ubuntu', Helvetica, Arial, sans-serif;
+      }
+      pre, code {
+        font-family: 'Ubuntu Mono', 'Courier New', 'Courier', monospace;
+      }
+    </style>
+    
+    
+    <link rel="stylesheet" href="http://batmass.org//css/batmass.css">
+    
+    <link rel="stylesheet" href="http://batmass.org//css/more-colors.css">
+    
+    <script src="http://batmass.org/javascripts/modernizr.js"></script>
+
+    
+
+  </head>
+  <body class="palette-primary-teal palette-accent-indigo">
+
+
+
+	
+	
+
+
+<div class="backdrop">
+	<div class="backdrop-paper"></div>
+</div>
+
+<input class="toggle" type="checkbox" id="toggle-drawer">
+<input class="toggle" type="checkbox" id="toggle-search">
+<label class="toggle-button overlay" for="toggle-drawer"></label>
+
+<header class="header">
+	<nav aria-label="Header">
+  <div class="bar default">
+    <div class="button button-menu" role="button" aria-label="Menu">
+      <label class="toggle-button icon icon-menu" for="toggle-drawer">
+        <span></span>
+      </label>
+    </div>
+    <div class="stretch">
+      <div class="title">
+        Using data access library
+      </div>
+    </div>
+
+    
+
+    
+    <div class="button button-github" role="button" aria-label="GitHub">
+      <a href="https://github.com/chhh" title="@chhh on GitHub" target="_blank" class="toggle-button icon icon-github"></a>
+    </div>
+    
+    
+        
+  </div>
+  <div class="bar search">
+    <div class="button button-close" role="button" aria-label="Close">
+      <label class="toggle-button icon icon-back" for="toggle-search"></label>
+    </div>
+    <div class="stretch">
+      <div class="field">
+        <input class="query" type="text" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck>
+      </div>
+    </div>
+    <div class="button button-reset" role="button" aria-label="Search">
+      <button class="toggle-button icon icon-close" id="reset-search"></button>
+    </div>
+  </div>
+</nav>
+</header>
+
+<main class="main">
+	<div class="drawer">
+		<nav aria-label="Navigation">
+  <a href="https://github.com/chhh/batmass" class="project">
+    <div class="banner">
+      
+        <div class="logo">
+          <img src="http://batmass.org/images/bm-icon-512.png">
+        </div>
+      
+      <div class="name">
+        <strong>BatMass <span class="version">0.0.4</span></strong>
+        
+          <br>
+          chhh/batmass
+        
+      </div>
+    </div>
+  </a>
+
+  <div class="scrollable">
+    <div class="wrapper">
+      
+        <ul class="repo">
+          <li class="repo-download">
+            <a href="https://github.com/chhh/batmass/releases/latest" target="_blank" title="Download" data-action="download">
+              <i class="icon icon-download"></i> Download
+            </a>
+          </li>
+          <li class="repo-stars">
+            <a href="https://github.com/chhh/batmass/stargazers" target="_blank" title="Stargazers" data-action="star">
+              <i class="icon icon-star"></i> Stars
+              <span class="count">&ndash;</span>
+            </a>
+          </li>
+        </ul>
+        <hr>
+      
+
+      <div class="toc">
+        
+        <ul>
+          
+
+
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="BatMass" href="http://batmass.org/">
+	
+	BatMass
+</a>
+
+
+  
+</li>
+
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="Getting started" href="http://batmass.org/getting-started/">
+	
+	Getting started
+</a>
+
+
+  
+</li>
+
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="Contact info" href="http://batmass.org/contacts/">
+	
+	Contact info
+</a>
+
+
+  
+</li>
+
+
+
+
+<li>
+  
+
+  
+
+
+
+<a  title="Tutorials" href="http://batmass.org/tutorial/">
+	
+	Tutorials
+</a>
+
+
+
+  <li>
+    
+
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+
+
+    <ul>
+      
+        
+        
+
+
+
+<a  title="Setting up development environment" href="http://batmass.org/tutorial/setting-up-development-environment/">
+	
+	Setting up development environment
+</a>
+
+
+      
+        
+        
+
+
+
+<a class="current" title="Using data access library" href="http://batmass.org/tutorial/data-access-layer/">
+	
+	Using data access library
+</a>
+
+
+<ul id="scrollspy">
+</ul>
+
+      
+        
+        
+
+
+
+<a  title="Developing the first plugin" href="http://batmass.org/tutorial/developing-first-plugin/">
+	
+	Developing the first plugin
+</a>
+
+
+      
+    </ul>
+  </li>
+  
+</li>
+
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="License" href="http://batmass.org/license/">
+	
+	License
+</a>
+
+
+  
+</li>
+
+
+        </ul>
+        
+
+        
+        <hr>
+        <span class="section">Dmitry Avtonomov</span>
+
+        <ul>
+          
+
+          
+          <li>
+            <a href="https://github.com/chhh" target="_blank" title="@chhh on GitHub">
+              @chhh on GitHub
+            </a>
+          </li>
+          
+        </ul>
+        
+      </div>
+    </div>
+  </div>
+</nav>
+
+	</div>
+
+	<article class="article">
+		<div class="wrapper">
+
+			
+
+			<h1>Using data access library </h1>
+
+			
+
+<p>In this guide we will quickly go through using the standalone java library for accessing some common mass spectrometry data formats. This is the same library that powers <em>BatMass</em>.</p>
+
+<p>All the classes responsible for parsing files live in <code>umich.ms.fileio.filetypes</code> package, each in its own subpackage, e.g. <code>umich.ms.fileio.filetypes.pepxml</code> for PepXML files. Most of those sub-packages contain a separate package <code>example</code> with working examples.</p>
+
+<p>The source code for the library lives in <a href="https://github.com/chhh/msftbx">MSFTBX repository on GitHub</a>. Start by cloning:<br />
+<code>git clone https://github.com/chhh/MSFTBX.git</code>
+and explore</p>
+
+<h2 id="parsing-lc-ms-data-mzml-mzxml-files">Parsing LC/MS data (mzML/mzXML files)</h2>
+
+<p>Unfortunately, it&rsquo;s near impossible to easily access raw mass spec data from the original vendor file formats using java. You can convert most data from proprietary formats (<em>.RAW</em> files for Thermo, <em>.d</em> directories for Agilent, etc.) using <code>msconvert</code> program from [ProteoWizard]().</p>
+
+<p>The API is separated into two parts. First you create a data source from your file. The data source can be used by itself, if you just want to iterate over spectra by yourself. It can also be attached to a special data structure, which handles data loading, management, indexing and garbage collection.</p>
+
+<p>mzML and mzXML share the same common base interface <code>umich.ms.fileio.filetypes.LCMSDataSource</code>, you can use that if you want to write code that can work seamlessly with both file formats.</p>
+
+<pre><code class="language-java">// Create a concrete implementation of LCMSDataSource
+Path pathToFile = Paths.get(&quot;some-path-to.mzXML&quot;);
+MZXMLFile source = new MZXMLFile(pathToFile);
+
+// This code block is for processing mzXML containing only MS2 scans
+{
+    // if a scan has zero peaks in its spectrum it will still be parsed
+    source.setExcludeEmptyScans(false);
+    // null means use as many cores as reported by Runtime.getRuntime().availableProcessors()
+    source.setNumThreadsForParsing(null);
+    // 30 sec timeout for worker threads - each worker must parse its chunk of spectra within that time
+    source.setParsingTimeout(30L);
+
+
+    MZXMLIndex mzxmlIndex = source.fetchIndex();
+
+
+    // this is a data structure used to store scans and to navigate around the run
+    ScanCollectionDefault scans = new ScanCollectionDefault();
+    // softly reference spectral data, make it reclaimable by GC
+    scans.setDefaultStorageStrategy(StorageStrategy.SOFT);
+    // set it to automatically re-parse spectra from the file if spectra were not yet parsed or were reclaimed
+    // to make auto-loading work you'll need to use IScan#fetchSpectrum() method instead of IScan#getSpectrum()
+    scans.isAutoloadSpectra(true);
+
+    // set the MZXML file as the data source for this scan collection
+    scans.setDataSource(source);
+    // load the whole run, with forced parsing of MS2 spectra, using default StorageStrategy.
+    scans.loadData(LCMSDataSubset.MS2_WITH_SPECTRA);
+
+    TreeMap&lt;Integer, IScan&gt; num2scan = scans.getMapNum2scan();
+    Set&lt;Map.Entry&lt;Integer, IScan&gt;&gt; scanEntries = num2scan.entrySet();
+    // we will use this index to map from internal scan numbers to raw scan numbers
+    MZXMLIndex idx = source.fetchIndex();
+    for (Map.Entry&lt;Integer, IScan&gt; scanEntry : scanEntries) {
+        Integer scanNum = scanEntry.getKey();
+        IScan scan = scanEntry.getValue();
+
+        // internal scan number (1 based)
+        int scanNumInternal = scan.getNum();
+        // an implementation of IndexElement will know how to covert between different numbering schemes
+        // it's possible to get a null here, but this should not happen
+        IndexElement idxElem = idx.getByNum(scanNumInternal);
+        int scanNumRaw = idxElem.getRawNumber();
+
+        // note that we use fetchSpectrum() method here, because we've set the ScanCollection to softly
+        // reference spectra
+        ISpectrum spectrum = scan.fetchSpectrum();
+        // just count the number of points in the spectrum
+        int numPoints = spectrum.getMZs().length;
+        if (scan.getMsLevel() &gt; 1) {
+            System.out.printf(&quot;Scan #%d MS%d[%s] (raw #%d), precursor: #%s(mz: %.3f, z: %d) contained %d data points\n&quot;,
+                    scanNumInternal, scan.getMsLevel(), scan.getPolarity().toString(), scanNumRaw,
+                    scan.getPrecursor().getParentScanRefRaw(), scan.getPrecursor().getMzTarget(), scan.getPrecursor().getCharge(), numPoints);
+        } else {
+            System.out.printf(&quot;Scan #%d MS%d[%s] (raw #%d) contained %d data points\n&quot;,
+                    scanNumInternal, scan.getMsLevel(), scan.getPolarity().toString(), scanNumRaw, numPoints);
+        }
+        // by this point we're no longer holding a strong reference to the spectrum, it can be reclaimed
+    }
+}
+
+
+// Get the index (fetchXXX() methods will parse data from the file if it has not yet been parsed) and
+// cache it in the object for reuse.
+// You'll only need the index if you want to convert between internal scan numbers and raw scan numbers
+// in the file. Some files might have non-consecutive scan numbers, for example, but internally they'll be
+// renumbered to start from 1 and increment by one for each next scan.
+MZXMLIndex idx = source.fetchIndex();
+// info about the run
+LCMSRunInfo runInfo = source.fetchRunInfo();
+
+
+// To parse a single scan from the file (or a range of scans) we first create a predicate matching the
+// scan to be parsed.
+// For example, parse scans from 1 to 3 at MS level 2.
+Set&lt;Integer&gt; msLevel = Collections.singleton(2);
+LCMSDataSubset subset = new LCMSDataSubset(1, 3, msLevel, null);
+List&lt;IScan&gt; parsedScans = source.parse(subset);
+
+// If you want higher level access to data, create an LCMSData object
+LCMSData data = new LCMSData(source);
+// load the whole structure of the run, and parse all spectra for MS1 scans
+data.load(LCMSDataSubset.WHOLE_RUN);
+data.releaseMemory();
+
+// or load the whole structure, but only get m/z-intensity info at MS level 2
+data.load(new LCMSDataSubset(null, null, msLevel, null));
+data.releaseMemory();
+// alternatively, use this shortcut
+data.load(LCMSDataSubset.MS2_WITH_SPECTRA);
+data.releaseMemory();
+
+// If you need memory management, you can also pass an instance of an object, which will be considered
+// the owner of prased data. When this object is garbage collected, this will be detected automatically
+// and corresponding spectra released.
+Object dataUser = new Object();
+data.load(LCMSDataSubset.WHOLE_RUN, dataUser);
+System.out.printf(&quot;The data is loaded and used by [%s] object.\n&quot;, System.identityHashCode(dataUser));
+// at this point dataUser might be garbage collected as it's not referenced anymore, and the data might
+// get unloaded automatically
+dataUser = null; // just to be sure that we don't have a strong reference
+
+// If you don't want to fiddle around with memory management at all, but still want it to play nicely
+// there's one more feature - auto-loading of spectra.
+// You can parse the whole structure of the file and keep it in memory (it's rather small), and
+// just magically get the spectra whenever you need them.
+// Also set referenceing type to soft, so that garbage collector could reclaim unused spectra.
+data.load(LCMSDataSubset.STRUCTURE_ONLY);
+
+IScanCollection scans = data.getScans();
+scans.isAutoloadSpectra(true); // set automatic spectra loading
+scans.setDefaultStorageStrategy(StorageStrategy.SOFT); // mz-intensity data will be softly referenced
+TreeMap&lt;Integer, ScanIndex&gt; msLevel2index = scans.getMapMsLevel2index();
+ScanIndex ms2idx = msLevel2index.get(2); // get the index at MS level 2
+
+// we'll iterate by scan numbers
+TreeMap&lt;Integer, IScan&gt; num2scan = ms2idx.getNum2scan();
+Set&lt;Map.Entry&lt;Integer, IScan&gt;&gt; scanEntries = num2scan.entrySet();
+for (Map.Entry&lt;Integer, IScan&gt; scanEntry : scanEntries) {
+    Integer scanNum = scanEntry.getKey();
+    IScan scan = scanEntry.getValue();
+
+    // note that we use fetchXXX() method here, because we've only parsed the structure of the file,
+    // which includes scan meta-data, but not the spectra themselves
+    ISpectrum spectrum = scan.fetchSpectrum();
+    int scanNumInternal = scan.getNum(); // internal scan number (1 based)
+    IndexElement idxElem = idx.getByNum(scanNumInternal);
+    int scanNumRaw = idxElem.getRawNumber();
+    int numPoints = spectrum.getMZs().length;
+    System.out.printf(&quot;Scan #%d (raw #%d) contained %d data points\n&quot;, scanNumInternal, scanNumRaw, numPoints);
+}
+
+// You can use the ScanCollection API to navigate around the LCMS run.
+// E.g., get the number fo the first scan at ms lelvel 2
+Integer firstMS2ScanNum = scans.getMapMsLevel2index().get(2).getNum2scan().firstKey();
+IScan scan = scans.getScanByNum(firstMS2ScanNum);
+// Now get the next scan at the same MS level
+scan = scans.getNextScanAtSameMsLevel(scan);
+
+// Because we did parsing of the whole structure, an important method was called automagically for us:
+// ScanCollectionHelper.finalizeScanCollection(scans), which sets up parent child relations between scans
+// even if that information was not in the scan meta-data.
+// You can also call this method yourself if it you only parse a portion of the file
+String parentScanRef = scan.getPrecursor().getParentScanRefRaw();
+System.out.printf(&quot;Scan #%d (MS%d) is a child scan of {%s}\n&quot;, scan.getNum(), scan.getMsLevel(), parentScanRef);
+
+data.releaseMemory();
+</code></pre>
+
+<p>I hope the comments in the code are enough to get you started.</p>
+
+<h2 id="parsing-identification-files-pepxml-protxml-mzidentml">Parsing identification files (PepXML, ProtXML, MzIdentML)</h2>
+
+<p>The library gives low level access to those file formats. There is no unifying API here, as the formats are very different. These parsers are not hand optimized for efficiency, so they might consume quite a bit more memory than they should, but they also are error resilient.</p>
+
+<p>Working with these files is simpler, you call the parser and get a single data-structure, that follows the schemas of corresponding XMLs.</p>
+
+<pre><code class="language-java">
+Path path = Paths.get(&quot;some-path-to.pep.xml&quot;);
+
+// a single call to parse the whole file
+MsmsPipelineAnalysis msmsPipelineAnalysis = PepXmlParser.parse(path);
+
+
+List&lt;MsmsRunSummary&gt; msmsRunSummaries = msmsPipelineAnalysis.getMsmsRunSummary();
+for (MsmsRunSummary msmsRunSummary : msmsRunSummaries) {
+    List&lt;SpectrumQuery&gt; spectrumQueries = msmsRunSummary.getSpectrumQuery();
+    System.out.printf(&quot;Spectrum queries from MS/MS run summary: %s\n&quot;, msmsRunSummary.getBaseName());
+    for (SpectrumQuery sq : spectrumQueries) {
+        System.out.printf(&quot;Spec ID: [%s], RT: [%.2f], precursor neutral mass: [%.3f]\n&quot;,
+                          sq.getSpectrum(), sq.getRetentionTimeSec(), sq.getPrecursorNeutralMass());
+    }
+    System.out.printf(&quot;Done with MS/MS run summary: %s\n&quot;, msmsRunSummary.getBaseName());
+}
+</code></pre>
+
+<h2 id="parsing-huge-identification-files-more-efficiently">Parsing huge identification files more efficiently</h2>
+
+<p>Sometimes you might have PepXML files that are many gigabytes in size, this happens when you combine search results from multiple experiments and store them in a single output file. In that case using <code>XMLStreamReader</code> class it is possible to first rewind the input stream to some large structural element of the underlying file, such as <code>&lt;msms_run_summary&gt;</code> in PepXML files.<br />
+You will need to have an idea of how the files are organized for this though, explore the corresponding XML schemas. The schemas can also be found in the sources of the library in file-specific sub-packages of <code>umich.ms.fileio.filetypes</code> in <code>resources</code> directories.</p>
+
+<p>// TODO: this is a work in progress</p>
+
+
+			<aside class="copyright" role="note">
+				
+				&copy; 2016 Dmitry Avtonomov. Released under the Apache 2.0 license.
+				
+			</aside>
+
+			<footer class="footer">
+				
+
+<nav class="pagination" aria-label="Footer">
+  <div class="previous">
+  
+      <a href="http://batmass.org/tutorial/setting-up-development-environment/" title="Setting up development environment">
+        <span class="direction">
+          Previous
+        </span>
+        <div class="page">
+          <div class="button button-previous" role="button" aria-label="Previous">
+            <i class="icon icon-back"></i>
+          </div>
+          <div class="stretch">
+            <div class="title">
+              Setting up development environment
+            </div>
+          </div>
+        </div>
+      </a>
+  
+  </div>
+
+  <div class="next">
+  
+      <a href="http://batmass.org/tutorial/developing-first-plugin/" title="Developing the first plugin">
+        <span class="direction">
+          Next
+        </span>
+        <div class="page">
+          <div class="stretch">
+            <div class="title">
+              Developing the first plugin
+            </div>
+          </div>
+          <div class="button button-next" role="button" aria-label="Next">
+            <i class="icon icon-forward"></i>
+          </div>
+        </div>
+      </a>
+  
+  </div>
+</nav>
+
+
+
+
+			</footer>
+		</div>
+	</article>
+
+	<div class="results" role="status" aria-live="polite">
+		<div class="scrollable">
+			<div class="wrapper">
+				<div class="meta"></div>
+				<div class="list"></div>
+			</div>
+		</div>
+	</div>
+</main>
+
+    <script>
+    
+      var base_url = 'http:\/\/batmass.org\/';
+      var repo_id  = 'chhh\/batmass';
+    
+    </script>
+
+    <script src="http://batmass.org/javascripts/application.js"></script>
+    
+
+    <script>
+      /* Add headers to scrollspy */
+      var headers   = document.getElementsByTagName("h2");
+      var scrollspy = document.getElementById('scrollspy');
+
+      if(headers.length > 0) {
+        for(var i = 0; i < headers.length; i++) {
+          var li = document.createElement("li");
+          li.setAttribute("class", "anchor");
+
+          var a  = document.createElement("a");
+          a.setAttribute("href", "#" + headers[i].id);
+          a.setAttribute("title", headers[i].innerHTML);
+          a.innerHTML = headers[i].innerHTML;
+
+          li.appendChild(a)
+          scrollspy.appendChild(li);
+        }
+      } else {
+        scrollspy.parentElement.removeChild(scrollspy)
+      }
+
+
+      /* Add permanent link next to the headers */
+      var headers = document.querySelectorAll("h1, h2, h3, h4, h5, h6");
+
+      for(var i = 0; i < headers.length; i++) {
+          var a = document.createElement("a");
+          a.setAttribute("class", "headerlink");
+          a.setAttribute("href", "#" + headers[i].id);
+          a.setAttribute("title", "Permanent link")
+          a.innerHTML = "#";
+          headers[i].appendChild(a);
+      }
+    </script>
+
+    
+      <script>
+        (function(i,s,o,g,r,a,m){
+          i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){(i[r].q=i[r].q||
+          []).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;
+          m.parentNode.insertBefore(a,m)
+        })(window, document,
+          'script', '//www.google-analytics.com/analytics.js', 'ga');
+         
+        ga('create', 'UA-5572974-10', 'auto');
+        
+        ga('send', 'pageview');
+
+
+        
+        
+        
+        
+        
+        
+        
+
+         
+        var buttons = document.querySelectorAll('a');
+        Array.prototype.map.call(buttons, function(item) {
+          if (item.host != document.location.host) {
+            item.addEventListener('click', function() {
+              var action = item.getAttribute('data-action') || 'follow';
+              ga('send', 'event', 'outbound', action, item.href);
+            });
+          }
+        });
+         
+        var query = document.querySelector('.query');
+        query.addEventListener('blur', function() {
+          if (this.value) {
+            var path = document.location.pathname;
+            ga('send', 'pageview', path + '?q=' + this.value);
+          }
+        });
+      </script>
+    
+
+    
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.3.0/styles/default.min.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.3.0/highlight.min.js"></script>
+    
+    <script>hljs.initHighlightingOnLoad();</script>
+  </body>
+</html>
+

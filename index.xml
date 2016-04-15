@@ -1,0 +1,615 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>BatMass</title>
+    <link>http://batmass.org/</link>
+    <description>Recent content on BatMass</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Thu, 14 Apr 2016 00:59:00 -0400</lastBuildDate>
+    <atom:link href="http://batmass.org/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>License</title>
+      <link>http://batmass.org/license/</link>
+      <pubDate>Thu, 14 Apr 2016 00:59:00 -0400</pubDate>
+      
+      <guid>http://batmass.org/license/</guid>
+      <description>&lt;p&gt;Copyright [2016] [Dmitry Avtonomov]&lt;/p&gt;
+
+&lt;p&gt;Licensed under the Apache License, Version 2.0 (the &amp;ldquo;License&amp;rdquo;);
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;http://www.apache.org/licenses/LICENSE-2.0
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an &amp;ldquo;AS IS&amp;rdquo; BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Developing the first plugin</title>
+      <link>http://batmass.org/tutorial/developing-first-plugin/</link>
+      <pubDate>Thu, 14 Apr 2016 00:33:00 -0400</pubDate>
+      
+      <guid>http://batmass.org/tutorial/developing-first-plugin/</guid>
+      <description>&lt;p&gt;In this guide we will develop a new module for BatMass that will add support for a new file format for detected LC/MS features.&lt;br /&gt;
+We will need to:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Create a parser for the file&lt;/li&gt;
+&lt;li&gt;Add recognition support for the new file type&lt;/li&gt;
+&lt;li&gt;Add support for importing the file into a project&lt;/li&gt;
+&lt;li&gt;Add basic support for viewing the data in tabular viewer&lt;/li&gt;
+&lt;li&gt;Add support for overlay of data over Map2D&lt;/li&gt;
+&lt;li&gt;Add the feature that will allow us to double click a row in the table and automatically zoom into the region of interest in Map2D.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;The prerequisite for this tutorial is that you have the development environment set up. If you don&amp;rsquo;t make sure to follow&lt;/p&gt;
+
+&lt;p&gt;// TODO: this is a work in progress&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Using data access library</title>
+      <link>http://batmass.org/tutorial/data-access-layer/</link>
+      <pubDate>Thu, 14 Apr 2016 00:32:00 -0400</pubDate>
+      
+      <guid>http://batmass.org/tutorial/data-access-layer/</guid>
+      <description>
+
+&lt;p&gt;In this guide we will quickly go through using the standalone java library for accessing some common mass spectrometry data formats. This is the same library that powers &lt;em&gt;BatMass&lt;/em&gt;.&lt;/p&gt;
+
+&lt;p&gt;All the classes responsible for parsing files live in &lt;code&gt;umich.ms.fileio.filetypes&lt;/code&gt; package, each in its own subpackage, e.g. &lt;code&gt;umich.ms.fileio.filetypes.pepxml&lt;/code&gt; for PepXML files. Most of those sub-packages contain a separate package &lt;code&gt;example&lt;/code&gt; with working examples.&lt;/p&gt;
+
+&lt;p&gt;The source code for the library lives in &lt;a href=&#34;https://github.com/chhh/msftbx&#34;&gt;MSFTBX repository on GitHub&lt;/a&gt;. Start by cloning:&lt;br /&gt;
+&lt;code&gt;git clone https://github.com/chhh/MSFTBX.git&lt;/code&gt;
+and explore&lt;/p&gt;
+
+&lt;h2 id=&#34;parsing-lc-ms-data-mzml-mzxml-files&#34;&gt;Parsing LC/MS data (mzML/mzXML files)&lt;/h2&gt;
+
+&lt;p&gt;Unfortunately, it&amp;rsquo;s near impossible to easily access raw mass spec data from the original vendor file formats using java. You can convert most data from proprietary formats (&lt;em&gt;.RAW&lt;/em&gt; files for Thermo, &lt;em&gt;.d&lt;/em&gt; directories for Agilent, etc.) using &lt;code&gt;msconvert&lt;/code&gt; program from [ProteoWizard]().&lt;/p&gt;
+
+&lt;p&gt;The API is separated into two parts. First you create a data source from your file. The data source can be used by itself, if you just want to iterate over spectra by yourself. It can also be attached to a special data structure, which handles data loading, management, indexing and garbage collection.&lt;/p&gt;
+
+&lt;p&gt;mzML and mzXML share the same common base interface &lt;code&gt;umich.ms.fileio.filetypes.LCMSDataSource&lt;/code&gt;, you can use that if you want to write code that can work seamlessly with both file formats.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;// Create a concrete implementation of LCMSDataSource
+Path pathToFile = Paths.get(&amp;quot;some-path-to.mzXML&amp;quot;);
+MZXMLFile source = new MZXMLFile(pathToFile);
+
+// This code block is for processing mzXML containing only MS2 scans
+{
+    // if a scan has zero peaks in its spectrum it will still be parsed
+    source.setExcludeEmptyScans(false);
+    // null means use as many cores as reported by Runtime.getRuntime().availableProcessors()
+    source.setNumThreadsForParsing(null);
+    // 30 sec timeout for worker threads - each worker must parse its chunk of spectra within that time
+    source.setParsingTimeout(30L);
+
+
+    MZXMLIndex mzxmlIndex = source.fetchIndex();
+
+
+    // this is a data structure used to store scans and to navigate around the run
+    ScanCollectionDefault scans = new ScanCollectionDefault();
+    // softly reference spectral data, make it reclaimable by GC
+    scans.setDefaultStorageStrategy(StorageStrategy.SOFT);
+    // set it to automatically re-parse spectra from the file if spectra were not yet parsed or were reclaimed
+    // to make auto-loading work you&#39;ll need to use IScan#fetchSpectrum() method instead of IScan#getSpectrum()
+    scans.isAutoloadSpectra(true);
+
+    // set the MZXML file as the data source for this scan collection
+    scans.setDataSource(source);
+    // load the whole run, with forced parsing of MS2 spectra, using default StorageStrategy.
+    scans.loadData(LCMSDataSubset.MS2_WITH_SPECTRA);
+
+    TreeMap&amp;lt;Integer, IScan&amp;gt; num2scan = scans.getMapNum2scan();
+    Set&amp;lt;Map.Entry&amp;lt;Integer, IScan&amp;gt;&amp;gt; scanEntries = num2scan.entrySet();
+    // we will use this index to map from internal scan numbers to raw scan numbers
+    MZXMLIndex idx = source.fetchIndex();
+    for (Map.Entry&amp;lt;Integer, IScan&amp;gt; scanEntry : scanEntries) {
+        Integer scanNum = scanEntry.getKey();
+        IScan scan = scanEntry.getValue();
+
+        // internal scan number (1 based)
+        int scanNumInternal = scan.getNum();
+        // an implementation of IndexElement will know how to covert between different numbering schemes
+        // it&#39;s possible to get a null here, but this should not happen
+        IndexElement idxElem = idx.getByNum(scanNumInternal);
+        int scanNumRaw = idxElem.getRawNumber();
+
+        // note that we use fetchSpectrum() method here, because we&#39;ve set the ScanCollection to softly
+        // reference spectra
+        ISpectrum spectrum = scan.fetchSpectrum();
+        // just count the number of points in the spectrum
+        int numPoints = spectrum.getMZs().length;
+        if (scan.getMsLevel() &amp;gt; 1) {
+            System.out.printf(&amp;quot;Scan #%d MS%d[%s] (raw #%d), precursor: #%s(mz: %.3f, z: %d) contained %d data points\n&amp;quot;,
+                    scanNumInternal, scan.getMsLevel(), scan.getPolarity().toString(), scanNumRaw,
+                    scan.getPrecursor().getParentScanRefRaw(), scan.getPrecursor().getMzTarget(), scan.getPrecursor().getCharge(), numPoints);
+        } else {
+            System.out.printf(&amp;quot;Scan #%d MS%d[%s] (raw #%d) contained %d data points\n&amp;quot;,
+                    scanNumInternal, scan.getMsLevel(), scan.getPolarity().toString(), scanNumRaw, numPoints);
+        }
+        // by this point we&#39;re no longer holding a strong reference to the spectrum, it can be reclaimed
+    }
+}
+
+
+// Get the index (fetchXXX() methods will parse data from the file if it has not yet been parsed) and
+// cache it in the object for reuse.
+// You&#39;ll only need the index if you want to convert between internal scan numbers and raw scan numbers
+// in the file. Some files might have non-consecutive scan numbers, for example, but internally they&#39;ll be
+// renumbered to start from 1 and increment by one for each next scan.
+MZXMLIndex idx = source.fetchIndex();
+// info about the run
+LCMSRunInfo runInfo = source.fetchRunInfo();
+
+
+// To parse a single scan from the file (or a range of scans) we first create a predicate matching the
+// scan to be parsed.
+// For example, parse scans from 1 to 3 at MS level 2.
+Set&amp;lt;Integer&amp;gt; msLevel = Collections.singleton(2);
+LCMSDataSubset subset = new LCMSDataSubset(1, 3, msLevel, null);
+List&amp;lt;IScan&amp;gt; parsedScans = source.parse(subset);
+
+// If you want higher level access to data, create an LCMSData object
+LCMSData data = new LCMSData(source);
+// load the whole structure of the run, and parse all spectra for MS1 scans
+data.load(LCMSDataSubset.WHOLE_RUN);
+data.releaseMemory();
+
+// or load the whole structure, but only get m/z-intensity info at MS level 2
+data.load(new LCMSDataSubset(null, null, msLevel, null));
+data.releaseMemory();
+// alternatively, use this shortcut
+data.load(LCMSDataSubset.MS2_WITH_SPECTRA);
+data.releaseMemory();
+
+// If you need memory management, you can also pass an instance of an object, which will be considered
+// the owner of prased data. When this object is garbage collected, this will be detected automatically
+// and corresponding spectra released.
+Object dataUser = new Object();
+data.load(LCMSDataSubset.WHOLE_RUN, dataUser);
+System.out.printf(&amp;quot;The data is loaded and used by [%s] object.\n&amp;quot;, System.identityHashCode(dataUser));
+// at this point dataUser might be garbage collected as it&#39;s not referenced anymore, and the data might
+// get unloaded automatically
+dataUser = null; // just to be sure that we don&#39;t have a strong reference
+
+// If you don&#39;t want to fiddle around with memory management at all, but still want it to play nicely
+// there&#39;s one more feature - auto-loading of spectra.
+// You can parse the whole structure of the file and keep it in memory (it&#39;s rather small), and
+// just magically get the spectra whenever you need them.
+// Also set referenceing type to soft, so that garbage collector could reclaim unused spectra.
+data.load(LCMSDataSubset.STRUCTURE_ONLY);
+
+IScanCollection scans = data.getScans();
+scans.isAutoloadSpectra(true); // set automatic spectra loading
+scans.setDefaultStorageStrategy(StorageStrategy.SOFT); // mz-intensity data will be softly referenced
+TreeMap&amp;lt;Integer, ScanIndex&amp;gt; msLevel2index = scans.getMapMsLevel2index();
+ScanIndex ms2idx = msLevel2index.get(2); // get the index at MS level 2
+
+// we&#39;ll iterate by scan numbers
+TreeMap&amp;lt;Integer, IScan&amp;gt; num2scan = ms2idx.getNum2scan();
+Set&amp;lt;Map.Entry&amp;lt;Integer, IScan&amp;gt;&amp;gt; scanEntries = num2scan.entrySet();
+for (Map.Entry&amp;lt;Integer, IScan&amp;gt; scanEntry : scanEntries) {
+    Integer scanNum = scanEntry.getKey();
+    IScan scan = scanEntry.getValue();
+
+    // note that we use fetchXXX() method here, because we&#39;ve only parsed the structure of the file,
+    // which includes scan meta-data, but not the spectra themselves
+    ISpectrum spectrum = scan.fetchSpectrum();
+    int scanNumInternal = scan.getNum(); // internal scan number (1 based)
+    IndexElement idxElem = idx.getByNum(scanNumInternal);
+    int scanNumRaw = idxElem.getRawNumber();
+    int numPoints = spectrum.getMZs().length;
+    System.out.printf(&amp;quot;Scan #%d (raw #%d) contained %d data points\n&amp;quot;, scanNumInternal, scanNumRaw, numPoints);
+}
+
+// You can use the ScanCollection API to navigate around the LCMS run.
+// E.g., get the number fo the first scan at ms lelvel 2
+Integer firstMS2ScanNum = scans.getMapMsLevel2index().get(2).getNum2scan().firstKey();
+IScan scan = scans.getScanByNum(firstMS2ScanNum);
+// Now get the next scan at the same MS level
+scan = scans.getNextScanAtSameMsLevel(scan);
+
+// Because we did parsing of the whole structure, an important method was called automagically for us:
+// ScanCollectionHelper.finalizeScanCollection(scans), which sets up parent child relations between scans
+// even if that information was not in the scan meta-data.
+// You can also call this method yourself if it you only parse a portion of the file
+String parentScanRef = scan.getPrecursor().getParentScanRefRaw();
+System.out.printf(&amp;quot;Scan #%d (MS%d) is a child scan of {%s}\n&amp;quot;, scan.getNum(), scan.getMsLevel(), parentScanRef);
+
+data.releaseMemory();
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;I hope the comments in the code are enough to get you started.&lt;/p&gt;
+
+&lt;h2 id=&#34;parsing-identification-files-pepxml-protxml-mzidentml&#34;&gt;Parsing identification files (PepXML, ProtXML, MzIdentML)&lt;/h2&gt;
+
+&lt;p&gt;The library gives low level access to those file formats. There is no unifying API here, as the formats are very different. These parsers are not hand optimized for efficiency, so they might consume quite a bit more memory than they should, but they also are error resilient.&lt;/p&gt;
+
+&lt;p&gt;Working with these files is simpler, you call the parser and get a single data-structure, that follows the schemas of corresponding XMLs.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;
+Path path = Paths.get(&amp;quot;some-path-to.pep.xml&amp;quot;);
+
+// a single call to parse the whole file
+MsmsPipelineAnalysis msmsPipelineAnalysis = PepXmlParser.parse(path);
+
+
+List&amp;lt;MsmsRunSummary&amp;gt; msmsRunSummaries = msmsPipelineAnalysis.getMsmsRunSummary();
+for (MsmsRunSummary msmsRunSummary : msmsRunSummaries) {
+    List&amp;lt;SpectrumQuery&amp;gt; spectrumQueries = msmsRunSummary.getSpectrumQuery();
+    System.out.printf(&amp;quot;Spectrum queries from MS/MS run summary: %s\n&amp;quot;, msmsRunSummary.getBaseName());
+    for (SpectrumQuery sq : spectrumQueries) {
+        System.out.printf(&amp;quot;Spec ID: [%s], RT: [%.2f], precursor neutral mass: [%.3f]\n&amp;quot;,
+                          sq.getSpectrum(), sq.getRetentionTimeSec(), sq.getPrecursorNeutralMass());
+    }
+    System.out.printf(&amp;quot;Done with MS/MS run summary: %s\n&amp;quot;, msmsRunSummary.getBaseName());
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;parsing-huge-identification-files-more-efficiently&#34;&gt;Parsing huge identification files more efficiently&lt;/h2&gt;
+
+&lt;p&gt;Sometimes you might have PepXML files that are many gigabytes in size, this happens when you combine search results from multiple experiments and store them in a single output file. In that case using &lt;code&gt;XMLStreamReader&lt;/code&gt; class it is possible to first rewind the input stream to some large structural element of the underlying file, such as &lt;code&gt;&amp;lt;msms_run_summary&amp;gt;&lt;/code&gt; in PepXML files.&lt;br /&gt;
+You will need to have an idea of how the files are organized for this though, explore the corresponding XML schemas. The schemas can also be found in the sources of the library in file-specific sub-packages of &lt;code&gt;umich.ms.fileio.filetypes&lt;/code&gt; in &lt;code&gt;resources&lt;/code&gt; directories.&lt;/p&gt;
+
+&lt;p&gt;// TODO: this is a work in progress&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Setting up development environment</title>
+      <link>http://batmass.org/tutorial/setting-up-development-environment/</link>
+      <pubDate>Thu, 14 Apr 2016 00:31:00 -0400</pubDate>
+      
+      <guid>http://batmass.org/tutorial/setting-up-development-environment/</guid>
+      <description>
+
+&lt;p&gt;This guide will quickly step you through setting up the environment for developing new functionality for BatMass. All the downloads, setting up the IDE and up to building BatMass from scratch.&lt;/p&gt;
+
+&lt;h2 id=&#34;setting-up-development-environement-for-batmass&#34;&gt;Setting up development environement for BatMass&lt;/h2&gt;
+
+&lt;p&gt;You will only need this information if you want to develop your own plugins
+for BatMass or change its functionality in some way, if you&amp;rsquo;re just a regular
+user you can skip this tutorial.&lt;/p&gt;
+
+&lt;p&gt;Don&amp;rsquo;t be scared by the size of this tutorial, it just assumes that you know
+nothing about NetBeans and the NetBeans Platform. All the steps are simple.&lt;/p&gt;
+
+&lt;h2 id=&#34;get-the-jdk-java-development-kit&#34;&gt;Get the JDK (Java Development Kit)&lt;/h2&gt;
+
+&lt;p&gt;BatMass is written in Java, so we&amp;rsquo;ll need Java. Download and isntall JDK 7:
+&lt;a href=&#34;http://www.oracle.com/technetwork/java/javase/downloads/jdk7-downloads-1880260.html&#34;&gt;e.g. from Oracle&lt;/a&gt;.
+It should work with &lt;em&gt;OpenJDK&lt;/em&gt; as well.&lt;/p&gt;
+
+&lt;h2 id=&#34;the-netbeans-platform&#34;&gt;The NetBeans platform&lt;/h2&gt;
+
+&lt;p&gt;BatMass is built on top of the NetBeans platform (we will call it just &lt;strong&gt;the
+platform&lt;/strong&gt; or &lt;strong&gt;NBP&lt;/strong&gt; for simplicity). It&amp;rsquo;s the same infrastructure  that the NetBeans IDE
+is built on top of itself. This is an essential part of the setup, it is the
+platform that provides the Window system, the Loader, Automatic Updates and much more.
+All platform applications are developed against some version of the platform,
+which itself is just a collection of libraries (called &lt;em&gt;Modules&lt;/em&gt;). Though it is
+possible to use the platform that comes with the NetBeans IDE, you&amp;rsquo;ll likely
+encounter multiple errors due to incorrect dependency versions, so &lt;strong&gt;you&amp;rsquo;ll need
+to get the platform version that we are providing&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;Developing platform applications is much simpler with the NetBeans IDE as it
+provides a lot of wizards and other core functionality. It is possible to use
+&lt;em&gt;ItelliJ&lt;/em&gt; as well, but we will not be covering this option, so &lt;a href=&#34;https://netbeans.org/downloads/&#34;&gt;go ahead and get
+the latest version of NetBeans&lt;/a&gt; (which is 8.1
+as of this writing). You can select the &lt;em&gt;Java SE&lt;/em&gt; version among all downloads.&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Download the platform files: &lt;a href=&#34;batmass-nbp-download-link&#34;&gt;from BatMass github repository&lt;/a&gt;.&lt;/li&gt;
+&lt;li&gt;Unpack the following 3 files to the same location, e.g. &lt;code&gt;/&amp;lt;path&amp;gt;/nbp&lt;/code&gt;:
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;netbeans-*-harness.zip&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;netbeans-*-ide.zip&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;netbeans-*-platform.zip&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;You should now have &lt;code&gt;/&amp;lt;path&amp;gt;/nbp/harness&lt;/code&gt;, &lt;code&gt;/&amp;lt;path&amp;gt;/nbp/ide&lt;/code&gt;,
+&lt;code&gt;/&amp;lt;path&amp;gt;/nbp/platform&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Start the NetBeans IDE.&lt;/li&gt;
+&lt;li&gt;In the main menu: &lt;em&gt;Tools -&amp;gt; NetBeans Platforms&lt;/em&gt;.&lt;/li&gt;
+&lt;li&gt;Click &lt;em&gt;Add Platform&lt;/em&gt; and select &lt;code&gt;/&amp;lt;path&amp;gt;/nbp&lt;/code&gt;, the &lt;em&gt;Platform Name&lt;/em&gt; text box
+on the right will show something like &lt;em&gt;nb81&lt;/em&gt;, which means that the directory
+has been recognized as containing &lt;em&gt;platform&lt;/em&gt; files.&lt;/li&gt;
+&lt;li&gt;Click &lt;em&gt;Next&lt;/em&gt;, change the platform name to &lt;code&gt;nb-batmass&lt;/code&gt; (&lt;strong&gt;This is very
+important!&lt;/strong&gt;) as it is and click &lt;em&gt;Finish&lt;/em&gt;.&lt;/li&gt;
+&lt;li&gt;You should now see the newly created &lt;em&gt;platform&lt;/em&gt; in the list, like this:&lt;br /&gt;
+&lt;img src=&#34;http://batmass.org/images/setting-up-development-environment/nb-platform-created.png&#34; alt=&#34;NetBeans platform added&#34; /&gt;&lt;/li&gt;
+&lt;li&gt;Change the tab to &lt;em&gt;Harness&lt;/em&gt; and make sure to switch the radio button to
+&lt;em&gt;Harness supplied with Platform&lt;/em&gt;.&lt;/li&gt;
+&lt;li&gt;Change the tab to &lt;em&gt;Sources&lt;/em&gt; and add the path to &lt;em&gt;.zip&lt;/em&gt; file
+&lt;code&gt;netbeans-*-platform-src.zip&lt;/code&gt; that came with your platform download.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;You should now have the environment set-up to bebing development.&lt;/p&gt;
+
+&lt;h2 id=&#34;batmass-modules&#34;&gt;BatMass modules&lt;/h2&gt;
+
+&lt;p&gt;BatMass itself is composed of multiple modules which are split into several
+module suits. A module suite in the platform terms is just a collection of
+modules groupped together all of which have access to some common set of
+dependencies. Each suite lives in its own github repository, clone them all to
+the to the same location:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;https://github.com/chhh/batmass&#34;&gt;BatMass&lt;/a&gt; - the main suite, most of
+development happens here&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;https://github.com/chhh/batmass-libs&#34;&gt;BatMassLibs&lt;/a&gt; - all the library
+dependencies reside in this suite. In&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;https://github.com/chhh/batmass-ext&#34;&gt;BatMassExternalSuite&lt;/a&gt; - contains
+separate functional pieces borrowed from the web or elsewhere. E.g. the color-
+picker used in the options lives here.&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;https://github.com/chhh/MSFTBX&#34;&gt;MSFTBX&lt;/a&gt; - this is the data access library.
+It provides pure-java implementations of &lt;em&gt;mzXML&lt;/em&gt;, &lt;em&gt;mzML&lt;/em&gt;, &lt;em&gt;pep.xml&lt;/em&gt;, &lt;em&gt;prot.xml&lt;/em&gt;
+files among some others as well. The API (interfaces) is bundled with it.&lt;br /&gt;
+Although this repository contains a NetBeans platform module project, you&amp;rsquo;ll
+also notice that it contains a regular IntelliJ IDEA project as well, which
+has artifacts configured to build a regular &lt;em&gt;jar&lt;/em&gt; out of it.&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;mkdir /&amp;lt;some-path&amp;gt;/batmass-projects
+cd /&amp;lt;some-path&amp;gt;/batmass-projects
+git clone https://github.com/chhh/batmass.git
+git clone https://github.com/chhh/batmass-libs.git
+git clone https://github.com/chhh/batmass-ext.git
+git clone https://github.com/chhh/MSFTBX.git
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;You now have all the source code and libraries necessary to build BatMass.&lt;/p&gt;
+
+&lt;h2 id=&#34;building-the-projects&#34;&gt;Building the projects&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Start NetBeans IDE&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Main Menu -&amp;gt; File -&amp;gt; Open Project&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Holding down &lt;kbd&gt;Ctrl&lt;/kbd&gt; select the 4 cloned projects, and open them (see
+image below)
+&lt;img src=&#34;http://batmass.org/images/setting-up-development-environment/netbeans-opening-projects.png&#34; alt=&#34;Open Cloned Projects&#34; /&gt;&lt;br /&gt;&lt;/li&gt;
+&lt;li&gt;Check the bottom right corner of the IDE for a progress bar, it might take a
+while to index the projects.&lt;/li&gt;
+&lt;li&gt;Right click &lt;code&gt;BatMass&lt;/code&gt; project, select &lt;code&gt;Properties&lt;/code&gt; in the context menu.&lt;/li&gt;
+&lt;li&gt;Select &lt;code&gt;Libraries&lt;/code&gt; in the &lt;em&gt;Categories&lt;/em&gt; list on the left.&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Make sure that drop-down &lt;em&gt;NetBeans Platform&lt;/em&gt; is set to &lt;code&gt;nb-batmass&lt;/code&gt; as in
+the image below, if this shows some other platform, switch to &lt;code&gt;nb-batmass&lt;/code&gt;&lt;br /&gt;
+&lt;img src=&#34;http://batmass.org/images/setting-up-development-environment/netbeans-project-batmass-check-library-settings.png&#34; alt=&#34;Make sure opened projects are set to use the provided platform&#34; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;If you see some errors in the &lt;em&gt;Project Properties&lt;/em&gt; window (e.g. saying that
+some module lacks some dependencies, and the &lt;em&gt;Resolve&lt;/em&gt; button is inactive),
+please contact us.&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Check the selected platform for the other 3 projects as well.&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;we-are-ready-to-build-the-final-product&#34;&gt;We are ready to build the final product!&lt;/h2&gt;
+
+&lt;p&gt;The build order is of importance. Automatic rebuilding of dependent module suits
+was not set up to improve build performance.&lt;br /&gt;
+Only the &lt;code&gt;BatMass&lt;/code&gt; project depends on others, so whenever you make changes to
+&lt;code&gt;BatMassLibs&lt;/code&gt;, &lt;code&gt;BatMassExternalSuite&lt;/code&gt; or &lt;code&gt;MSFTBX&lt;/code&gt; you will need to manually
+trigger a &lt;code&gt;clean build&lt;/code&gt; on them, and rebuild the &lt;code&gt;BatMass&lt;/code&gt; project  after that.&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Right click &lt;code&gt;MSFTBX&lt;/code&gt; project node in the &lt;em&gt;Project Explorer&lt;/em&gt; and choose &lt;code&gt;clean
+build&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Now do &lt;code&gt;clean build&lt;/code&gt; for &lt;code&gt;BatMassLibs&lt;/code&gt; and &lt;code&gt;BatMassExternalSuite&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;You can now &lt;code&gt;clean build&lt;/code&gt; the main &lt;code&gt;BatMass&lt;/code&gt; project&lt;/li&gt;
+&lt;li&gt;When the build is done, go to &lt;code&gt;Main menu -&amp;gt; Run -&amp;gt; Set main project&lt;/code&gt; and
+select &lt;code&gt;BatMass&lt;/code&gt; there. This will force the green &lt;code&gt;Run&lt;/code&gt; button (&lt;kbd&gt;F6&lt;/kbd&gt;
+shortcurt) to always launch this project and not the currently selected one.&lt;/li&gt;
+&lt;li&gt;Run the project: &lt;code&gt;Main menu -&amp;gt; Run -&amp;gt; Run main project&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;If all is well and you can start the project, you should also be able to
+create the installers for it. Right click &lt;code&gt;BatMass&lt;/code&gt; project, &lt;code&gt;Package as -&amp;gt;
+Installers&lt;/code&gt;. This is a time-consuming process, when done, you&amp;rsquo;ll find the
+installers for different platforms in &lt;code&gt;batmass-projects/batmass/dist&lt;/code&gt;.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Contact information</title>
+      <link>http://batmass.org/contacts/</link>
+      <pubDate>Thu, 14 Apr 2016 00:20:00 -0400</pubDate>
+      
+      <guid>http://batmass.org/contacts/</guid>
+      <description>
+
+&lt;p&gt;Please use the &lt;a href=&#34;https://github.com/chhh/batmass/issues&#34;&gt;bug tracker&lt;/a&gt; to request additional functionality or report bugs.&lt;/p&gt;
+
+&lt;h2 id=&#34;referencing-the-work&#34;&gt;Referencing the work&lt;/h2&gt;
+
+&lt;p&gt;The paper is due to be published.&lt;/p&gt;
+
+&lt;h2 id=&#34;general-inquiries&#34;&gt;General inquiries&lt;/h2&gt;
+
+&lt;p&gt;Alexey Nesvizhskii, Ph.D.  (University of Michigan, Ann Arbor)&lt;br /&gt;
+&lt;a href=&#34;http://www.nesvilab.org&#34;&gt;http://www.nesvilab.org&lt;/a&gt;&lt;br /&gt;
+Email: nesvi@umich.edu&lt;/p&gt;
+
+&lt;h2 id=&#34;technical-questions&#34;&gt;Technical questions&lt;/h2&gt;
+
+&lt;p&gt;Dmitry Avtonomov (University of Michigan, Ann Arbor)&lt;br /&gt;
+Email: dmitriya@umich.edu&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Getting started</title>
+      <link>http://batmass.org/getting-started/</link>
+      <pubDate>Thu, 14 Apr 2016 00:10:00 -0400</pubDate>
+      
+      <guid>http://batmass.org/getting-started/</guid>
+      <description>
+
+&lt;p&gt;This guide will quickly step you through the installation, creation of a project and viewing mzML/mzXML files.&lt;/p&gt;
+
+&lt;h2 id=&#34;installation&#34;&gt;Installation&lt;/h2&gt;
+
+&lt;p&gt;Download the latest release for your platform from &lt;a href=&#34;https://github.com/chhh/batmass/releases/latest&#34;&gt;GitHub&lt;/a&gt;.&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;https://github.com/chhh/batmass/releases/download/v.0.04/batmass-windows.exe&#34;&gt;Windows installer&lt;/a&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;It is preferable to install BatMass to non-system locations (e.g. not into &lt;em&gt;Program Files&lt;/em&gt; or similar locations) as you might need Administrator privileges to modify the configuration file.&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;https://github.com/chhh/batmass/releases/download/v.0.04/batmass-linux.sh&#34;&gt;Linux installer&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;https://github.com/chhh/batmass/releases/download/v.0.04/batmass-macosx.tgz&#34;&gt;MacOS installer&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;https://github.com/chhh/batmass/releases/download/v.0.04/batmass.zip&#34;&gt;Platform independent zip&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&#34;admonition note&#34;&gt;
+&lt;p class=&#34;admonition-title&#34;&gt;Note&lt;/p&gt;
+&lt;p&gt;If you select the platform independent version, you&amp;rsquo;ll have to launch &lt;em&gt;BatMass&lt;/em&gt; by manually running the correct executable for your platform from &lt;em&gt;&amp;lt;extracted-archive-path&amp;gt;/bin/&lt;/em&gt;.&lt;/p&gt;
+&lt;/div&gt;
+
+&lt;h2 id=&#34;configuration&#34;&gt;Configuration&lt;/h2&gt;
+
+&lt;p&gt;&lt;em&gt;You can skip this section if you can launch the application and view the files without problems.&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;The only two things you might want to configure are the maximum amount of memory, that &lt;em&gt;BatMass&lt;/em&gt; will be allowed to use and the path to JRE (Java Runtime Environment). The default amount of RAM is set to 4GB, if your machine doesn&amp;rsquo;t have that much, the JVM won&amp;rsquo;t start.&lt;br /&gt;
+The startup configuration is stored in &lt;code&gt;&amp;lt;batmass-install-path&amp;gt;/etc/batmass.conf&lt;/code&gt;.&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Max memory is set up in &lt;code&gt;default_options&lt;/code&gt; option, the flag is &lt;code&gt;-J-Xmx&lt;/code&gt;. By default after installation you&amp;rsquo;ll find that it is set to &lt;code&gt;-J-Xmx4G&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;You can set any standard JVM startup options using this &lt;code&gt;default_options&lt;/code&gt; line, just prepend the arguments with &lt;code&gt;-J-&lt;/code&gt;. E.g. &lt;code&gt;-J-DisableExplicitGC&lt;/code&gt;, however you likely won&amp;rsquo;t need that.&lt;/li&gt;
+&lt;li&gt;If you get a message that the JRE can&amp;rsquo;t be found, try explicitly specifying the full path using the &lt;code&gt;jdkhome&lt;/code&gt; option of &lt;code&gt;batmass.conf&lt;/code&gt;. Even though the name says &lt;code&gt;jdk&lt;/code&gt;, it&amp;rsquo;s actually the path to the JRE. The line with that option is commented out by default, so remove the &lt;code&gt;#&lt;/code&gt; symbol at the beginning of the line and set the path, e.g. &lt;code&gt;jdkhome=&amp;quot;C:\Program Files\Java\jre1.8.0_77&amp;quot;&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&#34;admonition note&#34;&gt;
+&lt;p class=&#34;admonition-title&#34;&gt;Note to Windows users&lt;/p&gt;
+&lt;p&gt;If you&amp;rsquo;ve isntalled BatMass into some system folder (most commonly &lt;em&gt;C:\Program Files\batmass&lt;/em&gt;), you might need to run text editor as Administrator in order to edit the config file, otherwise you likely won&amp;rsquo;t be able to save changes to &lt;em&gt;batmass.conf&lt;/em&gt;.&lt;/p&gt;
+&lt;/div&gt;
+
+&lt;h2 id=&#34;creating-a-project&#34;&gt;Creating a project&lt;/h2&gt;
+
+&lt;p&gt;Go to &lt;code&gt;Main menu -&amp;gt; New project&lt;/code&gt;, select any project type when presented with a choice, it won&amp;rsquo;t matter now. Choose an existing directory or create a new empty one for the project, all the project-related files will be created inside this directory and &lt;strong&gt;&lt;em&gt;not&lt;/em&gt;&lt;/strong&gt; &lt;em&gt;a new directory with the project name under the selected directory&lt;/em&gt;.&lt;/p&gt;
+
+&lt;p&gt;The project should now appear in the &lt;em&gt;Project Explorer&lt;/em&gt; tab on the left. Expand the project&amp;rsquo;s node and right click &lt;code&gt;LC/MS Files&lt;/code&gt; node, choose &lt;code&gt;Import LC/MS Files&lt;/code&gt;. You can select multiple files at once by holding &lt;kbd&gt;Shift&lt;/kbd&gt; or &lt;kbd&gt;Ctrl&lt;/kbd&gt;, you can also restrict the files that are being shown to a particular format using the drop-down menu on the bottom of the file-chooser.&lt;/p&gt;
+
+&lt;div class=&#34;admonition note&#34;&gt;
+&lt;p class=&#34;admonition-title&#34;&gt;Memory usage&lt;/p&gt;
+&lt;p&gt;For opening large LC/MS runs in Map 2D viewer BatMass requires enough memory to load the whole MS level in memory (MS&lt;sup&gt;1&lt;/sup&gt; or MS&lt;sup&gt;2&lt;/sup&gt; or a single &amp;lsquo;swath&amp;rsquo;/&amp;lsquo;window&amp;rsquo; of MS&lt;sup&gt;2&lt;/sup&gt; in case of DIA), the default configuration file is set to use 4GB of RAM maximum. This has two implications:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;If your machine does not have enough available RAM you might not be able to run the program at all. E.g. MS&lt;sup&gt;1&lt;/sup&gt; only run of 10GB on a machine with 4GB RAM (You should still be able to view spectra though).&lt;/li&gt;
+&lt;li&gt;To open larger experiments (multi-gigabyte mzML/mzXML files) you might want to set larger memory limit in the configuration file discussed above.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/p&gt;
+&lt;/div&gt;
+
+&lt;h2 id=&#34;viewer-controls&#34;&gt;Viewer controls&lt;/h2&gt;
+
+&lt;p&gt;Open one of the files in the 2D viewer by right clicking and &lt;code&gt;View -&amp;gt; 2D Map&lt;/code&gt; as shown below.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://batmass.org/images/getting-started/view-file.png&#34; alt=&#34;Open a file as a 2D Map&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;File parsing might take some time, when it&amp;rsquo;s done you should see something akin to the following.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://batmass.org/images/getting-started/standard-lcms-run-map2d.png&#34; alt=&#34;Map 2D viewer&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The image can be zoomed and panned using the mouse and keyboard.&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Drag to zoom&lt;/strong&gt;. Press the left mouse button (&lt;code&gt;LMB&lt;/code&gt;) and drag.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Zoom in/out with mouse wheel&lt;/strong&gt;. Using the mouse wheel with &lt;kbd&gt;Shift&lt;/kbd&gt; or &lt;kbd&gt;Alt&lt;/kbd&gt; modifiers will restrict zooming to only m/z or RT direction (the mnemonic rule is that the &lt;kbd&gt;Shift&lt;/kbd&gt; key is streched out horizontally, so it corresponds to m/z direction, which is horizontal in charts).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Go To Dialog&lt;/strong&gt;. If you are interested in a particular location, you can use this dialog to type in the coordinates. While a chart has focus, press &lt;kbd&gt;Ctrl&lt;/kbd&gt;+&lt;kbd&gt;G&lt;/kbd&gt; or click the magnifying glass icon &lt;img src=&#34;http://batmass.org/images/getting-started/icon_zoom.png&#34; alt=&#34;Link icon&#34; /&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Panning&lt;/strong&gt;. Hold &lt;kbd&gt;Ctrl&lt;/kbd&gt; while dragging the mouse to pan the view.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Restricted panning&lt;/strong&gt;. Using the same modifier keys (&lt;kbd&gt;Shift&lt;/kbd&gt; or &lt;kbd&gt;Alt&lt;/kbd&gt;) panning can be restricted to only one direction.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Zoom out to original full overview&lt;/strong&gt;. &lt;kbd&gt;Ctrl+Alt+Shift&lt;/kbd&gt;+&lt;code&gt;LMB click&lt;/code&gt; will un-zoom the image completely, bringing you to the view of the whole experiment.&lt;/li&gt;
+&lt;li&gt;If you accidentally zoom to wrong location use the &lt;code&gt;Undo&lt;/code&gt; button in the main toolbar.&lt;/li&gt;
+&lt;li&gt;If you are viewing DIA (Data Independent Acquisition) data, the toolbar of the 2D viewer should have drop-down menus for MS level and precursor windows in case of MS&lt;sup&gt;2&lt;/sup&gt;. After you change the MS level or precursor window in the drop-down, you&amp;rsquo;ll need to click the Refresh icon &lt;img src=&#34;http://batmass.org/images/getting-started/icon_update.png&#34; alt=&#34;Refresh icon&#34; /&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;linking-viewers&#34;&gt;Linking viewers&lt;/h2&gt;
+
+&lt;p&gt;Multiple viewers can be linked together by dragging and dropping the link icon &lt;img src=&#34;http://batmass.org/images/getting-started/icon_link.png&#34; alt=&#34;Link icon&#34; /&gt; from the viewer toolbar to another viewer&amp;rsquo;s link icon. You can do this for multiple viewers of different types to assemble thme into groups. Clicking on the link icon will highlight the other viewer windows which are currently in in the same linked group, i.e. all synchronized, their borders will be highlighted by the same color. By clicking the unlink button in the viewer&amp;rsquo;s toolbar &lt;img src=&#34;http://batmass.org/images/getting-started/icon_unlink.png&#34; alt=&#34;Link icon&#34; /&gt;, you can remove viewers from the group.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>BatMass: mass spectrometry data visualization</title>
+      <link>http://batmass.org/</link>
+      <pubDate>Thu, 14 Apr 2016 00:00:01 -0400</pubDate>
+      
+      <guid>http://batmass.org/</guid>
+      <description>
+
+&lt;h2 id=&#34;about-batmass&#34;&gt;About BatMass&lt;/h2&gt;
+
+&lt;p&gt;BatMass is a mass-spectrometry data visualization tool, with the main focus on being fast and interactive while providing comprehensive visualizations without any parameter tweaking. It is written in pure Java and built on top of the &lt;a href=&#34;https://netbeans.org/features/platform/all-docs.html&#34;&gt;NetBeans Platform&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h2 id=&#34;features&#34;&gt;Features&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;Support for the open standard &lt;em&gt;mzML&lt;/em&gt; and &lt;em&gt;mzXML&lt;/em&gt; mass spectrometry data types. We are hoping to bring native vendor format support as well.&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Viewer synchronization. Link any number of viewers and zooming/panning will be synchronized across them. If you&amp;rsquo;re viewing MS&lt;sup&gt;1&lt;/sup&gt; data in one view and MS&lt;sup&gt;2&lt;/sup&gt; data in the other the retention time is synchronized, while m/z is not. Open a detected LC/MS feature table or a peptide identification table, a double click on the row will open the corresponding spectrum, or bring you to the corresponding location in a 2D Map viewer.&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Data access layer. For the Java developers out there, the highly optimized mzML/mzXML parsers can be used in any standalone Java program as a simple &lt;em&gt;jar&lt;/em&gt; dependency. Parsing has been manually tuned to produce few garbage objects, thus minimizing time spent in GC (Garbage Collection), the speed is comparable to or better than in C/C++ implementations. The API for LC/MS data files gives access to most of the features supported by mzML/mzXML standards.&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;See the &lt;a href=&#34;http://batmass.org/getting-started/&#34;&gt;getting started guide&lt;/a&gt; for instructions how to get
+it up and running.&lt;/p&gt;
+
+&lt;h2 id=&#34;examples&#34;&gt;Examples&lt;/h2&gt;
+
+&lt;p&gt;Here&amp;rsquo;s a short demo video of BatMass in action.&lt;/p&gt;
+
+
+&lt;div style=&#34;position: relative; padding-bottom: 56.25%; padding-top: 30px; height: 0; overflow: hidden;&#34;&gt;
+  &lt;iframe src=&#34;//www.youtube.com/embed/EY9wvd6ckb0&#34; style=&#34;position: absolute; top: 0; left: 0; width: 100%; height: 100%;&#34; allowfullscreen frameborder=&#34;0&#34;&gt;&lt;/iframe&gt;
+ &lt;/div&gt;
+
+
+&lt;p&gt;The layout of windows is free and customizable by dragging.
+&lt;img src=&#34;http://batmass.org/images/about-batmass/free-layout.png&#34; alt=&#34;Free window layoyt&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Compare multiple experiments at once. The bottom-middle run in this figure is a blank (no sample was injected), while the other 5 were runs with some sample. Amazing how much stuff comes from the background.
+&lt;img src=&#34;http://batmass.org/images/about-batmass/comparison-6-runs-1-blank.png&#34; alt=&#34;Multi experiment comparison in Map2D&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;And here are the same runs but zoomed in to a small region of m/z and retentino time. Look at the color-marked regions. Let&amp;rsquo;s just accept that zero-values are a thing, there is no need to try extracting noise to do gap-filling in data.
+&lt;img src=&#34;http://batmass.org/images/about-batmass/comparison-6-runs-1-blank-02-zoom-marked.png&#34; alt=&#34;Multi experiment comparison in Map2D zoomed&#34; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;contacts&#34;&gt;Contacts&lt;/h2&gt;
+
+&lt;p&gt;&lt;strong&gt;General inquiries&lt;/strong&gt;&lt;br /&gt;
+Alexey Nesvizhskii, Ph.D.&lt;br /&gt;
+University of Michigan, Ann Arbor&lt;br /&gt;
+&lt;a href=&#34;http://www.nesvilab.org&#34;&gt;http://www.nesvilab.org&lt;/a&gt;&lt;br /&gt;
+Email: nesvi@umich.edu&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Technical questions&lt;/strong&gt;&lt;br /&gt;
+Dmitry Avtonomov&lt;br /&gt;
+University of Michigan, Ann Arbor&lt;br /&gt;
+Email: dmitriya@umich.edu&lt;/p&gt;
+
+&lt;p&gt;Please use the &lt;a href=&#34;https://github.com/chhh/batmass/issues&#34;&gt;bug tracker&lt;/a&gt; to ask questions, submit feature requests and bug reports.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

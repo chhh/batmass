@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Contacts on BatMass</title>
+    <link>http://batmass.org/contacts/</link>
+    <description>Recent content in Contacts on BatMass</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Thu, 14 Apr 2016 00:20:00 -0400</lastBuildDate>
+    <atom:link href="http://batmass.org/contacts/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Contact information</title>
+      <link>http://batmass.org/contacts/</link>
+      <pubDate>Thu, 14 Apr 2016 00:20:00 -0400</pubDate>
+      
+      <guid>http://batmass.org/contacts/</guid>
+      <description>
+
+&lt;p&gt;Please use the &lt;a href=&#34;https://github.com/chhh/batmass/issues&#34;&gt;bug tracker&lt;/a&gt; to request additional functionality or report bugs.&lt;/p&gt;
+
+&lt;h2 id=&#34;referencing-the-work&#34;&gt;Referencing the work&lt;/h2&gt;
+
+&lt;p&gt;The paper is due to be published.&lt;/p&gt;
+
+&lt;h2 id=&#34;general-inquiries&#34;&gt;General inquiries&lt;/h2&gt;
+
+&lt;p&gt;Alexey Nesvizhskii, Ph.D.  (University of Michigan, Ann Arbor)&lt;br /&gt;
+&lt;a href=&#34;http://www.nesvilab.org&#34;&gt;http://www.nesvilab.org&lt;/a&gt;&lt;br /&gt;
+Email: nesvi@umich.edu&lt;/p&gt;
+
+&lt;h2 id=&#34;technical-questions&#34;&gt;Technical questions&lt;/h2&gt;
+
+&lt;p&gt;Dmitry Avtonomov (University of Michigan, Ann Arbor)&lt;br /&gt;
+Email: dmitriya@umich.edu&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

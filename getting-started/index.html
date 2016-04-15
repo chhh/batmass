@@ -8,18 +8,18 @@
   <head lang="en-us">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1">
-    <title>BatMass</title>
+    <title>Getting started - BatMass</title>
     <meta name="generator" content="Hugo 0.15" />
 
     
     <meta name="description" content="Mass spectrometry data visualization">
     
-    <link rel="canonical" href="http://batmass.org/">
+    <link rel="canonical" href="http://batmass.org/getting-started/">
     
     <meta name="author" content="Dmitry Avtonomov">
     
 
-    <meta property="og:url" content="http://batmass.org/">
+    <meta property="og:url" content="http://batmass.org/getting-started/">
     <meta property="og:title" content="BatMass">
     <meta property="og:image" content="http://batmass.org/images/bm-icon-512.png">
     <meta name="apple-mobile-web-app-title" content="BatMass">
@@ -71,9 +71,6 @@
     <script src="http://batmass.org/javascripts/modernizr.js"></script>
 
     
-    <link href="http://batmass.org/index.xml" rel="alternate" type="application/rss+xml" title="BatMass" />
-    <link href="http://batmass.org/index.xml" rel="feed" type="application/rss+xml" title="BatMass" />
-    
 
   </head>
   <body class="palette-primary-teal palette-accent-indigo">
@@ -102,7 +99,7 @@
     </div>
     <div class="stretch">
       <div class="title">
-        BatMass
+        Getting started
       </div>
     </div>
 
@@ -186,14 +183,11 @@
 
 
 
-<a class="current" title="BatMass" href="http://batmass.org/">
+<a  title="BatMass" href="http://batmass.org/">
 	
 	BatMass
 </a>
 
-
-<ul id="scrollspy">
-</ul>
 
   
 </li>
@@ -207,11 +201,14 @@
 
 
 
-<a  title="Getting started" href="http://batmass.org/getting-started/">
+<a class="current" title="Getting started" href="http://batmass.org/getting-started/">
 	
 	Getting started
 </a>
 
+
+<ul id="scrollspy">
+</ul>
 
   
 </li>
@@ -361,68 +358,100 @@
 
 	<article class="article">
 		<div class="wrapper">
+
 			
 
-				
-					<img src=http://batmass.org/images/batmass-logo-300.png  class=batmass-about-image  />
-				
+			<h1>Getting started </h1>
 
-				<h1 class="text-center">BatMass: mass spectrometry data visualization </h1>
+			
 
-				
+<p>This guide will quickly step you through the installation, creation of a project and viewing mzML/mzXML files.</p>
 
-<h2 id="about-batmass">About BatMass</h2>
+<h2 id="installation">Installation</h2>
 
-<p>BatMass is a mass-spectrometry data visualization tool, with the main focus on being fast and interactive while providing comprehensive visualizations without any parameter tweaking. It is written in pure Java and built on top of the <a href="https://netbeans.org/features/platform/all-docs.html">NetBeans Platform</a>.</p>
-
-<h2 id="features">Features</h2>
+<p>Download the latest release for your platform from <a href="https://github.com/chhh/batmass/releases/latest">GitHub</a>.</p>
 
 <ul>
-<li><p>Support for the open standard <em>mzML</em> and <em>mzXML</em> mass spectrometry data types. We are hoping to bring native vendor format support as well.</p></li>
+<li><p><a href="https://github.com/chhh/batmass/releases/download/v.0.04/batmass-windows.exe">Windows installer</a></p>
 
-<li><p>Viewer synchronization. Link any number of viewers and zooming/panning will be synchronized across them. If you&rsquo;re viewing MS<sup>1</sup> data in one view and MS<sup>2</sup> data in the other the retention time is synchronized, while m/z is not. Open a detected LC/MS feature table or a peptide identification table, a double click on the row will open the corresponding spectrum, or bring you to the corresponding location in a 2D Map viewer.</p></li>
+<ul>
+<li>It is preferable to install BatMass to non-system locations (e.g. not into <em>Program Files</em> or similar locations) as you might need Administrator privileges to modify the configuration file.</li>
+</ul></li>
 
-<li><p>Data access layer. For the Java developers out there, the highly optimized mzML/mzXML parsers can be used in any standalone Java program as a simple <em>jar</em> dependency. Parsing has been manually tuned to produce few garbage objects, thus minimizing time spent in GC (Garbage Collection), the speed is comparable to or better than in C/C++ implementations. The API for LC/MS data files gives access to most of the features supported by mzML/mzXML standards.</p></li>
+<li><p><a href="https://github.com/chhh/batmass/releases/download/v.0.04/batmass-linux.sh">Linux installer</a></p></li>
+
+<li><p><a href="https://github.com/chhh/batmass/releases/download/v.0.04/batmass-macosx.tgz">MacOS installer</a></p></li>
+
+<li><p><a href="https://github.com/chhh/batmass/releases/download/v.0.04/batmass.zip">Platform independent zip</a></p></li>
 </ul>
 
-<p>See the <a href="http://batmass.org/getting-started/">getting started guide</a> for instructions how to get
-it up and running.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you select the platform independent version, you&rsquo;ll have to launch <em>BatMass</em> by manually running the correct executable for your platform from <em>&lt;extracted-archive-path&gt;/bin/</em>.</p>
+</div>
 
-<h2 id="examples">Examples</h2>
+<h2 id="configuration">Configuration</h2>
 
-<p>Here&rsquo;s a short demo video of BatMass in action.</p>
+<p><em>You can skip this section if you can launch the application and view the files without problems.</em></p>
 
+<p>The only two things you might want to configure are the maximum amount of memory, that <em>BatMass</em> will be allowed to use and the path to JRE (Java Runtime Environment). The default amount of RAM is set to 4GB, if your machine doesn&rsquo;t have that much, the JVM won&rsquo;t start.<br />
+The startup configuration is stored in <code>&lt;batmass-install-path&gt;/etc/batmass.conf</code>.</p>
 
-<div style="position: relative; padding-bottom: 56.25%; padding-top: 30px; height: 0; overflow: hidden;">
-  <iframe src="//www.youtube.com/embed/EY9wvd6ckb0" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;" allowfullscreen frameborder="0"></iframe>
- </div>
+<ul>
+<li>Max memory is set up in <code>default_options</code> option, the flag is <code>-J-Xmx</code>. By default after installation you&rsquo;ll find that it is set to <code>-J-Xmx4G</code></li>
+<li>You can set any standard JVM startup options using this <code>default_options</code> line, just prepend the arguments with <code>-J-</code>. E.g. <code>-J-DisableExplicitGC</code>, however you likely won&rsquo;t need that.</li>
+<li>If you get a message that the JRE can&rsquo;t be found, try explicitly specifying the full path using the <code>jdkhome</code> option of <code>batmass.conf</code>. Even though the name says <code>jdk</code>, it&rsquo;s actually the path to the JRE. The line with that option is commented out by default, so remove the <code>#</code> symbol at the beginning of the line and set the path, e.g. <code>jdkhome=&quot;C:\Program Files\Java\jre1.8.0_77&quot;</code></li>
+</ul>
 
+<div class="admonition note">
+<p class="admonition-title">Note to Windows users</p>
+<p>If you&rsquo;ve isntalled BatMass into some system folder (most commonly <em>C:\Program Files\batmass</em>), you might need to run text editor as Administrator in order to edit the config file, otherwise you likely won&rsquo;t be able to save changes to <em>batmass.conf</em>.</p>
+</div>
 
-<p>The layout of windows is free and customizable by dragging.
-<img src="http://batmass.org/images/about-batmass/free-layout.png" alt="Free window layoyt" /></p>
+<h2 id="creating-a-project">Creating a project</h2>
 
-<p>Compare multiple experiments at once. The bottom-middle run in this figure is a blank (no sample was injected), while the other 5 were runs with some sample. Amazing how much stuff comes from the background.
-<img src="http://batmass.org/images/about-batmass/comparison-6-runs-1-blank.png" alt="Multi experiment comparison in Map2D" /></p>
+<p>Go to <code>Main menu -&gt; New project</code>, select any project type when presented with a choice, it won&rsquo;t matter now. Choose an existing directory or create a new empty one for the project, all the project-related files will be created inside this directory and <strong><em>not</em></strong> <em>a new directory with the project name under the selected directory</em>.</p>
 
-<p>And here are the same runs but zoomed in to a small region of m/z and retentino time. Look at the color-marked regions. Let&rsquo;s just accept that zero-values are a thing, there is no need to try extracting noise to do gap-filling in data.
-<img src="http://batmass.org/images/about-batmass/comparison-6-runs-1-blank-02-zoom-marked.png" alt="Multi experiment comparison in Map2D zoomed" /></p>
+<p>The project should now appear in the <em>Project Explorer</em> tab on the left. Expand the project&rsquo;s node and right click <code>LC/MS Files</code> node, choose <code>Import LC/MS Files</code>. You can select multiple files at once by holding <kbd>Shift</kbd> or <kbd>Ctrl</kbd>, you can also restrict the files that are being shown to a particular format using the drop-down menu on the bottom of the file-chooser.</p>
 
-<h2 id="contacts">Contacts</h2>
+<div class="admonition note">
+<p class="admonition-title">Memory usage</p>
+<p>For opening large LC/MS runs in Map 2D viewer BatMass requires enough memory to load the whole MS level in memory (MS<sup>1</sup> or MS<sup>2</sup> or a single &lsquo;swath&rsquo;/&lsquo;window&rsquo; of MS<sup>2</sup> in case of DIA), the default configuration file is set to use 4GB of RAM maximum. This has two implications:</p>
 
-<p><strong>General inquiries</strong><br />
-Alexey Nesvizhskii, Ph.D.<br />
-University of Michigan, Ann Arbor<br />
-<a href="http://www.nesvilab.org">http://www.nesvilab.org</a><br />
-Email: nesvi@umich.edu</p>
+<ul>
+<li>If your machine does not have enough available RAM you might not be able to run the program at all. E.g. MS<sup>1</sup> only run of 10GB on a machine with 4GB RAM (You should still be able to view spectra though).</li>
+<li>To open larger experiments (multi-gigabyte mzML/mzXML files) you might want to set larger memory limit in the configuration file discussed above.</li>
+</ul>
+</p>
+</div>
 
-<p><strong>Technical questions</strong><br />
-Dmitry Avtonomov<br />
-University of Michigan, Ann Arbor<br />
-Email: dmitriya@umich.edu</p>
+<h2 id="viewer-controls">Viewer controls</h2>
 
-<p>Please use the <a href="https://github.com/chhh/batmass/issues">bug tracker</a> to ask questions, submit feature requests and bug reports.</p>
+<p>Open one of the files in the 2D viewer by right clicking and <code>View -&gt; 2D Map</code> as shown below.</p>
 
-			
+<p><img src="http://batmass.org/images/getting-started/view-file.png" alt="Open a file as a 2D Map" /></p>
+
+<p>File parsing might take some time, when it&rsquo;s done you should see something akin to the following.</p>
+
+<p><img src="http://batmass.org/images/getting-started/standard-lcms-run-map2d.png" alt="Map 2D viewer" /></p>
+
+<p>The image can be zoomed and panned using the mouse and keyboard.</p>
+
+<ul>
+<li><strong>Drag to zoom</strong>. Press the left mouse button (<code>LMB</code>) and drag.</li>
+<li><strong>Zoom in/out with mouse wheel</strong>. Using the mouse wheel with <kbd>Shift</kbd> or <kbd>Alt</kbd> modifiers will restrict zooming to only m/z or RT direction (the mnemonic rule is that the <kbd>Shift</kbd> key is streched out horizontally, so it corresponds to m/z direction, which is horizontal in charts).</li>
+<li><strong>Go To Dialog</strong>. If you are interested in a particular location, you can use this dialog to type in the coordinates. While a chart has focus, press <kbd>Ctrl</kbd>+<kbd>G</kbd> or click the magnifying glass icon <img src="http://batmass.org/images/getting-started/icon_zoom.png" alt="Link icon" />.</li>
+<li><strong>Panning</strong>. Hold <kbd>Ctrl</kbd> while dragging the mouse to pan the view.</li>
+<li><strong>Restricted panning</strong>. Using the same modifier keys (<kbd>Shift</kbd> or <kbd>Alt</kbd>) panning can be restricted to only one direction.</li>
+<li><strong>Zoom out to original full overview</strong>. <kbd>Ctrl+Alt+Shift</kbd>+<code>LMB click</code> will un-zoom the image completely, bringing you to the view of the whole experiment.</li>
+<li>If you accidentally zoom to wrong location use the <code>Undo</code> button in the main toolbar.</li>
+<li>If you are viewing DIA (Data Independent Acquisition) data, the toolbar of the 2D viewer should have drop-down menus for MS level and precursor windows in case of MS<sup>2</sup>. After you change the MS level or precursor window in the drop-down, you&rsquo;ll need to click the Refresh icon <img src="http://batmass.org/images/getting-started/icon_update.png" alt="Refresh icon" />.</li>
+</ul>
+
+<h2 id="linking-viewers">Linking viewers</h2>
+
+<p>Multiple viewers can be linked together by dragging and dropping the link icon <img src="http://batmass.org/images/getting-started/icon_link.png" alt="Link icon" /> from the viewer toolbar to another viewer&rsquo;s link icon. You can do this for multiple viewers of different types to assemble thme into groups. Clicking on the link icon will highlight the other viewer windows which are currently in in the same linked group, i.e. all synchronized, their borders will be highlighted by the same color. By clicking the unlink button in the viewer&rsquo;s toolbar <img src="http://batmass.org/images/getting-started/icon_unlink.png" alt="Link icon" />, you can remove viewers from the group.</p>
+
 
 			<aside class="copyright" role="note">
 				
@@ -433,23 +462,37 @@ Email: dmitriya@umich.edu</p>
 			<footer class="footer">
 				
 
-
-
 <nav class="pagination" aria-label="Footer">
   <div class="previous">
+  
+      <a href="http://batmass.org/" title="BatMass: mass spectrometry data visualization">
+        <span class="direction">
+          Previous
+        </span>
+        <div class="page">
+          <div class="button button-previous" role="button" aria-label="Previous">
+            <i class="icon icon-back"></i>
+          </div>
+          <div class="stretch">
+            <div class="title">
+              BatMass: mass spectrometry data visualization
+            </div>
+          </div>
+        </div>
+      </a>
+  
   </div>
 
-  
-  
   <div class="next">
-      <a href="http://batmass.org/getting-started/" title="Getting started">
+  
+      <a href="http://batmass.org/contacts/" title="Contact information">
         <span class="direction">
           Next
         </span>
         <div class="page">
           <div class="stretch">
             <div class="title">
-              Getting started
+              Contact information
             </div>
           </div>
           <div class="button button-next" role="button" aria-label="Next">
@@ -457,8 +500,11 @@ Email: dmitriya@umich.edu</p>
           </div>
         </div>
       </a>
+  
   </div>
 </nav>
+
+
 
 
 			</footer>
