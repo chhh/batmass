@@ -1,6 +1,7 @@
-# baseurl = "http://batmass.org/"
-baseurl = "http://localhost:1313/"
+baseurl = "http://batmass.org/"
+# baseurl = "http://localhost:1313/"
 # baseurl = "http://chhh.github.io/hugo-website-test/"
+# baseurl = "http://batmass.github.io/"
 
 
 languageCode = "en-us"
