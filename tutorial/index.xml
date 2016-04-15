@@ -2,19 +2,19 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Tutorials on BatMass</title>
-    <link>http://batmass.org/tutorial/</link>
+    <link>http://www.batmass.org/tutorial/</link>
     <description>Recent content in Tutorials on BatMass</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Thu, 14 Apr 2016 00:33:00 -0400</lastBuildDate>
-    <atom:link href="http://batmass.org/tutorial/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://www.batmass.org/tutorial/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>Developing the first plugin</title>
-      <link>http://batmass.org/tutorial/developing-first-plugin/</link>
+      <link>http://www.batmass.org/tutorial/developing-first-plugin/</link>
       <pubDate>Thu, 14 Apr 2016 00:33:00 -0400</pubDate>
       
-      <guid>http://batmass.org/tutorial/developing-first-plugin/</guid>
+      <guid>http://www.batmass.org/tutorial/developing-first-plugin/</guid>
       <description>&lt;p&gt;In this guide we will develop a new module for BatMass that will add support for a new file format for detected LC/MS features.&lt;br /&gt;
 We will need to:&lt;/p&gt;
 
@@ -35,10 +35,10 @@ We will need to:&lt;/p&gt;
     
     <item>
       <title>Using data access library</title>
-      <link>http://batmass.org/tutorial/data-access-layer/</link>
+      <link>http://www.batmass.org/tutorial/data-access-layer/</link>
       <pubDate>Thu, 14 Apr 2016 00:32:00 -0400</pubDate>
       
-      <guid>http://batmass.org/tutorial/data-access-layer/</guid>
+      <guid>http://www.batmass.org/tutorial/data-access-layer/</guid>
       <description>
 
 &lt;p&gt;In this guide we will quickly go through using the standalone java library for accessing some common mass spectrometry data formats. This is the same library that powers &lt;em&gt;BatMass&lt;/em&gt;.&lt;/p&gt;
@@ -245,10 +245,10 @@ You will need to have an idea of how the files are organized for this though, ex
     
     <item>
       <title>Setting up development environment</title>
-      <link>http://batmass.org/tutorial/setting-up-development-environment/</link>
+      <link>http://www.batmass.org/tutorial/setting-up-development-environment/</link>
       <pubDate>Thu, 14 Apr 2016 00:31:00 -0400</pubDate>
       
-      <guid>http://batmass.org/tutorial/setting-up-development-environment/</guid>
+      <guid>http://www.batmass.org/tutorial/setting-up-development-environment/</guid>
       <description>
 
 &lt;p&gt;This guide will quickly step you through setting up the environment for developing new functionality for BatMass. All the downloads, setting up the IDE and up to building BatMass from scratch.&lt;/p&gt;
@@ -305,7 +305,7 @@ has been recognized as containing &lt;em&gt;platform&lt;/em&gt; files.&lt;/li&gt
 &lt;li&gt;Click &lt;em&gt;Next&lt;/em&gt;, change the platform name to &lt;code&gt;nb-batmass&lt;/code&gt; (&lt;strong&gt;This is very
 important!&lt;/strong&gt;) as it is and click &lt;em&gt;Finish&lt;/em&gt;.&lt;/li&gt;
 &lt;li&gt;You should now see the newly created &lt;em&gt;platform&lt;/em&gt; in the list, like this:&lt;br /&gt;
-&lt;img src=&#34;http://batmass.org/images/setting-up-development-environment/nb-platform-created.png&#34; alt=&#34;NetBeans platform added&#34; /&gt;&lt;/li&gt;
+&lt;img src=&#34;http://www.batmass.org/images/setting-up-development-environment/nb-platform-created.png&#34; alt=&#34;NetBeans platform added&#34; /&gt;&lt;/li&gt;
 &lt;li&gt;Change the tab to &lt;em&gt;Harness&lt;/em&gt; and make sure to switch the radio button to
 &lt;em&gt;Harness supplied with Platform&lt;/em&gt;.&lt;/li&gt;
 &lt;li&gt;Change the tab to &lt;em&gt;Sources&lt;/em&gt; and add the path to &lt;em&gt;.zip&lt;/em&gt; file
@@ -358,7 +358,7 @@ git clone https://github.com/chhh/MSFTBX.git
 &lt;li&gt;&lt;code&gt;Main Menu -&amp;gt; File -&amp;gt; Open Project&lt;/code&gt;&lt;/li&gt;
 &lt;li&gt;Holding down &lt;kbd&gt;Ctrl&lt;/kbd&gt; select the 4 cloned projects, and open them (see
 image below)
-&lt;img src=&#34;http://batmass.org/images/setting-up-development-environment/netbeans-opening-projects.png&#34; alt=&#34;Open Cloned Projects&#34; /&gt;&lt;br /&gt;&lt;/li&gt;
+&lt;img src=&#34;http://www.batmass.org/images/setting-up-development-environment/netbeans-opening-projects.png&#34; alt=&#34;Open Cloned Projects&#34; /&gt;&lt;br /&gt;&lt;/li&gt;
 &lt;li&gt;Check the bottom right corner of the IDE for a progress bar, it might take a
 while to index the projects.&lt;/li&gt;
 &lt;li&gt;Right click &lt;code&gt;BatMass&lt;/code&gt; project, select &lt;code&gt;Properties&lt;/code&gt; in the context menu.&lt;/li&gt;
@@ -366,7 +366,7 @@ while to index the projects.&lt;/li&gt;
 
 &lt;li&gt;&lt;p&gt;Make sure that drop-down &lt;em&gt;NetBeans Platform&lt;/em&gt; is set to &lt;code&gt;nb-batmass&lt;/code&gt; as in
 the image below, if this shows some other platform, switch to &lt;code&gt;nb-batmass&lt;/code&gt;&lt;br /&gt;
-&lt;img src=&#34;http://batmass.org/images/setting-up-development-environment/netbeans-project-batmass-check-library-settings.png&#34; alt=&#34;Make sure opened projects are set to use the provided platform&#34; /&gt;&lt;/p&gt;
+&lt;img src=&#34;http://www.batmass.org/images/setting-up-development-environment/netbeans-project-batmass-check-library-settings.png&#34; alt=&#34;Make sure opened projects are set to use the provided platform&#34; /&gt;&lt;/p&gt;
 
 &lt;ul&gt;
 &lt;li&gt;If you see some errors in the &lt;em&gt;Project Properties&lt;/em&gt; window (e.g. saying that

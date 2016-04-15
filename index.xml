@@ -2,19 +2,19 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>BatMass</title>
-    <link>http://batmass.org/</link>
+    <link>http://www.batmass.org/</link>
     <description>Recent content on BatMass</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Thu, 14 Apr 2016 00:59:00 -0400</lastBuildDate>
-    <atom:link href="http://batmass.org/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://www.batmass.org/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>License</title>
-      <link>http://batmass.org/license/</link>
+      <link>http://www.batmass.org/license/</link>
       <pubDate>Thu, 14 Apr 2016 00:59:00 -0400</pubDate>
       
-      <guid>http://batmass.org/license/</guid>
+      <guid>http://www.batmass.org/license/</guid>
       <description>&lt;p&gt;Copyright [2016] [Dmitry Avtonomov]&lt;/p&gt;
 
 &lt;p&gt;Licensed under the Apache License, Version 2.0 (the &amp;ldquo;License&amp;rdquo;);
@@ -34,10 +34,10 @@ limitations under the License.&lt;/p&gt;
     
     <item>
       <title>Developing the first plugin</title>
-      <link>http://batmass.org/tutorial/developing-first-plugin/</link>
+      <link>http://www.batmass.org/tutorial/developing-first-plugin/</link>
       <pubDate>Thu, 14 Apr 2016 00:33:00 -0400</pubDate>
       
-      <guid>http://batmass.org/tutorial/developing-first-plugin/</guid>
+      <guid>http://www.batmass.org/tutorial/developing-first-plugin/</guid>
       <description>&lt;p&gt;In this guide we will develop a new module for BatMass that will add support for a new file format for detected LC/MS features.&lt;br /&gt;
 We will need to:&lt;/p&gt;
 
@@ -58,10 +58,10 @@ We will need to:&lt;/p&gt;
     
     <item>
       <title>Using data access library</title>
-      <link>http://batmass.org/tutorial/data-access-layer/</link>
+      <link>http://www.batmass.org/tutorial/data-access-layer/</link>
       <pubDate>Thu, 14 Apr 2016 00:32:00 -0400</pubDate>
       
-      <guid>http://batmass.org/tutorial/data-access-layer/</guid>
+      <guid>http://www.batmass.org/tutorial/data-access-layer/</guid>
       <description>
 
 &lt;p&gt;In this guide we will quickly go through using the standalone java library for accessing some common mass spectrometry data formats. This is the same library that powers &lt;em&gt;BatMass&lt;/em&gt;.&lt;/p&gt;
@@ -268,10 +268,10 @@ You will need to have an idea of how the files are organized for this though, ex
     
     <item>
       <title>Setting up development environment</title>
-      <link>http://batmass.org/tutorial/setting-up-development-environment/</link>
+      <link>http://www.batmass.org/tutorial/setting-up-development-environment/</link>
       <pubDate>Thu, 14 Apr 2016 00:31:00 -0400</pubDate>
       
-      <guid>http://batmass.org/tutorial/setting-up-development-environment/</guid>
+      <guid>http://www.batmass.org/tutorial/setting-up-development-environment/</guid>
       <description>
 
 &lt;p&gt;This guide will quickly step you through setting up the environment for developing new functionality for BatMass. All the downloads, setting up the IDE and up to building BatMass from scratch.&lt;/p&gt;
@@ -328,7 +328,7 @@ has been recognized as containing &lt;em&gt;platform&lt;/em&gt; files.&lt;/li&gt
 &lt;li&gt;Click &lt;em&gt;Next&lt;/em&gt;, change the platform name to &lt;code&gt;nb-batmass&lt;/code&gt; (&lt;strong&gt;This is very
 important!&lt;/strong&gt;) as it is and click &lt;em&gt;Finish&lt;/em&gt;.&lt;/li&gt;
 &lt;li&gt;You should now see the newly created &lt;em&gt;platform&lt;/em&gt; in the list, like this:&lt;br /&gt;
-&lt;img src=&#34;http://batmass.org/images/setting-up-development-environment/nb-platform-created.png&#34; alt=&#34;NetBeans platform added&#34; /&gt;&lt;/li&gt;
+&lt;img src=&#34;http://www.batmass.org/images/setting-up-development-environment/nb-platform-created.png&#34; alt=&#34;NetBeans platform added&#34; /&gt;&lt;/li&gt;
 &lt;li&gt;Change the tab to &lt;em&gt;Harness&lt;/em&gt; and make sure to switch the radio button to
 &lt;em&gt;Harness supplied with Platform&lt;/em&gt;.&lt;/li&gt;
 &lt;li&gt;Change the tab to &lt;em&gt;Sources&lt;/em&gt; and add the path to &lt;em&gt;.zip&lt;/em&gt; file
@@ -381,7 +381,7 @@ git clone https://github.com/chhh/MSFTBX.git
 &lt;li&gt;&lt;code&gt;Main Menu -&amp;gt; File -&amp;gt; Open Project&lt;/code&gt;&lt;/li&gt;
 &lt;li&gt;Holding down &lt;kbd&gt;Ctrl&lt;/kbd&gt; select the 4 cloned projects, and open them (see
 image below)
-&lt;img src=&#34;http://batmass.org/images/setting-up-development-environment/netbeans-opening-projects.png&#34; alt=&#34;Open Cloned Projects&#34; /&gt;&lt;br /&gt;&lt;/li&gt;
+&lt;img src=&#34;http://www.batmass.org/images/setting-up-development-environment/netbeans-opening-projects.png&#34; alt=&#34;Open Cloned Projects&#34; /&gt;&lt;br /&gt;&lt;/li&gt;
 &lt;li&gt;Check the bottom right corner of the IDE for a progress bar, it might take a
 while to index the projects.&lt;/li&gt;
 &lt;li&gt;Right click &lt;code&gt;BatMass&lt;/code&gt; project, select &lt;code&gt;Properties&lt;/code&gt; in the context menu.&lt;/li&gt;
@@ -389,7 +389,7 @@ while to index the projects.&lt;/li&gt;
 
 &lt;li&gt;&lt;p&gt;Make sure that drop-down &lt;em&gt;NetBeans Platform&lt;/em&gt; is set to &lt;code&gt;nb-batmass&lt;/code&gt; as in
 the image below, if this shows some other platform, switch to &lt;code&gt;nb-batmass&lt;/code&gt;&lt;br /&gt;
-&lt;img src=&#34;http://batmass.org/images/setting-up-development-environment/netbeans-project-batmass-check-library-settings.png&#34; alt=&#34;Make sure opened projects are set to use the provided platform&#34; /&gt;&lt;/p&gt;
+&lt;img src=&#34;http://www.batmass.org/images/setting-up-development-environment/netbeans-project-batmass-check-library-settings.png&#34; alt=&#34;Make sure opened projects are set to use the provided platform&#34; /&gt;&lt;/p&gt;
 
 &lt;ul&gt;
 &lt;li&gt;If you see some errors in the &lt;em&gt;Project Properties&lt;/em&gt; window (e.g. saying that
@@ -428,10 +428,10 @@ installers for different platforms in &lt;code&gt;batmass-projects/batmass/dist&
     
     <item>
       <title>Contact information</title>
-      <link>http://batmass.org/contacts/</link>
+      <link>http://www.batmass.org/contacts/</link>
       <pubDate>Thu, 14 Apr 2016 00:20:00 -0400</pubDate>
       
-      <guid>http://batmass.org/contacts/</guid>
+      <guid>http://www.batmass.org/contacts/</guid>
       <description>
 
 &lt;p&gt;Please use the &lt;a href=&#34;https://github.com/chhh/batmass/issues&#34;&gt;bug tracker&lt;/a&gt; to request additional functionality or report bugs.&lt;/p&gt;
@@ -455,10 +455,10 @@ Email: dmitriya@umich.edu&lt;/p&gt;
     
     <item>
       <title>Getting started</title>
-      <link>http://batmass.org/getting-started/</link>
+      <link>http://www.batmass.org/getting-started/</link>
       <pubDate>Thu, 14 Apr 2016 00:10:00 -0400</pubDate>
       
-      <guid>http://batmass.org/getting-started/</guid>
+      <guid>http://www.batmass.org/getting-started/</guid>
       <description>
 
 &lt;p&gt;This guide will quickly step you through the installation, creation of a project and viewing mzML/mzXML files.&lt;/p&gt;
@@ -525,37 +525,37 @@ The startup configuration is stored in &lt;code&gt;&amp;lt;batmass-install-path&
 
 &lt;p&gt;Open one of the files in the 2D viewer by right clicking and &lt;code&gt;View -&amp;gt; 2D Map&lt;/code&gt; as shown below.&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;http://batmass.org/images/getting-started/view-file.png&#34; alt=&#34;Open a file as a 2D Map&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;http://www.batmass.org/images/getting-started/view-file.png&#34; alt=&#34;Open a file as a 2D Map&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;File parsing might take some time, when it&amp;rsquo;s done you should see something akin to the following.&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;http://batmass.org/images/getting-started/standard-lcms-run-map2d.png&#34; alt=&#34;Map 2D viewer&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;http://www.batmass.org/images/getting-started/standard-lcms-run-map2d.png&#34; alt=&#34;Map 2D viewer&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;The image can be zoomed and panned using the mouse and keyboard.&lt;/p&gt;
 
 &lt;ul&gt;
 &lt;li&gt;&lt;strong&gt;Drag to zoom&lt;/strong&gt;. Press the left mouse button (&lt;code&gt;LMB&lt;/code&gt;) and drag.&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;Zoom in/out with mouse wheel&lt;/strong&gt;. Using the mouse wheel with &lt;kbd&gt;Shift&lt;/kbd&gt; or &lt;kbd&gt;Alt&lt;/kbd&gt; modifiers will restrict zooming to only m/z or RT direction (the mnemonic rule is that the &lt;kbd&gt;Shift&lt;/kbd&gt; key is streched out horizontally, so it corresponds to m/z direction, which is horizontal in charts).&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;Go To Dialog&lt;/strong&gt;. If you are interested in a particular location, you can use this dialog to type in the coordinates. While a chart has focus, press &lt;kbd&gt;Ctrl&lt;/kbd&gt;+&lt;kbd&gt;G&lt;/kbd&gt; or click the magnifying glass icon &lt;img src=&#34;http://batmass.org/images/getting-started/icon_zoom.png&#34; alt=&#34;Link icon&#34; /&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Go To Dialog&lt;/strong&gt;. If you are interested in a particular location, you can use this dialog to type in the coordinates. While a chart has focus, press &lt;kbd&gt;Ctrl&lt;/kbd&gt;+&lt;kbd&gt;G&lt;/kbd&gt; or click the magnifying glass icon &lt;img src=&#34;http://www.batmass.org/images/getting-started/icon_zoom.png&#34; alt=&#34;Link icon&#34; /&gt;.&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;Panning&lt;/strong&gt;. Hold &lt;kbd&gt;Ctrl&lt;/kbd&gt; while dragging the mouse to pan the view.&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;Restricted panning&lt;/strong&gt;. Using the same modifier keys (&lt;kbd&gt;Shift&lt;/kbd&gt; or &lt;kbd&gt;Alt&lt;/kbd&gt;) panning can be restricted to only one direction.&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;Zoom out to original full overview&lt;/strong&gt;. &lt;kbd&gt;Ctrl+Alt+Shift&lt;/kbd&gt;+&lt;code&gt;LMB click&lt;/code&gt; will un-zoom the image completely, bringing you to the view of the whole experiment.&lt;/li&gt;
 &lt;li&gt;If you accidentally zoom to wrong location use the &lt;code&gt;Undo&lt;/code&gt; button in the main toolbar.&lt;/li&gt;
-&lt;li&gt;If you are viewing DIA (Data Independent Acquisition) data, the toolbar of the 2D viewer should have drop-down menus for MS level and precursor windows in case of MS&lt;sup&gt;2&lt;/sup&gt;. After you change the MS level or precursor window in the drop-down, you&amp;rsquo;ll need to click the Refresh icon &lt;img src=&#34;http://batmass.org/images/getting-started/icon_update.png&#34; alt=&#34;Refresh icon&#34; /&gt;.&lt;/li&gt;
+&lt;li&gt;If you are viewing DIA (Data Independent Acquisition) data, the toolbar of the 2D viewer should have drop-down menus for MS level and precursor windows in case of MS&lt;sup&gt;2&lt;/sup&gt;. After you change the MS level or precursor window in the drop-down, you&amp;rsquo;ll need to click the Refresh icon &lt;img src=&#34;http://www.batmass.org/images/getting-started/icon_update.png&#34; alt=&#34;Refresh icon&#34; /&gt;.&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;h2 id=&#34;linking-viewers&#34;&gt;Linking viewers&lt;/h2&gt;
 
-&lt;p&gt;Multiple viewers can be linked together by dragging and dropping the link icon &lt;img src=&#34;http://batmass.org/images/getting-started/icon_link.png&#34; alt=&#34;Link icon&#34; /&gt; from the viewer toolbar to another viewer&amp;rsquo;s link icon. You can do this for multiple viewers of different types to assemble thme into groups. Clicking on the link icon will highlight the other viewer windows which are currently in in the same linked group, i.e. all synchronized, their borders will be highlighted by the same color. By clicking the unlink button in the viewer&amp;rsquo;s toolbar &lt;img src=&#34;http://batmass.org/images/getting-started/icon_unlink.png&#34; alt=&#34;Link icon&#34; /&gt;, you can remove viewers from the group.&lt;/p&gt;
+&lt;p&gt;Multiple viewers can be linked together by dragging and dropping the link icon &lt;img src=&#34;http://www.batmass.org/images/getting-started/icon_link.png&#34; alt=&#34;Link icon&#34; /&gt; from the viewer toolbar to another viewer&amp;rsquo;s link icon. You can do this for multiple viewers of different types to assemble thme into groups. Clicking on the link icon will highlight the other viewer windows which are currently in in the same linked group, i.e. all synchronized, their borders will be highlighted by the same color. By clicking the unlink button in the viewer&amp;rsquo;s toolbar &lt;img src=&#34;http://www.batmass.org/images/getting-started/icon_unlink.png&#34; alt=&#34;Link icon&#34; /&gt;, you can remove viewers from the group.&lt;/p&gt;
 </description>
     </item>
     
     <item>
       <title>BatMass: mass spectrometry data visualization</title>
-      <link>http://batmass.org/</link>
+      <link>http://www.batmass.org/</link>
       <pubDate>Thu, 14 Apr 2016 00:00:01 -0400</pubDate>
       
-      <guid>http://batmass.org/</guid>
+      <guid>http://www.batmass.org/</guid>
       <description>
 
 &lt;h2 id=&#34;about-batmass&#34;&gt;About BatMass&lt;/h2&gt;
@@ -572,7 +572,7 @@ The startup configuration is stored in &lt;code&gt;&amp;lt;batmass-install-path&
 &lt;li&gt;&lt;p&gt;Data access layer. For the Java developers out there, the highly optimized mzML/mzXML parsers can be used in any standalone Java program as a simple &lt;em&gt;jar&lt;/em&gt; dependency. Parsing has been manually tuned to produce few garbage objects, thus minimizing time spent in GC (Garbage Collection), the speed is comparable to or better than in C/C++ implementations. The API for LC/MS data files gives access to most of the features supported by mzML/mzXML standards.&lt;/p&gt;&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;See the &lt;a href=&#34;http://batmass.org/getting-started/&#34;&gt;getting started guide&lt;/a&gt; for instructions how to get
+&lt;p&gt;See the &lt;a href=&#34;http://www.batmass.org/getting-started/&#34;&gt;getting started guide&lt;/a&gt; for instructions how to get
 it up and running.&lt;/p&gt;
 
 &lt;h2 id=&#34;examples&#34;&gt;Examples&lt;/h2&gt;
@@ -586,13 +586,13 @@ it up and running.&lt;/p&gt;
 
 
 &lt;p&gt;The layout of windows is free and customizable by dragging.
-&lt;img src=&#34;http://batmass.org/images/about-batmass/free-layout.png&#34; alt=&#34;Free window layoyt&#34; /&gt;&lt;/p&gt;
+&lt;img src=&#34;http://www.batmass.org/images/about-batmass/free-layout.png&#34; alt=&#34;Free window layoyt&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Compare multiple experiments at once. The bottom-middle run in this figure is a blank (no sample was injected), while the other 5 were runs with some sample. Amazing how much stuff comes from the background.
-&lt;img src=&#34;http://batmass.org/images/about-batmass/comparison-6-runs-1-blank.png&#34; alt=&#34;Multi experiment comparison in Map2D&#34; /&gt;&lt;/p&gt;
+&lt;img src=&#34;http://www.batmass.org/images/about-batmass/comparison-6-runs-1-blank.png&#34; alt=&#34;Multi experiment comparison in Map2D&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;And here are the same runs but zoomed in to a small region of m/z and retentino time. Look at the color-marked regions. Let&amp;rsquo;s just accept that zero-values are a thing, there is no need to try extracting noise to do gap-filling in data.
-&lt;img src=&#34;http://batmass.org/images/about-batmass/comparison-6-runs-1-blank-02-zoom-marked.png&#34; alt=&#34;Multi experiment comparison in Map2D zoomed&#34; /&gt;&lt;/p&gt;
+&lt;img src=&#34;http://www.batmass.org/images/about-batmass/comparison-6-runs-1-blank-02-zoom-marked.png&#34; alt=&#34;Multi experiment comparison in Map2D zoomed&#34; /&gt;&lt;/p&gt;
 
 &lt;h2 id=&#34;contacts&#34;&gt;Contacts&lt;/h2&gt;
 

@@ -2,19 +2,19 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Contacts on BatMass</title>
-    <link>http://batmass.org/contacts/</link>
+    <link>http://www.batmass.org/contacts/</link>
     <description>Recent content in Contacts on BatMass</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Thu, 14 Apr 2016 00:20:00 -0400</lastBuildDate>
-    <atom:link href="http://batmass.org/contacts/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://www.batmass.org/contacts/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>Contact information</title>
-      <link>http://batmass.org/contacts/</link>
+      <link>http://www.batmass.org/contacts/</link>
       <pubDate>Thu, 14 Apr 2016 00:20:00 -0400</pubDate>
       
-      <guid>http://batmass.org/contacts/</guid>
+      <guid>http://www.batmass.org/contacts/</guid>
       <description>
 
 &lt;p&gt;Please use the &lt;a href=&#34;https://github.com/chhh/batmass/issues&#34;&gt;bug tracker&lt;/a&gt; to request additional functionality or report bugs.&lt;/p&gt;

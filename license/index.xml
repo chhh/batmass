@@ -2,19 +2,19 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Licenses on BatMass</title>
-    <link>http://batmass.org/license/</link>
+    <link>http://www.batmass.org/license/</link>
     <description>Recent content in Licenses on BatMass</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Thu, 14 Apr 2016 00:59:00 -0400</lastBuildDate>
-    <atom:link href="http://batmass.org/license/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://www.batmass.org/license/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>License</title>
-      <link>http://batmass.org/license/</link>
+      <link>http://www.batmass.org/license/</link>
       <pubDate>Thu, 14 Apr 2016 00:59:00 -0400</pubDate>
       
-      <guid>http://batmass.org/license/</guid>
+      <guid>http://www.batmass.org/license/</guid>
       <description>&lt;p&gt;Copyright [2016] [Dmitry Avtonomov]&lt;/p&gt;
 
 &lt;p&gt;Licensed under the Apache License, Version 2.0 (the &amp;ldquo;License&amp;rdquo;);
