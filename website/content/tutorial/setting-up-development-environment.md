@@ -6,7 +6,7 @@ summary: "This guide will quickly step you through the installation, creation of
 menu:
   main:
     parent: Tutorials
-    identifier: dev-env-setup-guide
+    identifier: "Setting up development environment"
     weight: 20
 ---
 

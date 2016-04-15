@@ -28,7 +28,10 @@ googleAnalytics = "UA-5572974-10"
 	permalink = "#"
 
 	# Custom assets
-	custom_css = ["/css/batmass.css"]
+	custom_css = [
+		"/css/batmass.css",
+		"/css/more-colors.css"
+	]
 	custom_js  = []
 
 	# Syntax highlighting theme
@@ -43,6 +46,8 @@ googleAnalytics = "UA-5572974-10"
     [params.font]
     	text = "Ubuntu"
     	code = "Ubuntu Mono"
+		# text = "Roboto"
+		# code = "Roboto Mono"
 
 
 [social]

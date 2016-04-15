@@ -22,6 +22,10 @@ BatMass is a mass-spectrometry data visualization tool, with the main focus on b
 See the [getting started guide]({{< relref "getting-started/index.md" >}}) for instructions how to get
 it up and running.
 
+
+## Examples
+
+
 ## Contacts
 **General inquiries**  
 Alexey Nesvizhskii, Ph.D.  
