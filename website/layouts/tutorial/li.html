@@ -1,0 +1,9 @@
+<li>
+<a href="{{ .Permalink }}">{{ .Title }}</a>
+
+{{ if isset .Params "summary" }}
+  <div>{{ .Params.summary }}</div>
+{{ end }}
+
+<!-- <div class="meta">{{ .Date.Format "Mon, Jan 2, 2006" }}</div> -->
+</li>

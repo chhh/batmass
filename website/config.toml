@@ -1,0 +1,83 @@
+# baseurl = "http://batmass.org/"
+baseurl = "http://localhost:1313/"
+# baseurl = "http://chhh.github.io/hugo-website-test/"
+
+
+languageCode = "en-us"
+title = "BatMass"
+theme = "hugo-material-docs"
+metadataformat = "yaml"
+canonifyurls = true
+# Enable Google Analytics by entering your tracking id
+googleAnalytics = "UA-5572974-10"
+
+[params]
+	# General information
+	author = "Dmitry Avtonomov"
+	description = "Mass spectrometry data visualization"
+	copyright = "Dmitry Avtonomov. Released under the Apache 2.0 license."
+
+	# Repository
+	provider = "GitHub"
+	repo_url = "https://github.com/chhh/batmass"
+
+	version = "0.0.4"
+	logo = "images/bm-icon-512.png"
+	favicon = ""
+
+	permalink = "#"
+
+	# Custom assets
+	custom_css = ["/css/batmass.css"]
+	custom_js  = []
+
+	# Syntax highlighting theme
+	highlight_css  = ""
+
+	[params.palette]
+    	# primary = "red"
+    	# accent  = "light green"
+			primary = "teal"
+    	accent  = "indigo"
+
+    [params.font]
+    	text = "Ubuntu"
+    	code = "Ubuntu Mono"
+
+
+[social]
+	twitter = ""
+	github  = "chhh"
+
+
+[[menu.main]]
+	name   = "BatMass"
+	url    = "/"
+	weight = 0
+
+[[menu.main]]
+	name   = "Getting started"
+	url    = "getting-started/"
+	weight = 10
+
+[[menu.main]]
+	name   = "Contact info"
+	url    = "contacts/"
+	weight = 20
+
+[[menu.main]]
+	name   = "Tutorials"
+	url    = "tutorial/"
+	weight = 30
+
+[[menu.main]]
+	name   = "License"
+	url    = "license/"
+	weight = 90
+
+
+[blackfriday]
+	smartypants	= true
+	fractions = true
+	smartDashes = true
+	plainIDAnchors = true
