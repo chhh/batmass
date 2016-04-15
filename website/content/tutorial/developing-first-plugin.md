@@ -1,12 +1,12 @@
 ---
 weight: -30
-date: 2016-04-14T00:31:00-04:00
-title: Quickstart guide
+date: 2016-04-14T00:32:00-04:00
+title: Developing the first plugin
 menu:
   main:
     parent: Tutorials
-    identifier: quickstart-guide-identifier
-    weight: 10
+    identifier: "Developing the first plugin"
+    weight: 20
 ---
 
 This guide will quickly step you through the installation, creation of a project and viewing mzML/mzXML files.

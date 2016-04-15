@@ -24,6 +24,13 @@ it up and running.
 
 
 ## Examples
+Here's a short demo video of BatMass in action.
+
+{{< youtube EY9wvd6ckb0>}}
+
+The layout of windows is free and customizable by dragging.
+![Free window layoyt](/images/about-batmass/free-layout.png)
+
 
 
 ## Contacts

@@ -63,11 +63,12 @@ File parsing might take some time, when it's done you should see something akin 
 The image can be zoomed and panned using the mouse and keyboard.
 
 - **Drag to zoom**. Press the left mouse button (`LMB`) and drag.
-- **Zoom in/out with mouse wheel**. Using the mouse wheel with <kbd>Shift</kbd> or <kbd>Alt</kbd> modifiers will restrict zooming to only m/z or RT direction.
-- **Panning**. Hold <kbd>Ctrl</kbd> while dragging the mouse to pan the view.  
+- **Zoom in/out with mouse wheel**. Using the mouse wheel with <kbd>Shift</kbd> or <kbd>Alt</kbd> modifiers will restrict zooming to only m/z or RT direction (the mnemonic rule is that the <kbd>Shift</kbd> key is streched out horizontally, so it corresponds to m/z direction, which is horizontal in charts).
+- **Go To Dialog**. If you are interested in a particular location, you can use this dialog to type in the coordinates. While a chart has focus, press <kbd>Ctrl</kbd>+<kbd>G</kbd> or click the magnifying glass icon (![Link icon](/images/getting-started/icon_zoom.png)).
+- **Panning**. Hold <kbd>Ctrl</kbd> while dragging the mouse to pan the view.
+- **Restricted panning**. Using the same modifier keys (<kbd>Shift</kbd> or <kbd>Alt</kbd>) panning can be restricted to only one direction.
 - **Zoom out to original full overview**. <kbd>Ctrl+Alt+Shift</kbd>+`LMB click` will un-zoom the image completely, bringing you to the view of the whole experiment.
 - If you accidentally zoom to wrong location use the `Undo` button in the main toolbar.
-- If you are interested in a particular location, you can use the `GoTo` dialog, which can be brought up by clicking the magnifying glass icon in the toolbar of the viewer or by pressing <kbd>Ctrl+G</kbd>.
 - If you are viewing DIA (Data Independent Acquisition) data, the toolbar of the 2D viewer should have drop-down menus for MS level and precursor windows in case of MS<sup>2</sup>.
 
 
