@@ -1,0 +1,8 @@
+fcac54079233f3fb63c740f1835bcf54fe6986ce	refs/heads/lab
+3d3db60def9d1dc1425c2b9804825a0ad0eafb8b	refs/heads/master
+6d1113924ce8b0ffafa91e48a069277290dca6ef	refs/heads/site
+6d1113924ce8b0ffafa91e48a069277290dca6ef	refs/remotes/origin/HEAD
+faee198a92692979bf2a2d9e5ad8b8a4b93dc27f	refs/remotes/origin/lab
+6d1113924ce8b0ffafa91e48a069277290dca6ef	refs/remotes/origin/master
+8c7d7293796d95c9470bb1a4b75141732060c2f2	refs/tags/v.0.0.4
+c06a4b19b145cadb4ec82dfbc77dc9f081827b66	refs/tags/v.0.0.4^{}
