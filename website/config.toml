@@ -1,7 +1,7 @@
 # baseurl = "http://localhost:1313/"
-baseurl = "http://www.batmass.org/"
+# baseurl = "http://www.batmass.org/"
 # baseurl = "http://chhh.github.io/hugo-website-test/"
-# baseurl = "http://batmass.github.io/"
+baseurl = "http://batmass.github.io/"
 
 
 languageCode = "en-us"
@@ -36,7 +36,10 @@ googleAnalytics = "UA-5572974-10"
 	custom_js  = []
 
 	# Syntax highlighting theme
-	highlight_css  = ""
+	highlight_provider = "http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.3.0/styles/"
+	highlight_css  = "monokai-sublime.min.css" # batmass.css color: #f8f8f2
+	# highlight_css  = "hybrid.min.css" # batmass.css color: #c5c8c6
+	# highlight_css  = "github.min.css" # color of text in batmass.css should be changed to #333
 
 	[params.palette]
     	# primary = "red"

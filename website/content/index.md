@@ -23,11 +23,13 @@ See the [getting started guide]({{< relref "getting-started/index.md" >}}) for i
 it up and running.
 
 
-## Examples
+## Demo Video
 Here's a short demo video of BatMass in action.
 
 {{< youtube EY9wvd6ckb0>}}
 
+
+## Some Examples
 The layout of windows is free and customizable by dragging.
 ![Free window layoyt](/images/about-batmass/free-layout.png)
 
