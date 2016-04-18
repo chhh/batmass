@@ -55,156 +55,189 @@ and explore&lt;/p&gt;
 
 &lt;p&gt;The API is separated into two parts. First you create a data source from your file. The data source can be used by itself, if you just want to iterate over spectra by yourself. It can also be attached to a special data structure, which handles data loading, management, indexing and garbage collection.&lt;/p&gt;
 
-&lt;p&gt;mzML and mzXML share the same common base interface &lt;code&gt;umich.ms.fileio.filetypes.LCMSDataSource&lt;/code&gt;, you can use that if you want to write code that can work seamlessly with both file formats.&lt;/p&gt;
+&lt;p&gt;mzML and mzXML share the same common base interface &lt;code&gt;umich.ms.fileio.filetypes.LCMSDataSource&lt;/code&gt;, you can use that if you want to write code that can work seamlessly with both file formats.
+We will start by creating a data source and just reading spectra one by one, which is very ineffective.&lt;/p&gt;
 
-&lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;// Create a concrete implementation of LCMSDataSource
-Path pathToFile = Paths.get(&amp;quot;some-path-to.mzXML&amp;quot;);
-MZXMLFile source = new MZXMLFile(pathToFile);
+&lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;public static void main(String[] args) throws FileParsingException {
 
-// This code block is for processing mzXML containing only MS2 scans
-{
-    // if a scan has zero peaks in its spectrum it will still be parsed
-    source.setExcludeEmptyScans(false);
-    // null means use as many cores as reported by Runtime.getRuntime().availableProcessors()
-    source.setNumThreadsForParsing(null);
-    // 30 sec timeout for worker threads - each worker must parse its chunk of spectra within that time
-    source.setParsingTimeout(30L);
+  // Creating data source
+  Path path = Paths.get(&amp;quot;some-path-to.mzXML&amp;quot;);
+  path = Paths.get(args[0]);
+  MZXMLFile source = new MZXMLFile(path.toString());
 
+  // Notice that we use fetchIndex() instead of getIndex().
+  // fetchIndex() will either get a cached copy or parse it from
+  // disk, if no cache is available. The index will be cached after parsing.
+  MZXMLIndex index = source.fetchIndex();
 
-    MZXMLIndex mzxmlIndex = source.fetchIndex();
+  // The index gives you the scan numbers, on the lowest level you can parse
+  // the file using those numbers. We need the raw scan numbers (the numbers
+  // as they&#39;re used in the file). The internal scan numbering scheme always
+  // renumbers all scans starting from 1 and increasing by 1 consecutively.
 
+  for (Integer scanNumRaw : index.getMapByRawNum().keySet()) {
+      // The second parameter asks the parser to parse the spectrum along
+      // with meta-info about the scan itself
+      IScan scan = source.parseScan(scanNumRaw, true);
 
-    // this is a data structure used to store scans and to navigate around the run
-    ScanCollectionDefault scans = new ScanCollectionDefault();
-    // softly reference spectral data, make it reclaimable by GC
-    scans.setDefaultStorageStrategy(StorageStrategy.SOFT);
-    // set it to automatically re-parse spectra from the file if spectra were not yet parsed or were reclaimed
-    // to make auto-loading work you&#39;ll need to use IScan#fetchSpectrum() method instead of IScan#getSpectrum()
-    scans.isAutoloadSpectra(true);
+      // Do something with the scan.
+      // Note that some features, like scan.getChildScans() will not work in
+      // this case, as there is not enough information to build those
+      // relationships.
 
-    // set the MZXML file as the data source for this scan collection
-    scans.setDataSource(source);
-    // load the whole run, with forced parsing of MS2 spectra, using default StorageStrategy.
-    scans.loadData(LCMSDataSubset.MS2_WITH_SPECTRA);
-
-    TreeMap&amp;lt;Integer, IScan&amp;gt; num2scan = scans.getMapNum2scan();
-    Set&amp;lt;Map.Entry&amp;lt;Integer, IScan&amp;gt;&amp;gt; scanEntries = num2scan.entrySet();
-    // we will use this index to map from internal scan numbers to raw scan numbers
-    MZXMLIndex idx = source.fetchIndex();
-    for (Map.Entry&amp;lt;Integer, IScan&amp;gt; scanEntry : scanEntries) {
-        Integer scanNum = scanEntry.getKey();
-        IScan scan = scanEntry.getValue();
-
-        // internal scan number (1 based)
-        int scanNumInternal = scan.getNum();
-        // an implementation of IndexElement will know how to covert between different numbering schemes
-        // it&#39;s possible to get a null here, but this should not happen
-        IndexElement idxElem = idx.getByNum(scanNumInternal);
-        int scanNumRaw = idxElem.getRawNumber();
-
-        // note that we use fetchSpectrum() method here, because we&#39;ve set the ScanCollection to softly
-        // reference spectra
-        ISpectrum spectrum = scan.fetchSpectrum();
-        // just count the number of points in the spectrum
-        int numPoints = spectrum.getMZs().length;
-        if (scan.getMsLevel() &amp;gt; 1) {
-            System.out.printf(&amp;quot;Scan #%d MS%d[%s] (raw #%d), precursor: #%s(mz: %.3f, z: %d) contained %d data points\n&amp;quot;,
-                    scanNumInternal, scan.getMsLevel(), scan.getPolarity().toString(), scanNumRaw,
-                    scan.getPrecursor().getParentScanRefRaw(), scan.getPrecursor().getMzTarget(), scan.getPrecursor().getCharge(), numPoints);
-        } else {
-            System.out.printf(&amp;quot;Scan #%d MS%d[%s] (raw #%d) contained %d data points\n&amp;quot;,
-                    scanNumInternal, scan.getMsLevel(), scan.getPolarity().toString(), scanNumRaw, numPoints);
-        }
-        // by this point we&#39;re no longer holding a strong reference to the spectrum, it can be reclaimed
-    }
+      System.out.println(scan.toString());
+  }
 }
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Notice how much faster the parsing has been and that only MS1 scans reported the number of points in the spectrum.&lt;/p&gt;
+
+&lt;p&gt;It is a lot more effective to load data in chunks, rather than manually keeping track of what&amp;rsquo;s been loadad and what needs unloading, we will instead use the &lt;code&gt;ScanCollectionDefault&lt;/code&gt; data structure to that for us.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;public static void main(String[] args) throws FileParsingException {
+
+  // Creating data source
+  Path path = Paths.get(&amp;quot;some-path-to.mzXML&amp;quot;);
+  path = Paths.get(args[0]);
+  MZXMLFile source = new MZXMLFile(path.toString());
+
+  // This is a data structure used to store scans and to navigate around the run
+  ScanCollectionDefault scans = new ScanCollectionDefault();
+  // Softly reference spectral data, make it reclaimable by GC
+  scans.setDefaultStorageStrategy(StorageStrategy.SOFT);
+  // Set it to automatically re-parse spectra from the file if spectra were not
+  // yet parsed or were reclaimed to make auto-loading work you&#39;ll need to use
+  // IScan#fetchSpectrum() method instead of IScan#getSpectrum()
+  scans.isAutoloadSpectra(true);
+
+  // Set our mzXML file as the data source for this scan collection
+  scans.setDataSource(source);
+  // Set number of threads for multi-threaded parsing.
+  // null means use as many cores as reported by Runtime.getRuntime().availableProcessors()
+  source.setNumThreadsForParsing(null);
+  // load the meta-data about the whole run, with forced parsing of MS1 spectra
+  // as we have enabled auto-loading, then if we ever invoke IScan#fetchSpectrum()
+  // on an MS2 spectrum, for which the spectrum has not been parsed, it will be
+  // obtained from disk automatically. And because of Soft referencing, the GC
+  // will be able to reclaim it.
+  scans.loadData(LCMSDataSubset.MS1_WITH_SPECTRA);
+
+  // let&#39;s traverse the data-structure
+  TreeMap&amp;lt;Integer, IScan&amp;gt; num2scanMap = scans.getMapNum2scan();
+  for (IScan scan : num2scanMap.values()) {
+    ISpectrum spectrum = scan.getSpectrum();
+    if (spectrum == null) {
+      System.out.printf(&amp;quot;%s does NOT have a parsed spectrum\n&amp;quot;, scan.toString());
+    } else {
+      System.out.printf(&amp;quot;%s has a parsed spectrum, it contains %d data points\n&amp;quot;,
+                        scan.toString(), spectrum.getMZs().length);
+    }
+  }
+
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Here&amp;rsquo;s a more complex example, loading spectra for custom ranges (scan number range and MS level combination) and adding better memory management for long-running applications.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;public static void main(String[] args) throws FileParsingException {
+  // Creating data source
+  Path path = Paths.get(&amp;quot;some-path-to.mzXML&amp;quot;);
+  path = Paths.get(args[0]);
+  MZXMLFile source = new MZXMLFile(path.toString());
+
+  // Get the index (fetchXXX() methods will parse data from the file if it has not
+  // yet been parsed) and cache it in the object for reuse.
+  // You&#39;ll only need the index if you want to convert between internal scan numbers
+  // and raw scan numbers in the file. Some files might have non-consecutive scan
+  // numbers, for example, but internally they&#39;ll be renumbered to start from
+  // 1 and increment by one for each next scan.
+  MZXMLIndex idx = source.fetchIndex();
+  // info about the run
+  LCMSRunInfo runInfo = source.fetchRunInfo();
 
 
-// Get the index (fetchXXX() methods will parse data from the file if it has not yet been parsed) and
-// cache it in the object for reuse.
-// You&#39;ll only need the index if you want to convert between internal scan numbers and raw scan numbers
-// in the file. Some files might have non-consecutive scan numbers, for example, but internally they&#39;ll be
-// renumbered to start from 1 and increment by one for each next scan.
-MZXMLIndex idx = source.fetchIndex();
-// info about the run
-LCMSRunInfo runInfo = source.fetchRunInfo();
+  // To parse a single scan from the file (or a range of scans) we first create a
+  // predicate matching the scan to be parsed.
+  // For example, parse scans from 1 to 3 at MS level 2.
+  Set&amp;lt;Integer&amp;gt; msLevel = Collections.singleton(2);
+  LCMSDataSubset subset = new LCMSDataSubset(1, 3, msLevel, null);
+  List&amp;lt;IScan&amp;gt; parsedScans = source.parse(subset);
 
+  // If you want higher level access to data, create an LCMSData object
+  LCMSData data = new LCMSData(source);
+  // load the whole structure of the run, and parse all spectra for MS1 scans
+  data.load(LCMSDataSubset.WHOLE_RUN);
+  data.releaseMemory();
 
-// To parse a single scan from the file (or a range of scans) we first create a predicate matching the
-// scan to be parsed.
-// For example, parse scans from 1 to 3 at MS level 2.
-Set&amp;lt;Integer&amp;gt; msLevel = Collections.singleton(2);
-LCMSDataSubset subset = new LCMSDataSubset(1, 3, msLevel, null);
-List&amp;lt;IScan&amp;gt; parsedScans = source.parse(subset);
+  // or load the whole structure, but only get m/z-intensity info at MS level 2
+  data.load(new LCMSDataSubset(null, null, msLevel, null));
+  data.releaseMemory();
+  // alternatively, use this shortcut
+  data.load(LCMSDataSubset.MS2_WITH_SPECTRA);
+  data.releaseMemory();
 
-// If you want higher level access to data, create an LCMSData object
-LCMSData data = new LCMSData(source);
-// load the whole structure of the run, and parse all spectra for MS1 scans
-data.load(LCMSDataSubset.WHOLE_RUN);
-data.releaseMemory();
+  // If you need memory management, you can also pass an instance of an object,
+  // which will be considered the owner of prased data. When this object is
+  // garbage collected, this will be detected automatically  and corresponding
+  // spectra released.
+  Object dataUser = new Object();
+  data.load(LCMSDataSubset.WHOLE_RUN, dataUser);
+  System.out.printf(&amp;quot;The data is loaded and used by [%s] object.\n&amp;quot;,
+                    System.identityHashCode(dataUser));
+  // at this point dataUser might be garbage collected as it&#39;s not referenced anymore,
+  // and the data might get unloaded automatically
+  dataUser = null; // just to be sure that we don&#39;t have a strong reference
 
-// or load the whole structure, but only get m/z-intensity info at MS level 2
-data.load(new LCMSDataSubset(null, null, msLevel, null));
-data.releaseMemory();
-// alternatively, use this shortcut
-data.load(LCMSDataSubset.MS2_WITH_SPECTRA);
-data.releaseMemory();
+  // If you don&#39;t want to fiddle around with memory management at all, but still
+  // want it to play nicely there&#39;s one more feature - auto-loading of spectra.
+  // You can parse the whole structure of the file and keep it in memory (it&#39;s
+  // rather small), and just magically get the spectra whenever you need them.
+  // Also set referenceing type to soft, so that garbage collector could reclaim
+  // unused spectra.
+  data.load(LCMSDataSubset.STRUCTURE_ONLY);
 
-// If you need memory management, you can also pass an instance of an object, which will be considered
-// the owner of prased data. When this object is garbage collected, this will be detected automatically
-// and corresponding spectra released.
-Object dataUser = new Object();
-data.load(LCMSDataSubset.WHOLE_RUN, dataUser);
-System.out.printf(&amp;quot;The data is loaded and used by [%s] object.\n&amp;quot;, System.identityHashCode(dataUser));
-// at this point dataUser might be garbage collected as it&#39;s not referenced anymore, and the data might
-// get unloaded automatically
-dataUser = null; // just to be sure that we don&#39;t have a strong reference
+  IScanCollection scans = data.getScans();
+  scans.isAutoloadSpectra(true); // set automatic spectra loading
+  scans.setDefaultStorageStrategy(StorageStrategy.SOFT); // mz-intensity data will be softly referenced
+  TreeMap&amp;lt;Integer, ScanIndex&amp;gt; msLevel2index = scans.getMapMsLevel2index();
+  ScanIndex ms2idx = msLevel2index.get(2); // get the index at MS level 2
 
-// If you don&#39;t want to fiddle around with memory management at all, but still want it to play nicely
-// there&#39;s one more feature - auto-loading of spectra.
-// You can parse the whole structure of the file and keep it in memory (it&#39;s rather small), and
-// just magically get the spectra whenever you need them.
-// Also set referenceing type to soft, so that garbage collector could reclaim unused spectra.
-data.load(LCMSDataSubset.STRUCTURE_ONLY);
-
-IScanCollection scans = data.getScans();
-scans.isAutoloadSpectra(true); // set automatic spectra loading
-scans.setDefaultStorageStrategy(StorageStrategy.SOFT); // mz-intensity data will be softly referenced
-TreeMap&amp;lt;Integer, ScanIndex&amp;gt; msLevel2index = scans.getMapMsLevel2index();
-ScanIndex ms2idx = msLevel2index.get(2); // get the index at MS level 2
-
-// we&#39;ll iterate by scan numbers
-TreeMap&amp;lt;Integer, IScan&amp;gt; num2scan = ms2idx.getNum2scan();
-Set&amp;lt;Map.Entry&amp;lt;Integer, IScan&amp;gt;&amp;gt; scanEntries = num2scan.entrySet();
-for (Map.Entry&amp;lt;Integer, IScan&amp;gt; scanEntry : scanEntries) {
+  // we&#39;ll iterate by scan numbers
+  TreeMap&amp;lt;Integer, IScan&amp;gt; num2scan = ms2idx.getNum2scan();
+  Set&amp;lt;Map.Entry&amp;lt;Integer, IScan&amp;gt;&amp;gt; scanEntries = num2scan.entrySet();
+  for (Map.Entry&amp;lt;Integer, IScan&amp;gt; scanEntry : scanEntries) {
     Integer scanNum = scanEntry.getKey();
     IScan scan = scanEntry.getValue();
 
-    // note that we use fetchXXX() method here, because we&#39;ve only parsed the structure of the file,
-    // which includes scan meta-data, but not the spectra themselves
+    // note that we use fetchXXX() method here, because we&#39;ve only parsed the structure
+    // of the file, which includes scan meta-data, but not the spectra themselves
     ISpectrum spectrum = scan.fetchSpectrum();
     int scanNumInternal = scan.getNum(); // internal scan number (1 based)
     IndexElement idxElem = idx.getByNum(scanNumInternal);
     int scanNumRaw = idxElem.getRawNumber();
     int numPoints = spectrum.getMZs().length;
-    System.out.printf(&amp;quot;Scan #%d (raw #%d) contained %d data points\n&amp;quot;, scanNumInternal, scanNumRaw, numPoints);
+    System.out.printf(&amp;quot;Scan #%d (raw #%d) contained %d data points\n&amp;quot;,
+                      scanNumInternal, scanNumRaw, numPoints);
+  }
+
+  // You can use the ScanCollection API to navigate around the LCMS run.
+  // E.g., get the number fo the first scan at ms lelvel 2
+  Integer firstMS2ScanNum = scans.getMapMsLevel2index().get(2).getNum2scan().firstKey();
+  IScan scan = scans.getScanByNum(firstMS2ScanNum);
+  // Now get the next scan at the same MS level
+  scan = scans.getNextScanAtSameMsLevel(scan);
+
+  // Because we did parsing of the whole structure, an important method was called
+  // automagically for us: ScanCollectionHelper.finalizeScanCollection(scans),
+  // which sets up parent child relations between scans even if that information was
+  //  not in the scan meta-data. You can also call this method yourself if it you
+  // only parse a portion of the file
+  String parentScanRef = scan.getPrecursor().getParentScanRefRaw();
+  System.out.printf(&amp;quot;Scan #%d (MS%d) is a child scan of {%s}\n&amp;quot;,
+                    scan.getNum(), scan.getMsLevel(), parentScanRef);
+
+  data.releaseMemory();
 }
-
-// You can use the ScanCollection API to navigate around the LCMS run.
-// E.g., get the number fo the first scan at ms lelvel 2
-Integer firstMS2ScanNum = scans.getMapMsLevel2index().get(2).getNum2scan().firstKey();
-IScan scan = scans.getScanByNum(firstMS2ScanNum);
-// Now get the next scan at the same MS level
-scan = scans.getNextScanAtSameMsLevel(scan);
-
-// Because we did parsing of the whole structure, an important method was called automagically for us:
-// ScanCollectionHelper.finalizeScanCollection(scans), which sets up parent child relations between scans
-// even if that information was not in the scan meta-data.
-// You can also call this method yourself if it you only parse a portion of the file
-String parentScanRef = scan.getPrecursor().getParentScanRefRaw();
-System.out.printf(&amp;quot;Scan #%d (MS%d) is a child scan of {%s}\n&amp;quot;, scan.getNum(), scan.getMsLevel(), parentScanRef);
-
-data.releaseMemory();
 &lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;I hope the comments in the code are enough to get you started.&lt;/p&gt;
@@ -225,7 +258,8 @@ MsmsPipelineAnalysis msmsPipelineAnalysis = PepXmlParser.parse(path);
 List&amp;lt;MsmsRunSummary&amp;gt; msmsRunSummaries = msmsPipelineAnalysis.getMsmsRunSummary();
 for (MsmsRunSummary msmsRunSummary : msmsRunSummaries) {
     List&amp;lt;SpectrumQuery&amp;gt; spectrumQueries = msmsRunSummary.getSpectrumQuery();
-    System.out.printf(&amp;quot;Spectrum queries from MS/MS run summary: %s\n&amp;quot;, msmsRunSummary.getBaseName());
+    System.out.printf(&amp;quot;Spectrum queries from MS/MS run summary: %s\n&amp;quot;,
+                      msmsRunSummary.getBaseName());
     for (SpectrumQuery sq : spectrumQueries) {
         System.out.printf(&amp;quot;Spec ID: [%s], RT: [%.2f], precursor neutral mass: [%.3f]\n&amp;quot;,
                           sq.getSpectrum(), sq.getRetentionTimeSec(), sq.getPrecursorNeutralMass());
@@ -236,10 +270,61 @@ for (MsmsRunSummary msmsRunSummary : msmsRunSummaries) {
 
 &lt;h2 id=&#34;parsing-huge-identification-files-more-efficiently&#34;&gt;Parsing huge identification files more efficiently&lt;/h2&gt;
 
-&lt;p&gt;Sometimes you might have PepXML files that are many gigabytes in size, this happens when you combine search results from multiple experiments and store them in a single output file. In that case using &lt;code&gt;XMLStreamReader&lt;/code&gt; class it is possible to first rewind the input stream to some large structural element of the underlying file, such as &lt;code&gt;&amp;lt;msms_run_summary&amp;gt;&lt;/code&gt; in PepXML files.&lt;br /&gt;
-You will need to have an idea of how the files are organized for this though, explore the corresponding XML schemas. The schemas can also be found in the sources of the library in file-specific sub-packages of &lt;code&gt;umich.ms.fileio.filetypes&lt;/code&gt; in &lt;code&gt;resources&lt;/code&gt; directories.&lt;/p&gt;
+&lt;p&gt;Sometimes you might have PepXML files that are many gigabytes in size, this happens when you combine search results from multiple experiments and store them in a single output file. In that case, using &lt;code&gt;XMLStreamReader&lt;/code&gt; class it is possible to first rewind the input stream to some large structural element of the underlying file, such as &lt;code&gt;&amp;lt;msms_run_summary&amp;gt;&lt;/code&gt; in PepXML files.&lt;br /&gt;
+You will need to have an idea of how the files are organized for this to work in general though, explore the corresponding XML schemas. The schemas can also be found in the sources of the library in file-specific sub-packages of &lt;code&gt;umich.ms.fileio.filetypes&lt;/code&gt; in &lt;code&gt;resources&lt;/code&gt; directories.&lt;/p&gt;
 
-&lt;p&gt;// TODO: this is a work in progress&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;try {
+  // we&#39;ll manually iterate over msmsRunSummaries - won&#39;t need so much memory
+  // at once for processing large files.
+  JAXBContext ctx = JAXBContext.newInstance(MsmsRunSummary.class);
+  Unmarshaller unmarshaller = ctx.createUnmarshaller();
+
+  XMLInputFactory xif = XMLInputFactory.newFactory();
+  StreamSource ss = new StreamSource(is);
+  XMLStreamReader xsr = xif.createXMLStreamReader(ss);
+
+
+  while (advanceReaderToNextRunSummary(xsr)) {
+    // we&#39;ve advanced to the next MsmsRunSummary in the file
+    long timeLo = System.nanoTime();
+    JAXBElement&amp;lt;MsmsRunSummary&amp;gt; unmarshalled = unmarshaller
+                                          .unmarshal(xsr, MsmsRunSummary.class);
+    long timeHi = System.nanoTime();
+    System.out.printf(&amp;quot;Unmarshalling took %.4fms (%.2fs)\n&amp;quot;,
+                      (timeHi-timeLo)/1e6, (timeHi-timeLo)/1e9);
+    MsmsRunSummary runSummary = unmarshalled.getValue();
+    if (runSummary.getSpectrumQuery().isEmpty()) {
+      String msg = String.format(&amp;quot;Parsed msms_run_summary was empty for file &amp;quot; +
+          &amp;quot;&#39;%s&#39;, summary base_name &#39;%&#39;&amp;quot;, uri.toString(), runSummary.getBaseName());
+      System.out.println(msg);
+    }
+  }
+} catch (JAXBException | XMLStreamException e) {
+  // do something with the exception
+}
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;and here is the meat of it, the code to rewind the &lt;code&gt;XMLStreamReader&lt;/code&gt; - &lt;code&gt;advanceReaderToNextRunSummary(XMLStreamReader)&lt;/code&gt;.
+In this case the example assumes we try to parse multiple msms_run_summary tags one by one from the file.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;
+private static final String TAG_RUN_SUMMARY = &amp;quot;msms_run_summary&amp;quot;;
+
+private static boolean advanceReaderToNextRunSummary(XMLStreamReader xsr)
+    throws XMLStreamException {
+  long timeLo = System.nanoTime();
+  do {
+      if (xsr.next() == XMLStreamConstants.END_DOCUMENT)
+          return false;
+  } while (!(xsr.isStartElement() &amp;amp;&amp;amp; xsr.getLocalName().equals(TAG_RUN_SUMMARY)));
+
+  long timeHi = System.nanoTime();
+  System.out.printf(&amp;quot;Advancing reader took: %.4fms\n&amp;quot;, (timeHi-timeLo)/1e6d);
+
+  return true;
+}
+&lt;/code&gt;&lt;/pre&gt;
 </description>
     </item>
     
