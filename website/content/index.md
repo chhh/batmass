@@ -40,14 +40,14 @@ And here are the same runs but zoomed in to a small region of m/z and retentino 
 
 ## Contacts
 **The author and maintainer of the project**  
-Dmitry Avtonomov  
+Dmitry Avtonomov, Ph.D.  
 University of Michigan, Ann Arbor  
 Email: dmitriya@umich.edu  
 
 **General inquiries**  
 Alexey Nesvizhskii, Ph.D.  
 University of Michigan, Ann Arbor  
+Email: nesvi@umich.edu  
 http://www.nesvilab.org  
-Email: nesvi@umich.edu   
 
 Please use the [bug tracker](https://github.com/chhh/batmass/issues) to ask questions, submit feature requests and bug reports.
