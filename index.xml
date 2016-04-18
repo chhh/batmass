@@ -660,7 +660,7 @@ The startup configuration is stored in &lt;code&gt;&amp;lt;batmass-install-path&
 &lt;p&gt;See the &lt;a href=&#34;http://www.batmass.org/getting-started/&#34;&gt;getting started guide&lt;/a&gt; for instructions how to get
 it up and running.&lt;/p&gt;
 
-&lt;h2 id=&#34;examples&#34;&gt;Examples&lt;/h2&gt;
+&lt;h2 id=&#34;demo-video&#34;&gt;Demo Video&lt;/h2&gt;
 
 &lt;p&gt;Here&amp;rsquo;s a short demo video of BatMass in action.&lt;/p&gt;
 
@@ -669,6 +669,8 @@ it up and running.&lt;/p&gt;
   &lt;iframe src=&#34;//www.youtube.com/embed/EY9wvd6ckb0&#34; style=&#34;position: absolute; top: 0; left: 0; width: 100%; height: 100%;&#34; allowfullscreen frameborder=&#34;0&#34;&gt;&lt;/iframe&gt;
  &lt;/div&gt;
 
+
+&lt;h2 id=&#34;some-examples&#34;&gt;Some Examples&lt;/h2&gt;
 
 &lt;p&gt;The layout of windows is free and customizable by dragging.
 &lt;img src=&#34;http://www.batmass.org/images/about-batmass/free-layout.png&#34; alt=&#34;Free window layoyt&#34; /&gt;&lt;/p&gt;
