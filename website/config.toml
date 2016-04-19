@@ -1,7 +1,7 @@
 # baseurl = "http://localhost:1313/"
-# baseurl = "http://www.batmass.org/"
+baseurl = "http://www.batmass.org/"
 # baseurl = "http://chhh.github.io/hugo-website-test/"
-baseurl = "http://batmass.github.io/"
+# baseurl = "http://batmass.github.io/"
 
 
 languageCode = "en-us"
@@ -68,6 +68,11 @@ googleAnalytics = "UA-5572974-10"
 	name   = "Getting started"
 	url    = "getting-started/"
 	weight = 10
+
+[[menu.main]]
+	name   = "Data Access Library"
+	url    = "data-access-lib/"
+	weight = 15
 
 [[menu.main]]
 	name   = "Contact info"

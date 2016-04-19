@@ -9,11 +9,13 @@ Please use the [bug tracker](https://github.com/chhh/batmass/issues) to request 
 ## Referencing the work
 The paper is due to be published.
 
-## General inquiries
-Alexey Nesvizhskii, Ph.D.  (University of Michigan, Ann Arbor)  
-http://www.nesvilab.org  
-Email: nesvi@umich.edu   
 
-## Technical questions
-Dmitry Avtonomov (University of Michigan, Ann Arbor)  
+## The author and maintainer of the project
+Dmitry Avtonomov, Ph.D. (University of Michigan, Ann Arbor)  
 Email: dmitriya@umich.edu  
+
+
+## General inquiries
+Alexey Nesvizhskii, Ph.D. (University of Michigan, Ann Arbor)  
+Email: nesvi@umich.edu   
+http://www.nesvilab.org  
