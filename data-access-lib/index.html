@@ -8,18 +8,18 @@
   <head lang="en-us">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1">
-    <title>Tutorials - BatMass</title>
+    <title>MSFTBX: Mass-Spec File Toolbox, the data access library - BatMass</title>
     <meta name="generator" content="Hugo 0.15" />
 
     
     <meta name="description" content="Mass spectrometry data visualization">
     
-    <link rel="canonical" href="http://www.batmass.org/tutorial/">
+    <link rel="canonical" href="http://www.batmass.org/data-access-lib/">
     
     <meta name="author" content="Dmitry Avtonomov">
     
 
-    <meta property="og:url" content="http://www.batmass.org/tutorial/">
+    <meta property="og:url" content="http://www.batmass.org/data-access-lib/">
     <meta property="og:title" content="BatMass">
     <meta property="og:image" content="http://www.batmass.org/images/bm-icon-512.png">
     <meta name="apple-mobile-web-app-title" content="BatMass">
@@ -77,9 +77,6 @@
     <script src="http://www.batmass.org/javascripts/modernizr.js"></script>
 
     
-    <link href="http://www.batmass.org/tutorial/index.xml" rel="alternate" type="application/rss+xml" title="BatMass" />
-    <link href="http://www.batmass.org/tutorial/index.xml" rel="feed" type="application/rss+xml" title="BatMass" />
-    
 
   </head>
   <body class="palette-primary-teal palette-accent-indigo">
@@ -108,7 +105,7 @@
     </div>
     <div class="stretch">
       <div class="title">
-        Tutorials
+        MSFTBX: Mass-Spec File Toolbox, the data access library
       </div>
     </div>
 
@@ -228,11 +225,14 @@
 
 
 
-<a  title="Data Access Library" href="http://www.batmass.org/data-access-lib/">
+<a class="current" title="Data Access Library" href="http://www.batmass.org/data-access-lib/">
 	
 	Data Access Library
 </a>
 
+
+<ul id="scrollspy">
+</ul>
 
   
 </li>
@@ -265,14 +265,11 @@
 
 
 
-<a class="current" title="Tutorials" href="http://www.batmass.org/tutorial/">
+<a  title="Tutorials" href="http://www.batmass.org/tutorial/">
 	
 	Tutorials
 </a>
 
-
-<ul id="scrollspy">
-</ul>
 
 
   <li>
@@ -388,51 +385,108 @@
 	<article class="article">
 		<div class="wrapper">
 
+			
 
-      <h1 id="title">Tutorials</h1>
-        <ul id="list">
+			<h1>MSFTBX: Mass-Spec File Toolbox, the data access library </h1>
 
-				  
-            
-                <li>
-<a href="http://www.batmass.org/tutorial/setting-up-development-environment/">Setting up development environment</a>
+			
+
+<p>The data access library is at the core of <em>BatMass</em>, but is a separate standalone project. It can be used in regular Java programs (read as a <em>jar</em> library) and NetBeans platform applications via the included NetBeans Module wrapper.</p>
+
+<h2 id="features">Features</h2>
+
+<ul>
+<li>Single API to <strong>mzML</strong> and <strong>mzXML</strong> files</li>
+<li><strong>mzML</strong> and <strong>mzXML</strong> parsing
+
+<ul>
+<li>Very fast multi-threaded parser</li>
+<li>Can separately parse LC/MS run information, the index and data</li>
+<li>Separation of parsing of scan meta-information and spectral data</li>
+<li>Automatic indexing of the data
+
+<ul>
+<li>maps from scan numbers to scans</li>
+<li>maps from retention time to scans</li>
+<li>same maps separately at each MS level</li>
+<li>automatic DIA (data Independent Acquisition) detection and automated grouping of DIA MS2 scans according to the corresponding isolation windows</li>
+</ul></li>
+<li>Memory management
+
+<ul>
+<li>can parse the whole structure of the run (all scans with all meta-info) and dynamically parse spectral data from the disk only when it&rsquo;s accessed</li>
+<li>an object can be used as the &lsquo;owner&rsquo; of loaded data, if the &lsquo;owner&rsquo; is garbage collected, and no other &lsquo;owners&rsquo; claimed the scans, the corresponding resources can be automatically released</li>
+</ul></li>
+<li>Tolerance to broken index
+
+<ul>
+<li>automatically detects errors in the index, such as all scan offsets are the same (which happens with some versions of ProteoWizard&rsquo;s <em>msconvert</em> when converting large files)</li>
+<li>if the index is not present, will reindex the file</li>
+</ul></li>
+<li>Tolerance to MS2 scan tags being enclosed in the corresponding MS1 scan tag (old data converted with ReAdW)</li>
+</ul></li>
+<li><strong>PepXML</strong> parsing/writing</li>
+<li><strong>ProtXML</strong> parsing/writing</li>
+<li><strong>MzIdentML</strong> parsing/writing</li>
+</ul>
+
+<h2 id="usage">Usage</h2>
+
+<p>Take a look at <a href="http://www.batmass.org/tutorial/data-access-layer/">this tutorial</a> for a short introduction and check the <a href="https://github.com/chhh/msftbx">sources at github</a>.</p>
 
 
-  <div>This guide will quickly step you through setting up the environment for developing new functionality for BatMass. All the downloads, setting up the IDE and up to building BatMass from scratch.</div>
-
-
-
-</li>
-
-            
-                <li>
-<a href="http://www.batmass.org/tutorial/data-access-layer/">Using data access library</a>
-
-
-  <div>The data access library provides a relatively rich API to mzML/mzXML files (MS level, polarity, precursor isolation window, instrument data, etc.) and a few other file formats common to the proteomics field, such as PepXML, ProtXML and MzIdentML. In this tutorial will step through parsing some data, using the library as a jar in a simple console window application.</div>
-
-
-
-</li>
-
-            
-                <li>
-<a href="http://www.batmass.org/tutorial/developing-first-plugin/">Developing the first plugin</a>
-
-
-  <div>We will step through developing one complete plugin, which will add support for a new type of files holding LC/MS feature information, which will be viewable as a table and can be overlaid on top of Map 2D view.</div>
-
-
-
-</li>
-
-            
-        </ul>
-  </div>
-
+			<aside class="copyright" role="note">
+				
+				&copy; 2016 Dmitry Avtonomov. Released under the Apache 2.0 license.
+				
+			</aside>
 
 			<footer class="footer">
 				
+
+<nav class="pagination" aria-label="Footer">
+  <div class="previous">
+  
+      <a href="http://www.batmass.org/getting-started/" title="Getting started">
+        <span class="direction">
+          Previous
+        </span>
+        <div class="page">
+          <div class="button button-previous" role="button" aria-label="Previous">
+            <i class="icon icon-back"></i>
+          </div>
+          <div class="stretch">
+            <div class="title">
+              Getting started
+            </div>
+          </div>
+        </div>
+      </a>
+  
+  </div>
+
+  <div class="next">
+  
+      <a href="http://www.batmass.org/contacts/" title="Contact information">
+        <span class="direction">
+          Next
+        </span>
+        <div class="page">
+          <div class="stretch">
+            <div class="title">
+              Contact information
+            </div>
+          </div>
+          <div class="button button-next" role="button" aria-label="Next">
+            <i class="icon icon-forward"></i>
+          </div>
+        </div>
+      </a>
+  
+  </div>
+</nav>
+
+
 
 
 			</footer>
