@@ -39,7 +39,7 @@ import java.util.Locale;
  * use {@link #getMapReferenceFrame() } for this.
  * To draw the axes just call {@link #draw(java.awt.Graphics2D) } providing
  * the Graphics of the corresponding {@link Map2DPanel}.
- * @author dmitriya
+ * @author Dmitry Avtonomov
  */
 public final class Map2DAxes {
     /** The m/z - rt  region of current BaseMap2D */

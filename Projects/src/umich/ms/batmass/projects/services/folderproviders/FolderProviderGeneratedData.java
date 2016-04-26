@@ -24,7 +24,7 @@ import umich.ms.batmass.projects.core.type.BMProject;
  * This service provides access to a folder where all "original files" generated
  * by internal application runs should be placed, and then linked via .file_descriptor
  * files placed in viewable folders.
- * @author dmitriya
+ * @author Dmitry Avtonomov
  */
 @ProjectServiceProvider(
         service=FolderProviderGeneratedData.class,

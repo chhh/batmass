@@ -20,7 +20,7 @@ import umich.ms.batmass.gui.viewers.map2d.events.ZoomEvent;
 
 /**
  *
- * @author dmitriya
+ * @author Dmitry Avtonomov
  */
 public interface Map2DZoomEventListener extends EventListener {
     

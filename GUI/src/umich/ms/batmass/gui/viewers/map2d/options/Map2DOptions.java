@@ -31,7 +31,7 @@ import umich.ms.batmass.nbputils.config.BmConfig;
 /**
  * Singleton implementation of options for Map2D.
  * Lazy loading via static inner instance holder class.
- * @author dmitriya
+ * @author Dmitry Avtonomov
  */
 public class Map2DOptions {
     @StaticResource

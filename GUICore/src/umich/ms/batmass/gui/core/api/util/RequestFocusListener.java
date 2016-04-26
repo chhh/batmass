@@ -21,7 +21,7 @@ import javax.swing.event.AncestorListener;
 
 /**
  *
- * @author dmitriya
+ * @author Dmitry Avtonomov
  */
 public class RequestFocusListener implements AncestorListener {
 

@@ -16,7 +16,7 @@
 package umich.ms.batmass.filesupport.files.types.agilent.cef.model;
 
 /**
- * Created by dmitriya on 2015-09-23.
+ * @author Dmitry Avtonomov
  */
 public class IonId {
     public static final int CHARGE_UNKNOWN = Integer.MIN_VALUE;

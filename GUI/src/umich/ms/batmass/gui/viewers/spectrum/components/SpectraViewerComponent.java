@@ -74,7 +74,7 @@ import umich.ms.fileio.exceptions.FileParsingException;
 
 /**
  *
- * @author dmitriya
+ * @author Dmitry Avtonomov
  */
 public class SpectraViewerComponent extends BMComponentJPanel {
     // message bus

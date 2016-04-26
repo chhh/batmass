@@ -26,7 +26,7 @@ import umich.ms.batmass.nbputils.PathUtils;
 
 /**
  *
- * @author dmitriya
+ * @author Dmitry Avtonomov
  */
 public class FileDescriptor extends Descriptor {
     /** File extension that will be given to this file descriptor */

@@ -26,7 +26,7 @@ import umich.ms.datatypes.LCMSData;
 
 /**
  *
- * @author dmitriya
+ * @author Dmitry Avtonomov
  */
 
 //@ActionID(

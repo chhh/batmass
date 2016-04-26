@@ -21,7 +21,7 @@ import java.util.List;
 
 /**
  *
- * @author dmitriya
+ * @author Dmitry Avtonomov
  */
 public abstract class ColorHelper {
 

@@ -32,7 +32,7 @@ import umich.ms.datatypes.scancollection.IScanCollection;
 
 /**
  *
- * @author dmitriya
+ * @author Dmitry Avtonomov
  */
 public class NextScanAction extends AbstractAction {
     @StaticResource

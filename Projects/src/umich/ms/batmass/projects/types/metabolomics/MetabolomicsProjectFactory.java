@@ -26,7 +26,7 @@ import umich.ms.batmass.projects.core.type.BMProjectFactory;
  * e.g. metabolomics, proteomics, etc all use mzXML/RAW/mzML... files as the main
  * input source. Those project types should extend this one, providing some
  * project-specific actions.
- * @author dmitriya
+ * @author Dmitry Avtonomov
  */
 @ServiceProvider(service=ProjectFactory.class)
 public class MetabolomicsProjectFactory extends BMProjectFactory {

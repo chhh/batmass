@@ -30,7 +30,7 @@ import umich.ms.batmass.projects.core.util.BMProjectUtils;
  * </pre>
  * @see BMProject#getType()
  * @see BMProjectUtils#getProjectType(java.lang.Class) 
- * @author dmitriya
+ * @author Dmitry Avtonomov
  */
 public interface ProjectServicesPathProvider extends LayerPathProvider {
 

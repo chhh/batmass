@@ -22,7 +22,7 @@ import java.util.concurrent.atomic.AtomicLong;
  * Dummy object which should be extended by concrete Descriptors.
  * E.g. {@link FileDesc} might have a path to the original file, it's size,
  * but still needs to provide UID for internal linking.
- * @author dmitriya
+ * @author Dmitry Avtonomov
  */
 public abstract class Descriptor implements Serializable {
     private static volatile transient AtomicLong importCounter = new AtomicLong(0);

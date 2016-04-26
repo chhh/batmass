@@ -24,7 +24,7 @@ import java.lang.annotation.Target;
 /**
  * Annotation for registering stuff in the layer.xml file. Annotated class must
  * have a no-arguments constructor.
- * @author dmitriya
+ * @author Dmitry Avtonomov
  * @deprecated use simple {@link LayerRegistration} annotation instead.
  */
 @Deprecated

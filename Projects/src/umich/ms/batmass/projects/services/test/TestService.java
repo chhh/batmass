@@ -19,7 +19,7 @@ import javax.swing.JOptionPane;
 
 /**
  * TODO: WARNINIG: ACHTUNG: Delete this class! Was here for testing.
- * @author dmitriya
+ * @author Dmitry Avtonomov
  */
 public abstract class TestService {
     static {

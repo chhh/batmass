@@ -31,7 +31,7 @@ import umich.ms.batmass.db.manager.DBManager;
  * because this class is registered in Module Manifest as:
  *     OpenIDE-Module-Install: umich/ms/batmass/db/options/OptionsInstaller.class
  *
- * @author dmitriya
+ * @author Dmitry Avtonomov
  */
 public class OptionsInstaller extends ModuleInstall {
 

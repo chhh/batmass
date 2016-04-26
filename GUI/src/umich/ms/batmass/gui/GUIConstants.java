@@ -17,7 +17,7 @@ package umich.ms.batmass.gui;
 
 /**
  *
- * @author dmitriya
+ * @author Dmitry Avtonomov
  */
 public class GUIConstants {
     private GUIConstants(){};

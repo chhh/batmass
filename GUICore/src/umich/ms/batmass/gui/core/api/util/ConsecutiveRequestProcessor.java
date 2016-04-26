@@ -24,7 +24,7 @@ import org.openide.util.TaskListener;
 
 /**
  *
- * @author dmitriya
+ * @author Dmitry Avtonomov
  */
 public abstract class ConsecutiveRequestProcessor {
     private final static RequestProcessor rp =

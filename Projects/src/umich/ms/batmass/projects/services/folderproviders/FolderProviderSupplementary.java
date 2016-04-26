@@ -22,7 +22,7 @@ import umich.ms.batmass.projects.types.proteomics.ProteomicsProject;
 
 /**
  *
- * @author dmitriya
+ * @author Dmitry Avtonomov
  */
 @ProjectServiceProvider(
         service=FolderProviderSupplementary.class,

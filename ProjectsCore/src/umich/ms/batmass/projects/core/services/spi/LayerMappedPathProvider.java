@@ -20,7 +20,7 @@ package umich.ms.batmass.projects.core.services.spi;
  * Intended use: to register class-specific actions. You register your actions
  * in a folder of your choosing, and provide an implementation of this
  * interface in project's lookup.
- * @author dmitriya
+ * @author Dmitry Avtonomov
  */
 public interface LayerMappedPathProvider extends LayerPathProvider {
     /**

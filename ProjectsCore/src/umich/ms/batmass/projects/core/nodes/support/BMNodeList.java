@@ -29,7 +29,7 @@ import umich.ms.batmass.projects.core.services.spi.ProjectSubfolderProvider;
 
 /**
  *
- * @author dmitriya
+ * @author Dmitry Avtonomov
  */
 public abstract class BMNodeList implements NodeList<FileObject> {
 

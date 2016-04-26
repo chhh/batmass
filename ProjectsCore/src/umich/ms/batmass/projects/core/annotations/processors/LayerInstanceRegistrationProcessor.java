@@ -36,7 +36,7 @@ import umich.ms.batmass.projects.core.annotations.LayerRegistration;
  * @deprecated use {@link LayerRegistration} annotation, for which
  * {@link LayerRegistrationProcessor} will be used. These annotations are
  * exactly similar.
- * @author dmitriya
+ * @author Dmitry Avtonomov
  */
 @ServiceProvider(service = Processor.class)
 @SupportedAnnotationTypes("umich.ms.batmass.projects.core.annotations.LayerInstance.Registration")

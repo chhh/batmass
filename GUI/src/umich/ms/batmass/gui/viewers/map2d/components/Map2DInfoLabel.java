@@ -23,7 +23,7 @@ import umich.ms.batmass.gui.viewers.map2d.util.NoopGraphics;
 
 /**
  *
- * @author dmitriya
+ * @author Dmitry Avtonomov
  */
 public class Map2DInfoLabel extends javax.swing.JLabel implements IMap2DInfoDisplayer {
 

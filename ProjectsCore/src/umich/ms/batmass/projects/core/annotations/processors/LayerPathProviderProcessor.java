@@ -35,7 +35,7 @@ import umich.ms.batmass.projects.core.services.spi.LayerPathProvider;
 /**
  * This is an annotation processor, which handles
  * TODO: what does this handle?!
- * @author dmitriya
+ * @author Dmitry Avtonomov
  */
 @ServiceProvider(service = Processor.class)
 @SupportedAnnotationTypes("umich.ms.batmass.projects.core.services.spi.LayerPathProvider.Registration")

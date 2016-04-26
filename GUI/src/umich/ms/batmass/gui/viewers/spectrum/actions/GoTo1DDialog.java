@@ -24,7 +24,7 @@ import umich.ms.datatypes.scancollection.IScanCollection;
 
 /**
  *
- * @author dmitriya
+ * @author Dmitry Avtonomov
  */
 public class GoTo1DDialog extends javax.swing.JPanel {
     private IScanCollection scans;

@@ -44,7 +44,7 @@ import umich.ms.fileio.exceptions.FileParsingException;
 
 /**
  *
- * @author dmitriya
+ * @author Dmitry Avtonomov
  */
 @NbBundle.Messages({"MapComponent.text=Map2D Info"})
 @SuppressWarnings({"rawtypes"})

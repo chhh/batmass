@@ -29,7 +29,7 @@ import umich.ms.batmass.nbputils.PathUtils;
 
 /**
  * This class creates a file-descriptor file in the project's sub-folder.
- * @author dmitriya
+ * @author Dmitry Avtonomov
  */
 public abstract class ExternalFileImporter {
 

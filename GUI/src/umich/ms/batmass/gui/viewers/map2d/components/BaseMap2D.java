@@ -41,7 +41,7 @@ import umich.ms.util.IntervalST;
 /**
  * This class stores extrapolated information from ScanCollection mapped to
  * a pixel intensity array.
- * @author dmitriya
+ * @author Dmitry Avtonomov
  */
 public final class BaseMap2D {
 

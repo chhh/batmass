@@ -21,7 +21,7 @@ import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
- * @author dmitriya
+ * @author Dmitry Avtonomov
  */
 @ServiceProvider(service = MIMEResolver.class)
 public class PepXMLMimeResolver extends MIMEResolver {

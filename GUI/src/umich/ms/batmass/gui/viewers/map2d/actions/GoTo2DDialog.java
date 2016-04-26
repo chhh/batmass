@@ -20,7 +20,7 @@ import umich.ms.batmass.gui.core.components.util.textinput.DocumentFilters;
 
 /**
  *
- * @author dmitriya
+ * @author Dmitry Avtonomov
  */
 public class GoTo2DDialog extends javax.swing.JPanel {
 

@@ -17,7 +17,7 @@ package umich.ms.batmass.gui.core.components.util.textinput;
 
 /**
  *
- * @author dmitriya
+ * @author Dmitry Avtonomov
  */
 import java.awt.Color;
 import java.awt.event.FocusAdapter;

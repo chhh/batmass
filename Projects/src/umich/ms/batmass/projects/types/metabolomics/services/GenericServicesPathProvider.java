@@ -19,7 +19,7 @@ import umich.ms.batmass.projects.core.services.spi.ProjectServicesPathProvider;
 
 /**
  * TODO: WARNINIG: ACHTUNG: Delete this class! Was here for testing.
- * @author dmitriya
+ * @author Dmitry Avtonomov
  */
 //@ProjectServiceProvider(
 //        service=ProjectServicesPathProvider.class,

@@ -34,7 +34,7 @@ import umich.ms.batmass.projects.types.proteomics.ProteomicsProject;
 
 /**
  * TODO: WARNINIG: ACHTUNG: This class was here for testing, ActionReference commented out now.
- * @author dmitriya
+ * @author Dmitry Avtonomov
  */
 @ActionID(
         category = "Project",

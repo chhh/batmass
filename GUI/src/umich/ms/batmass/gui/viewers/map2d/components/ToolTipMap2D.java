@@ -20,7 +20,7 @@ import org.apache.commons.lang.StringUtils;
 
 /**
  *
- * @author dmitriya
+ * @author Dmitry Avtonomov
  */
 public class ToolTipMap2D extends JToolTip {
 

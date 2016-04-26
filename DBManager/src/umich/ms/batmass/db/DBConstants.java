@@ -17,7 +17,7 @@ package umich.ms.batmass.db;
 
 /**
  *
- * @author dmitriya
+ * @author Dmitry Avtonomov
  */
 public abstract class DBConstants {
     public static final String OUTPUT_TOPIC = "DB";

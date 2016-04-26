@@ -29,7 +29,7 @@ import umich.ms.util.Interval1D;
  * After creating a new instance, check the value of {@link #wasMapFilledSuccess()}.
  * If false - it means that the basemap was still created, but it is filled with zeroes,
  * so you could actually display it.
- * @author dmitriya
+ * @author Dmitry Avtonomov
  */
 public class Map2DZoomLevel {
     private final int level;

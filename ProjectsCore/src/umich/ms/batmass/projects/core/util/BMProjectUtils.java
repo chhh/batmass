@@ -29,7 +29,7 @@ import umich.ms.batmass.projects.core.type.BMProject;
 
 /**
  *
- * @author dmitriya
+ * @author Dmitry Avtonomov
  */
 public abstract class BMProjectUtils {
     private BMProjectUtils() {};

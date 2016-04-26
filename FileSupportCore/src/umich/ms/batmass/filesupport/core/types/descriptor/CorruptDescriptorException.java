@@ -17,7 +17,7 @@ package umich.ms.batmass.filesupport.core.types.descriptor;
 
 /**
  * Use if a Descriptor deserialization can't be done.
- * @author dmitriya
+ * @author Dmitry Avtonomov
  */
 public class CorruptDescriptorException extends Exception {
 

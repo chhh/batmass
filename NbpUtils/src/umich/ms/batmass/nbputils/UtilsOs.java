@@ -1,5 +1,5 @@
-/* 
- * Copyright 2016 Dmitry Avtonomov.
+/*
+ * Copyright 2016 dmitriya.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,26 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package umich.ms.batmass.filesupport.core.actions.importing;
+package umich.ms.batmass.nbputils;
+
+import org.openide.util.Utilities;
 
 /**
  *
  * @author Dmitry Avtonomov
  */
-public class BMDirectoryFileFilter extends BMFileFilter {
-
-    public BMDirectoryFileFilter() {
-        super(org.apache.commons.io.filefilter.DirectoryFileFilter.DIRECTORY);
+public class UtilsOs {
+    private UtilsOs() {}
+    
+    public static boolean isWindows() {
+        return Utilities.isWindows();
     }
-
-    @Override
-    public String getShortDescription() {
-        return "Dirs";
-    }
-
-    @Override
-    public String getDescription() {
-        return "Any directory";
-    }
-
 }

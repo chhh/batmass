@@ -17,7 +17,7 @@ package umich.ms.batmass.projects.core.services.spi;
 
 /**
  *
- * @author dmitriya
+ * @author Dmitry Avtonomov
  */
 @LayerPathProvider.Registration(paths = {"SomePath/Subfolder/Extensions"})
 public class ProjectExtraServicesProvider implements LayerPathProvider {

@@ -36,7 +36,7 @@ import umich.ms.fileio.exceptions.FileParsingException;
 
 /**
  *
- * @author dmitriya
+ * @author Dmitry Avtonomov
  */
 public class SpectrumPanelAdapter {
     IScanCollection scans;

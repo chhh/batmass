@@ -21,7 +21,7 @@ import org.openide.util.Lookup;
 
 /**
  * A FilterNode with diasbled cut/copy/paste functions.
- * @author dmitriya
+ * @author Dmitry Avtonomov
  */
 public class IndestructibleFilterNode extends FilterNode {
 

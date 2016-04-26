@@ -50,7 +50,7 @@ import umich.ms.batmass.projects.core.util.BMProjectUtils;
  * Annotate your projects with @BMProjectType annotation AND specify a final
  * static field TYPE. The field is needed.
  *
- * @author dmitriya
+ * @author Dmitry Avtonomov
  */
 public abstract class BMProject implements Project {
 

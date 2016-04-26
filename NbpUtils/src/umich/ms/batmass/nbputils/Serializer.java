@@ -29,7 +29,7 @@ import org.openide.util.Lookup;
  * loader for FSTConfiguration.<br/>
  * That is needed as FST library is loaded in NbpUtils module, which doesn't
  * know about other classes loaded by the platform.
- * @author dmitriya
+ * @author Dmitry Avtonomov
  */
 public class Serializer {
 

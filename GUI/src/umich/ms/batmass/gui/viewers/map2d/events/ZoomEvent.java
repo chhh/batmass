@@ -21,7 +21,7 @@ import umich.ms.batmass.gui.viewers.map2d.components.Map2DZoomLevel;
 
 /**
  *
- * @author dmitriya
+ * @author Dmitry Avtonomov
  */
 public class ZoomEvent {
     public enum TYPE {

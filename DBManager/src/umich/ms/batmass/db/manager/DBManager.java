@@ -30,7 +30,7 @@ import umich.ms.batmass.nbputils.OutputWndPrinter;
 
 /**
  *
- * @author dmitriya
+ * @author Dmitry Avtonomov
  */
 @ServiceProvider(service = DBManager.class)
 public class DBManager {

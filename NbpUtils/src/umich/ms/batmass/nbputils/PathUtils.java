@@ -20,7 +20,7 @@ import org.openide.modules.Places;
 /**
  * Container for utility methods for path manipulation.
  * Both file-system paths and layer paths.
- * @author dmitriya
+ * @author Dmitry Avtonomov
  */
 public abstract class PathUtils {
 

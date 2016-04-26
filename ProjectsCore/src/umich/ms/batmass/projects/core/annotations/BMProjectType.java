@@ -26,7 +26,7 @@ import javax.lang.model.SourceVersion;
 /**
  * A unique textual identifier for the project type. Is used to register stuff
  * in the layer file specifically for this project type.
- * @author dmitriya
+ * @author Dmitry Avtonomov
  */
 @Retention(RetentionPolicy.RUNTIME)
 @SupportedSourceVersion(SourceVersion.RELEASE_7)

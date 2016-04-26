@@ -17,7 +17,7 @@ package umich.ms.batmass.projects.preferences;
 
 /**
  *
- * @author dmitriya
+ * @author Dmitry Avtonomov
  */
 import java.awt.BorderLayout;
 import javax.swing.JComponent;
@@ -37,7 +37,7 @@ import umich.ms.batmass.projects.types.proteomics.ProteomicsProject;
  * TODO: implement CustomizerProvider, put it into the lookup of BMProject.
  * See: {@link TestCustomizer} and tutorial here: https://blogs.oracle.com/gridbag/entry/project_properties_gui_for_custom
  * 
- * @author dmitriya
+ * @author Dmitry Avtonomov
  */
 public class TestCustomizer implements ProjectCustomizer.CompositeCategoryProvider {
 

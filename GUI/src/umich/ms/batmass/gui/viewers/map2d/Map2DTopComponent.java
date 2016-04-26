@@ -54,7 +54,7 @@ import umich.ms.fileio.exceptions.FileParsingException;
 
 /**
  *
- * @author dmitriya
+ * @author Dmitry Avtonomov
  */
 @ConvertAsProperties(dtd = "-//umich.ms.batmass.gui.viewers.map2d//Map2DTopComponent//EN", autostore = false)
 public class Map2DTopComponent extends BMTopComponent implements Map2DZoomEventListener {

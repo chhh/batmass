@@ -34,7 +34,7 @@ import umich.ms.util.IntervalST;
 
 /**
  * @deprecated There is now just one single Spectrum panel
- * @author dmitriya
+ * @author Dmitry Avtonomov
  */
 @Deprecated
 @SuppressWarnings({"rawtypes"})

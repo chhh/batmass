@@ -29,7 +29,7 @@ import java.util.Arrays;
  *
  * Borrowed from https://github.com/prefuse/Prefuse
 
- * @author dmitriya
+ * @author Dmitry Avtonomov
  */
 public class ColorMap {
 

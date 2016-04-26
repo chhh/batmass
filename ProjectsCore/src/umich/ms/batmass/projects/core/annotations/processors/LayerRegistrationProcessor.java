@@ -34,7 +34,7 @@ import umich.ms.batmass.projects.core.annotations.LayerRegistration;
 
 /**
  *
- * @author dmitriya
+ * @author Dmitry Avtonomov
  */
 @ServiceProvider(service = Processor.class)
 @SupportedAnnotationTypes("umich.ms.batmass.projects.core.annotations.LayerRegistration")

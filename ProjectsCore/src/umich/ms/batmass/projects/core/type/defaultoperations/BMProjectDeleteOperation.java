@@ -24,7 +24,7 @@ import umich.ms.batmass.projects.core.type.BMProject;
 
 /**
  *
- * @author dmitriya
+ * @author Dmitry Avtonomov
  */
 public class BMProjectDeleteOperation implements DeleteOperationImplementation {
     private final BMProject project;

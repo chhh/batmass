@@ -21,7 +21,7 @@ import org.openide.util.lookup.ServiceProvider;
 
 /**
  * Test a custom MIMEResolver.
- * @author dmitriya
+ * @author Dmitry Avtonomov
  */
 @ServiceProvider(service = MIMEResolver.class)
 public class ABCMimeResolver extends MIMEResolver {

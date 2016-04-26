@@ -26,7 +26,7 @@ import umich.ms.batmass.projects.core.type.BMProjectLogicalView;
 
 /**
  *
- * @author dmitriya
+ * @author Dmitry Avtonomov
  */
 @BMProjectType(projectType = "MetabolomicsProject")
 public class MetabolomicsProject extends BMProject {

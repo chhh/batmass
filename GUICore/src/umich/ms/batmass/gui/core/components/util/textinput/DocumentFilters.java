@@ -24,7 +24,7 @@ import javax.swing.text.PlainDocument;
 
 /**
  *
- * @author dmitriya
+ * @author Dmitry Avtonomov
  */
 public abstract class DocumentFilters {
     

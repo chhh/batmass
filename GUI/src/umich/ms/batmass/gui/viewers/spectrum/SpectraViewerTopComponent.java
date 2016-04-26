@@ -42,7 +42,7 @@ import umich.ms.datatypes.scancollection.IScanCollection;
 
 /**
  *
- * @author dmitriya
+ * @author Dmitry Avtonomov
  */
 @TopComponent.Description(
         preferredID = "ViewSpectraTopComponent",

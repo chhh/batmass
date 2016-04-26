@@ -30,7 +30,7 @@ import umich.ms.batmass.projects.core.util.BMProjectUtils;
 
 /**
  *
- * @author dmitriya
+ * @author Dmitry Avtonomov
  */
 @SuppressWarnings("rawtypes")
 public class NodeInfoUtils {

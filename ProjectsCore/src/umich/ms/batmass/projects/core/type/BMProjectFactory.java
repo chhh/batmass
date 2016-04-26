@@ -46,7 +46,7 @@ import org.openide.util.Exceptions;
  * proteomics, etc all use mzXML/RAW/mzML... files as the main input source.
  * Those project types should extend this one, providing some project-specific
  * actions.
- * @author dmitriya
+ * @author Dmitry Avtonomov
  */
 public abstract class BMProjectFactory implements ProjectFactory2 {
 

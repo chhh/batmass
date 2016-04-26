@@ -32,7 +32,7 @@ import umich.ms.fileio.exceptions.FileParsingException;
 
 /**
  *
- * @author dmitriya
+ * @author Dmitry Avtonomov
  */
 public class ChromatogramComponent extends BMComponentJPanel {
     private PlotType plotType;

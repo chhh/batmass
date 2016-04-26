@@ -29,7 +29,7 @@ import umich.ms.batmass.projects.core.services.spi.ProjectSubfolderProvider;
  * Intended to be wrapped around a single folder in the real file-system.
  * The root folder can't be deleted or moved. To be used in conjunction with
  * {@link ProjectSubfolderProvider}s registered in a project's lookup.
- * @author dmitriya
+ * @author Dmitry Avtonomov
  */
 public class SingleFolderNodeList extends BMNodeList {
     protected String rootDisplayName;

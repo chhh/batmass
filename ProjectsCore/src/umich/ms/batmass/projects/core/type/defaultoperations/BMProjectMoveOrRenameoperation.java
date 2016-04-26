@@ -32,7 +32,7 @@ import umich.ms.batmass.projects.core.type.BMProject;
 
 /**
  *
- * @author dmitriya
+ * @author Dmitry Avtonomov
  */
 public class BMProjectMoveOrRenameoperation implements MoveOrRenameOperationImplementation {
 

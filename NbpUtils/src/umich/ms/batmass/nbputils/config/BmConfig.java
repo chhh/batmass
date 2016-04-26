@@ -27,7 +27,7 @@ import org.apache.commons.configuration.PropertiesConfiguration;
 import umich.ms.batmass.nbputils.PathUtils;
 /**
  * THIS IS AN XML BASED CONFIG, IT SHOULD WORK IN BATMASS, BUT NOT IN msgui
- * @author dmitriya
+ * @author Dmitry Avtonomov
  */
 public class BmConfig {
 //    private static final String EXT = ".config.xml";

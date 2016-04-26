@@ -18,7 +18,7 @@ package umich.ms.batmass.projects.core.services.spi;
 /**
  * Provides additional layer paths from where a particular project should be
  * taking actions available project node context menu.
- * @author dmitriya
+ * @author Dmitry Avtonomov
  */
 public interface ProjectActionsPathProvider extends LayerPathProvider {
 

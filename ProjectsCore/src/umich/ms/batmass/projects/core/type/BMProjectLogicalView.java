@@ -37,7 +37,7 @@ import umich.ms.batmass.projects.core.util.BMProjectUtils;
  * Even though the class is named <i>'abstract'</i>, there is nothing in it now
  * that is worth forcing being overridden by specific implementations.
  * So users can just extend it, or use as is, instantiating directly.
- * @author dmitriya
+ * @author Dmitry Avtonomov
  */
 public class BMProjectLogicalView implements LogicalViewProvider {
 

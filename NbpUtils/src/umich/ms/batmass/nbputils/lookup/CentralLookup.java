@@ -20,7 +20,7 @@ import org.openide.util.lookup.InstanceContent;
 
 /**
  *
- * @author dmitriya
+ * @author Dmitry Avtonomov
  */
 public class CentralLookup extends AbstractLookup {
 

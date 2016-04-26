@@ -24,7 +24,7 @@ import org.openide.util.lookup.Lookups;
 
 /**
  * TODO: WARNINIG: ACHTUNG: Delete this class! Was here for testing.
- * @author dmitriya
+ * @author Dmitry Avtonomov
  */
 
 //@ProjectServiceProvider(

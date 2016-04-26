@@ -17,7 +17,7 @@ package umich.ms.batmass.gui.viewers.map2d.components;
 
 /**
  *
- * @author dmitriya
+ * @author Dmitry Avtonomov
  */
 public interface IMap2DInfoDisplayer {
     

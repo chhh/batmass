@@ -27,7 +27,7 @@ import umich.ms.batmass.projects.services.test.TestService;
 
 /**
  * asd
- * @author dmitriya
+ * @author Dmitry Avtonomov
  */
 @BMProjectType(projectType = "ProteomicsProject")
 public class ProteomicsProject extends BMProject {

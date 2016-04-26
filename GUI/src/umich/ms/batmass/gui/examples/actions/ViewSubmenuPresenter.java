@@ -21,7 +21,7 @@ import umich.ms.batmass.nbputils.nodes.NodeSubmenu;
 
 /**
  *
- * @author dmitriya
+ * @author Dmitry Avtonomov
  */
 //@ActionID(
 //    category = "LCMSFileDesc",
