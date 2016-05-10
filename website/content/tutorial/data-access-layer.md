@@ -19,7 +19,7 @@ The source code for the library lives in [MSFTBX repository on GitHub](https://g
 and explore
 
 ## Parsing LC/MS data (mzML/mzXML files)
-Unfortunately, it's near impossible to easily access raw mass spec data from the original vendor file formats using java. You can convert most data from proprietary formats (_.RAW_ files for Thermo, _.d_ directories for Agilent, etc.) using `msconvert` program from [ProteoWizard]().
+Unfortunately, it's near impossible to easily access raw mass spec data from the original vendor file formats using java. You can convert most data from proprietary formats (_.RAW_ files for Thermo, _.d_ directories for Agilent, etc.) using `msconvert` program from [ProteoWizard](http://proteowizard.sourceforge.net/).
 
 The API is separated into two parts. First you create a data source from your file. The data source can be used by itself, if you just want to iterate over spectra by yourself. It can also be attached to a special data structure, which handles data loading, management, indexing and garbage collection.
 
