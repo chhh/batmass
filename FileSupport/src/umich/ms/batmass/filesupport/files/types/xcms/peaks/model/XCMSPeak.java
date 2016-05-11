@@ -34,7 +34,7 @@ public class XCMSPeak {
     protected String adduct = "";
     protected int pcgroup = -1;
 
-    /** Values <0 mean unknown. */
+    /** Values &lt;0 mean unknown. */
     protected int isotopeNum = -1;
 
     @Override

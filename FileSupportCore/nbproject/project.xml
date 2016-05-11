@@ -199,9 +199,8 @@
                 <package>umich.ms.batmass.filesupport.core.api</package>
                 <package>umich.ms.batmass.filesupport.core.spi.filetypes</package>
                 <package>umich.ms.batmass.filesupport.core.spi.nodes</package>
-                <package>umich.ms.batmass.filesupport.core.spi.parsers</package>
-                <package>umich.ms.batmass.filesupport.core.spi.providers</package>
                 <package>umich.ms.batmass.filesupport.core.types.descriptor</package>
+                <package>umich.ms.batmass.filesupport.core.util</package>
             </public-packages>
         </data>
         <spellchecker-wordlist xmlns="http://www.netbeans.org/ns/spellchecker-wordlist/1">
