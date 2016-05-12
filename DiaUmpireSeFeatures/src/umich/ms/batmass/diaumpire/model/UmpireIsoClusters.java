@@ -60,7 +60,7 @@ public class UmpireIsoClusters {
      */
     public static UmpireIsoClusters create(Path path) throws IOException {
         if (!Files.exists(path))
-            throw new IllegalArgumentException("File path for XCMS peaks does not exist.");
+            throw new IllegalArgumentException("File path for Umpire-SE file does not exist.");
 
         // first read the header to figure out which column indexes we need
         String[] headers = null;

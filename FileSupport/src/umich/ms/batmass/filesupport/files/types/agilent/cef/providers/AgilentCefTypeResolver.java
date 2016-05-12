@@ -40,10 +40,10 @@ public class AgilentCefTypeResolver extends AbstractFileTypeResolver {
     public static final ImageIcon ICON = ImageUtilities.loadImageIcon(ICON_BASE_PATH, false);
 
     public static final String CATEGORY = "features";
-    public static final String TYPE = "umpire-se";
-    protected static final String EXT = "_PeakCluster.csv";
-    protected static final BMFileFilter FILE_FILTER = new UmpireSeFileFilter();
-    protected static final String DESCRIPTION = "DIA-Umpire Signal Extraction peak clusters";
+    public static final String TYPE = "agilent-cef";
+    protected static final String EXT = ".cef";
+    protected static final BMFileFilter FILE_FILTER = new AgilentCefFileFilter();
+    protected static final String DESCRIPTION = "Agilent .cef files from MassHunter MFE";
     
     public static AgilentCefTypeResolver getInstance() {
         return INSTANCE;
@@ -79,9 +79,9 @@ public class AgilentCefTypeResolver extends AbstractFileTypeResolver {
         return FILE_FILTER;
     }
 
-    public static class UmpireSeFileFilter extends BMFileFilter {
+    public static class AgilentCefFileFilter extends BMFileFilter {
 
-        public UmpireSeFileFilter() {
+        public AgilentCefFileFilter() {
             super(FileFilterUtils.suffixFileFilter(EXT, IOCase.INSENSITIVE));
         }
 

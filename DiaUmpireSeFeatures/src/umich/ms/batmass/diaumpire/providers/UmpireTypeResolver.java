@@ -16,10 +16,11 @@
 package umich.ms.batmass.diaumpire.providers;
 
 import javax.swing.ImageIcon;
+import org.apache.commons.io.IOCase;
+import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.netbeans.api.annotations.common.StaticResource;
 import org.openide.util.ImageUtilities;
 import umich.ms.batmass.filesupport.core.actions.importing.BMFileFilter;
-import umich.ms.batmass.filesupport.core.actions.importing.BMSuffixFileFilter;
 import umich.ms.batmass.filesupport.core.annotations.FileTypeResolverRegistration;
 import umich.ms.batmass.filesupport.core.spi.filetypes.AbstractFileTypeResolver;
 
@@ -40,11 +41,10 @@ public class UmpireTypeResolver extends AbstractFileTypeResolver {
     public static final ImageIcon ICON = ImageUtilities.loadImageIcon(ICON_BASE_PATH, false);
 
     public static final String CATEGORY = "features";
-    public static final String TYPE = "xcms";
-    protected static final String EXT = ".xcms.csv";
-    protected static final String DESCRIPTION = "CSV files from XCMS feature finding";
-    protected static final String SHORT_DESC = ".xcms.csv";
-    protected static final BMFileFilter FILE_FILTER = new BMSuffixFileFilter(EXT, SHORT_DESC, DESCRIPTION);
+    public static final String TYPE = "umpire-se";
+    protected static final String EXT = "_PeakCluster.csv";
+    protected static final BMFileFilter FILE_FILTER = new UmpireSeFileFilter();
+    protected static final String DESCRIPTION = "DIA-Umpire Signal Extraction peak clusters";
     
     public static UmpireTypeResolver getInstance() {
         return INSTANCE;
@@ -78,5 +78,22 @@ public class UmpireTypeResolver extends AbstractFileTypeResolver {
     @Override
     public BMFileFilter getFileFilter() {
         return FILE_FILTER;
+    }
+    
+    public static class UmpireSeFileFilter extends BMFileFilter {
+
+        public UmpireSeFileFilter() {
+            super(FileFilterUtils.suffixFileFilter(EXT, IOCase.INSENSITIVE));
+        }
+
+        @Override
+        public String getShortDescription() {
+            return EXT;
+        }
+
+        @Override
+        public String getDescription() {
+            return DESCRIPTION;
+        }
     }
 }

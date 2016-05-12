@@ -28,7 +28,8 @@ import umich.ms.batmass.filesupport.core.spi.nodes.NodeInfo;
 import umich.ms.batmass.nbputils.nodes.NodeSubmenu;
 
 /**
- *
+ * This action doesn't do anything other than providing the "View" sub-menu in 
+ * a node's context menu. It might be ugly, but that's how menus work in Swing.
  * @author Dmitry Avtonomov
  */
 @ActionID(
