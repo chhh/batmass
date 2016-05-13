@@ -40,7 +40,8 @@ import umich.ms.batmass.nbputils.SwingHelper;
 import umich.ms.datatypes.LCMSData;
 
 /**
- *
+ * An action which looks for data of 2 types in the global lookup to be activated.
+ * Overlays feature data over Map2D.
  * @author Dmitry Avtonomov
  */
 @ActionID(

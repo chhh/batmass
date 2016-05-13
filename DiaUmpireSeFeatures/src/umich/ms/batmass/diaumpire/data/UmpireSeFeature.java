@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2016 Dmitry Avtonomov.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,65 +13,60 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package umich.ms.batmass.filesupport.files.types.agilent.cef.data;
+package umich.ms.batmass.diaumpire.data;
 
 import java.awt.Color;
 import java.awt.geom.Rectangle2D;
 import umich.ms.batmass.data.core.lcms.features.AbstractLCMSFeature2D;
 import umich.ms.batmass.data.core.lcms.features.AbstractLCMSTrace;
-import umich.ms.batmass.filesupport.files.types.agilent.cef.model.AgilentCompound;
-import umich.ms.batmass.filesupport.files.types.agilent.cef.model.AgilentMSPeak;
+import umich.ms.batmass.diaumpire.model.UmpireSeIsoCluster;
 
 /**
  *
  * @author Dmitry Avtonomov
  */
-public class AgilentCefFeature extends AbstractLCMSFeature2D<AbstractLCMSTrace>{
-    protected AgilentCompound compund;
+public class UmpireSeFeature extends AbstractLCMSFeature2D<AbstractLCMSTrace>{
+    protected UmpireSeIsoCluster cluster;
 
-    public AgilentCefFeature(AbstractLCMSTrace[] traces, int charge) {
+    public UmpireSeFeature(AbstractLCMSTrace[] traces, int charge) {
         super(traces, charge);
     }
 
-    public AgilentCefFeature(AbstractLCMSTrace[] traces) {
+    public UmpireSeFeature(AbstractLCMSTrace[] traces) {
         super(traces);
     }
 
-    public AgilentCompound getCompund() {
-        return compund;
+    public UmpireSeIsoCluster getCluster() {
+        return cluster;
     }
 
-    public void setCompund(AgilentCompound compund) {
-        this.compund = compund;
+    public void setCompund(UmpireSeIsoCluster cluster) {
+        this.cluster = cluster;
     }
     
-    public static AgilentCefFeature create(AgilentCompound ac) {
-        int numTraces = ac.size();
+    public static UmpireSeFeature create(UmpireSeIsoCluster c) {
+        int numTraces = c.getNumPeaks();
         
         AbstractLCMSTrace[] tr = new AbstractLCMSTrace[numTraces];
-        for (int i = 0; i < tr.length; i++) {
-            AgilentMSPeak peak = ac.getPeaks().get(i);
-            tr[i] = new AbstractLCMSTrace(peak.getMz(), ac.getRtLo(), ac.getRtHi());
+        for (int i = 0; i < numTraces; i++) {
+            tr[i] = new AbstractLCMSTrace(c.getMz()[i], c.getRtLo(), c.getRtHi());
         }
         
-        int z = ac.getPeaks().get(0).getZ();
-        if (z == AgilentMSPeak.CHARGE_UNKNOWN) {
-            z = CHARGE_UNKNOWN;
-        }
+        int z = c.getCharge();
         
-        AgilentCefFeature acf = new AgilentCefFeature(tr, z);
-        acf.setCompund(ac);
+        UmpireSeFeature acf = new UmpireSeFeature(tr, z);
+        acf.setCompund(c);
         return acf;
     }
     
     @Override
     public Color getColor() {
-        return compund.size() > 1 ? Color.MAGENTA : Color.RED;
+        return cluster.getNumPeaks() > 1 ? Color.MAGENTA : Color.RED;
     }
     
     /**
      * Overriding this method, because we don't store shapes/bounds for LCMS Traces
-     * in Agilent Features.
+     * in Umpire Features.
      * @return
      */
     @Override

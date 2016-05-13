@@ -22,6 +22,7 @@ import java.nio.file.Paths;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicBoolean;
 import javax.swing.ImageIcon;
+import javax.swing.table.TableModel;
 import org.netbeans.api.annotations.common.StaticResource;
 import org.netbeans.api.progress.BaseProgressUtils;
 import org.netbeans.api.progress.ProgressHandle;
@@ -90,7 +91,8 @@ public class FeatureTableTopComponent extends BMTopComponent {
                 URI uri = data.getSource().getOriginURI();
                 Path path = Paths.get(uri);
                 setDisplayName(path.getFileName().toString());
-                featureTableComponent.addToLookup(data.create());
+                TableModel tm = data.create();
+                featureTableComponent.addToLookup(tm);
                 makeBusy(false);
                 requestActive();
             }

@@ -24,13 +24,13 @@ import umich.ms.batmass.filesupport.core.spi.nodes.AbstractFileNodeInfo;
  * @author Dmitry Avtonomov
  */
 @NodeInfoRegistration(
-        fileCategory = UmpireTypeResolver.CATEGORY,
-        fileType = UmpireTypeResolver.TYPE
+        fileCategory = UmpireSeTypeResolver.CATEGORY,
+        fileType = UmpireSeTypeResolver.TYPE
 )
-public class UmpireNodeInfo extends AbstractFileNodeInfo{
+public class UmpireSeNodeInfo extends AbstractFileNodeInfo{
 
     @Override
     public FileTypeResolver getFileTypeResolver() {
-        return UmpireTypeResolver.getInstance();
+        return UmpireSeTypeResolver.getInstance();
     }
 }

@@ -15,8 +15,6 @@
  */
 package umich.ms.batmass.filesupport.core.spi.nodes;
 
-import umich.ms.batmass.filesupport.core.spi.nodes.CapabilityProvider;
-
 /**
  *
  * @author Dmitry Avtonomov

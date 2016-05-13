@@ -23,6 +23,7 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import umich.ms.batmass.filesupport.core.util.DelimitedFiles;
 
@@ -30,7 +31,7 @@ import umich.ms.batmass.filesupport.core.util.DelimitedFiles;
  * A simple array-list storage for parsed LCMS features from Umpire PeakCluster csv files.
  * @author Dmitry Avtonomov
  */
-public class UmpireIsoClusters {
+public class UmpireSeIsoClusters {
     public static String COL_NAME_RT_LO = "StartRT";
     public static String COL_NAME_RT_HI = "EndRT";
     public static String COL_NAME_SCAN_NUM_LO = "StartScan";
@@ -43,13 +44,13 @@ public class UmpireIsoClusters {
     public static String COL_NAME_PEAK_HEIGHT = "PeakHeight1";
     public static String COL_NAME_PEAK_AREA = "PeakArea1";
     
-    protected List<UmpireIsoCluster> clusters;
+    protected List<UmpireSeIsoCluster> clusters;
 
-    public UmpireIsoClusters() {
+    public UmpireSeIsoClusters() {
         clusters = new ArrayList<>();
     }
 
-    public List<UmpireIsoCluster> getClusters() {
+    public List<UmpireSeIsoCluster> getClusters() {
         return clusters;
     }
     
@@ -58,7 +59,7 @@ public class UmpireIsoClusters {
      * @param path the file to parse data from
      * @return 
      */
-    public static UmpireIsoClusters create(Path path) throws IOException {
+    public static UmpireSeIsoClusters create(Path path) throws IOException {
         if (!Files.exists(path))
             throw new IllegalArgumentException("File path for Umpire-SE file does not exist.");
 
@@ -68,6 +69,7 @@ public class UmpireIsoClusters {
             headers = DelimitedFiles.readDelimitedHeader(is, ',');
         }
         int[] colMapping = new int[headers.length];
+        Arrays.fill(colMapping, -1);
         findHeaderIndex(headers, COL_NAME_RT_LO, colMapping, 0);
         findHeaderIndex(headers, COL_NAME_RT_HI, colMapping, 1);
         findHeaderIndex(headers, COL_NAME_SCAN_NUM_LO, colMapping, 2);
@@ -79,17 +81,30 @@ public class UmpireIsoClusters {
         findHeaderIndex(headers, COL_NAME_MZ4, colMapping, 8);
         findHeaderIndex(headers, COL_NAME_PEAK_HEIGHT, colMapping, 9);
         findHeaderIndex(headers, COL_NAME_PEAK_AREA, colMapping, 10);
-        UmpireNumberParser parser = new UmpireNumberParser(colMapping);
+        UmpireSeNumberParser parser = new UmpireSeNumberParser(colMapping);
         
-        UmpireIsoClusters clusters = new UmpireIsoClusters();
-        clusters.getClusters();
+        UmpireSeIsoClusters result = new UmpireSeIsoClusters();
+        List<UmpireSeIsoCluster> clusters = result.getClusters();
         try (BufferedReader br = new BufferedReader(new FileReader(path.toFile()))) {
-            String line;
+            String line = br.readLine(); // skip the first line
             while ((line = br.readLine()) != null) {
                 DelimitedFiles.readLineOfNumbers(line, ',', '.', parser);
+                UmpireSeIsoCluster p = parser.cluster;
+                UmpireSeIsoCluster c = new UmpireSeIsoCluster();
+                c.charge = p.charge;
+                for (int i = 0; i < p.mz.length; i++) {
+                    c.mz[i] = p.mz[i];
+                }
+                c.peakArea = p.peakArea;
+                c.peakHeight = p.peakHeight;
+                c.rtHi = p.rtHi;
+                c.rtLo = p.rtLo;
+                c.scanNumHi = p.scanNumHi;
+                c.scanNumLo = p.scanNumLo;
+                clusters.add(c);
             }
         }
-        return clusters;
+        return result;
     }
     
     /**
@@ -102,7 +117,7 @@ public class UmpireIsoClusters {
         for (int i = 0; i < headers.length; i++) {
             if (headers[i].equals(header)) {
                 colMapping[i] = map;
-                break;
+                return;
             }
         }
         throw new IllegalStateException(String.format(

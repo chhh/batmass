@@ -30,23 +30,23 @@ import umich.ms.batmass.filesupport.core.spi.filetypes.AbstractFileTypeResolver;
  */
 
 @FileTypeResolverRegistration(
-        fileCategory = UmpireTypeResolver.CATEGORY,
-        fileType = UmpireTypeResolver.TYPE
+        fileCategory = UmpireSeTypeResolver.CATEGORY,
+        fileType = UmpireSeTypeResolver.TYPE
 )
-public class UmpireTypeResolver extends AbstractFileTypeResolver {
-    private static final UmpireTypeResolver INSTANCE = new UmpireTypeResolver();
+public class UmpireSeTypeResolver extends AbstractFileTypeResolver {
+    private static final UmpireSeTypeResolver INSTANCE = new UmpireSeTypeResolver();
 
     @StaticResource
     public static final String ICON_BASE_PATH = "umich/ms/batmass/diaumpire/resources/features_16.png";
     public static final ImageIcon ICON = ImageUtilities.loadImageIcon(ICON_BASE_PATH, false);
 
     public static final String CATEGORY = "features";
-    public static final String TYPE = "umpire-se";
+    public static final String TYPE = "dia-umpire-se";
     protected static final String EXT = "_PeakCluster.csv";
     protected static final BMFileFilter FILE_FILTER = new UmpireSeFileFilter();
     protected static final String DESCRIPTION = "DIA-Umpire Signal Extraction peak clusters";
     
-    public static UmpireTypeResolver getInstance() {
+    public static UmpireSeTypeResolver getInstance() {
         return INSTANCE;
     }
 

@@ -21,19 +21,19 @@ import umich.ms.batmass.filesupport.core.util.DelimitedFiles;
  *
  * @author Dmitry Avtonomov
  */
-public class UmpireNumberParser extends DelimitedFiles.NumberParsingDelegate {
-    protected UmpireIsoCluster cluster;
+public class UmpireSeNumberParser extends DelimitedFiles.NumberParsingDelegate {
+    protected UmpireSeIsoCluster cluster;
     protected int[] colMapping;
 
-    public UmpireNumberParser(int[] colMapping) {
-        cluster = new UmpireIsoCluster();
+    public UmpireSeNumberParser(int[] colMapping) {
+        cluster = new UmpireSeIsoCluster();
         this.colMapping = colMapping;
     }
     
     @Override
     public void parse(int idx, int number, int length, int decimalPos) {
         int mapping = colMapping[idx];
-        switch (idx) {
+        switch (mapping) {
             case 0:
                 cluster.setRtLo(DelimitedFiles.parseDouble(number, length, decimalPos));
                 break;
@@ -50,16 +50,20 @@ public class UmpireNumberParser extends DelimitedFiles.NumberParsingDelegate {
                 cluster.setCharge(DelimitedFiles.parseInt(number, length, decimalPos));
                 break;
             case 5:
-                cluster.setMz1(DelimitedFiles.parseDouble(number, length, decimalPos));
+                double[] mz = cluster.getMz();
+                mz[0] = DelimitedFiles.parseDouble(number, length, decimalPos);
                 break;
             case 6:
-                cluster.setMz2(DelimitedFiles.parseDouble(number, length, decimalPos));
+                mz = cluster.getMz();
+                mz[1] = DelimitedFiles.parseDouble(number, length, decimalPos);
                 break;
             case 7: 
-                cluster.setMz3(DelimitedFiles.parseDouble(number, length, decimalPos));
+                mz = cluster.getMz();
+                mz[2] = DelimitedFiles.parseDouble(number, length, decimalPos);
                 break;
             case 8:
-                cluster.setMz4(DelimitedFiles.parseDouble(number, length, decimalPos));
+                mz = cluster.getMz();
+                mz[3] = DelimitedFiles.parseDouble(number, length, decimalPos);
                 break;
             case 9:
                 cluster.setPeakHeight(DelimitedFiles.parseDouble(number, length, decimalPos));

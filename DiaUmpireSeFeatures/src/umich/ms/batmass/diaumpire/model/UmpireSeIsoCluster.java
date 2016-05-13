@@ -19,16 +19,13 @@ package umich.ms.batmass.diaumpire.model;
  *
  * @author Dmitry Avtonomov
  */
-public class UmpireIsoCluster {
+public class UmpireSeIsoCluster {
     protected double rtLo;
     protected double rtHi;
     protected int scanNumLo;
     protected int scanNumHi;
     protected int charge;
-    protected double mz1;
-    protected double mz2;
-    protected double mz3;
-    protected double mz4;
+    protected double[] mz = new double[4];
     protected double peakHeight;
     protected double peakArea;
 
@@ -36,15 +33,15 @@ public class UmpireIsoCluster {
      * Bare minimum info required to plot something.
      * @param rtLo
      * @param rtHi
-     * @param mz1 
+     * @param mz
      */
-    public UmpireIsoCluster(double rtLo, double rtHi, double mz1) {
+    public UmpireSeIsoCluster(double rtLo, double rtHi, double mz) {
         this.rtLo = rtLo;
         this.rtHi = rtHi;
-        this.mz1 = mz1;
+        this.mz[0] = mz;
     }
 
-    public UmpireIsoCluster() {
+    public UmpireSeIsoCluster() {
     }
 
     public double getRtLo() {
@@ -87,36 +84,16 @@ public class UmpireIsoCluster {
         this.charge = charge;
     }
 
-    public double getMz1() {
-        return mz1;
+    public double[] getMz() {
+        return mz;
     }
 
-    public void setMz1(double mz1) {
-        this.mz1 = mz1;
+    public void setMz(double[] mz) {
+        this.mz = mz;
     }
-
-    public double getMz2() {
-        return mz2;
-    }
-
-    public void setMz2(double mz2) {
-        this.mz2 = mz2;
-    }
-
-    public double getMz3() {
-        return mz3;
-    }
-
-    public void setMz3(double mz3) {
-        this.mz3 = mz3;
-    }
-
-    public double getMz4() {
-        return mz4;
-    }
-
-    public void setMz4(double mz4) {
-        this.mz4 = mz4;
+    
+    public void setMz(int index, double value) {
+        mz[index] = value;
     }
 
     public double getPeakHeight() {
@@ -135,5 +112,16 @@ public class UmpireIsoCluster {
         this.peakArea = peakArea;
     }
     
-    
+    /**
+     * Counts the number of peaks for which the m/z value is not zero.
+     * @return 
+     */
+    public int getNumPeaks() {
+        int numPeaks = 0;
+        for (int i = 0; i < mz.length; i++) {
+            if (mz[i] > 0)
+                numPeaks++;
+        }
+        return numPeaks;
+    }
 }
