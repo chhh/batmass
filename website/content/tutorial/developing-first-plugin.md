@@ -15,11 +15,9 @@ We will need to:
 
 - [Create a new NetBeans module](#create-a-new-netbeans-module)
 - [Create a parser for the file](#create-a-parser-for-the-file)
-- [Add recognition support for the new file type](#add-recognition-support-for-the-new-file-type)
-- [Add support for importing the file into a project](#add-support-for-importing-the-file-into-a-project)
-- [Add basic support for viewing the data in tabular viewer](#add-basic-support-for-viewing-the-data-in-tabular-viewer)
-- [Add support for overlay of data over Map2D](#add-support-for-overlay-of-data-over-Map2D)
-- [Add the feature that will allow us to double click a row in the table and automatically zoom into the region of interest in Map2D](#add-double-click-navigation-between-viewers)
+- [Add support for the new file type](#adding-support-for-the-new-file-type)
+- [Add support for importing the file into a project](#adding-capabilities-to-the-node)
+- [Add basic support for viewing the data in tabular viewer and overlay of data over Map2D](#making-our-data-recognizable-by-table-and-map2d-viewers)
 
 The prerequisite for this tutorial is that you have the development environment set up. If you don't have that yet, make sure to go through [the setting up dev environment tutorial]({{< relref "tutorial/setting-up-development-environment.md" >}}).  
 
@@ -310,7 +308,7 @@ So far our new node is pretty useless. We've seen those 2 actions appear, they a
 ```java
 public class OpenFeature2DTable extends AbstractContextAwareAction<FeatureTableModelData> {}
 ```
-So this is a `ContextAwareAction` which operates on `FeatureTableModelData`. That means that it expects to find an instance of `FeatureTableModelData` in the global Lookup (if you don't know what a lookup is in the context of platform applications, read [this](https://dzone.com/articles/netbeans-lookups-explained)). When we select our node for the imported file so far it doesn't expose this particular feature. _BatMass_ defines a single way to add things to a node's lookup - via registering an implementation of `CapabilityProvider` interface for a node using `@NodeCapabilityRegistration` annotation. This interface has a single method `addCapabilitiesToLookup(InstanceContent, FileDescriptor)` - when the method is invoked you are given the `InstanceContent` that powers this node's lookup (again, if you don't know what I'm talking about, read [the link I've suggested above]((https://dzone.com/articles/netbeans-lookups-explained))) and a `FileDescriptor`, which is the _BatMass_ way of representing a link to a file in the filesystem.  
+So this is a `ContextAwareAction` which operates on `FeatureTableModelData`. That means that it expects to find an instance of `FeatureTableModelData` in the global Lookup (if you don't know what a lookup is in the context of platform applications, read [this](https://dzone.com/articles/netbeans-lookups-explained)). When we select our node for the imported file so far it doesn't expose this particular feature. _BatMass_ defines a single way to add things to a node's lookup - via registering an implementation of `CapabilityProvider` interface for a node using `@NodeCapabilityRegistration` annotation. This interface has a single method `addCapabilitiesToLookup(InstanceContent, FileDescriptor)` - when the method is invoked you are given the `InstanceContent` that powers this node's lookup (again, if you don't know what I'm talking about, read [the link I've suggested above](https://dzone.com/articles/netbeans-lookups-explained)) and a `FileDescriptor`, which is the _BatMass_ way of representing a link to a file in the filesystem.  
 
 You can find an example to copy-paste from in `FileSupport (BatMass)` module, package `umich.ms.batmass.filesupport.files.types.agilent.cef.providers`, class `AgilentCefDataProvider`.  
 

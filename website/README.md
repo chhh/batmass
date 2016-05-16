@@ -6,14 +6,23 @@ The site is built with [Hugo](https://gohugo.io/) (currently Hugo v.0.15) using 
 In a command line change to the website directory.  
 `hugo --theme=hugo-material-docs`  
 The static assembled website will be in `<website-path>/public`.  
-__IMPORTANT:__ in the `config.toml` file change `baseurl` to wherever it will be hosted, e.g. to `baseurl = "http://chhh.github.io/hugo-website-test/"`. The trailing slash is important.
+
+
+__IMPORTANT:__ in the `config.toml` file change `baseurl` to wherever it will be hosted, e.g. to `baseurl = "http://chhh.github.io/hugo-website-test/"`. The trailing slash is important.  
+
+
+__IMPORTANT:__ There's a _CNAME_ file in the root of the website, it is used for hosting on github, so that an HTTP request for `batmass.org` is rewritten to `www.batmass.org`, that's why we use `baseurl = "http://www.batmass.org/"` in _config.toml_  when you're pushing to _github.com/chhh/batmass_. However, you'll need to delete the file when pushing to _batmass.github.io_.
+
 
 
 # To run/test the website locally
 No webserver install is needed, Hugo has one built in. In a command line change to the website directory.  
 `hugo serve --theme=hugo-material-docs` to start a local server, the website will be available at http://localhost:1313.  
-It's that simple.
+It's that simple.  
+
+
 __IMPORTANT:__ in the `config.toml` file change `baseurl` to `baseurl = "http://localhost:1313/"`. The trailing slash is important.
+
 
 
 # To host the site on GitHub
