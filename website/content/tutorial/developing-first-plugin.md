@@ -607,4 +607,6 @@ public class UmpireSeDataProvider extends AbstractCapabilityProvider{
 }
 ```
 
-There should be no errors now, you should be able to right click the `DIA Umpire SE Features` module that we were developing and click _Build_ then _Run_ the _BatMass_ module to test it out.
+There should be no errors now, you should be able to right click the `DIA Umpire SE Features` module that we were developing and click _Build_ then _Run_ the _BatMass_ module to test it out.  
+
+Start the application, import some DIA-Umpire Singnal Extraction results into the `LC/MS Features` node, import the corresponding mzXML file into `LC/MS Files` node. With a right click on the `..._PeakCluster.csv` file you should now have the option to open it in a table viewer and if you select **BOTH** the mzXML file and the csv file, then right click any of those, there will be an option for overlay in Map2D.
