@@ -399,11 +399,9 @@ We will need to:</p>
 <ul>
 <li><a href="#create-a-new-netbeans-module">Create a new NetBeans module</a></li>
 <li><a href="#create-a-parser-for-the-file">Create a parser for the file</a></li>
-<li><a href="#add-recognition-support-for-the-new-file-type">Add recognition support for the new file type</a></li>
-<li><a href="#add-support-for-importing-the-file-into-a-project">Add support for importing the file into a project</a></li>
-<li><a href="#add-basic-support-for-viewing-the-data-in-tabular-viewer">Add basic support for viewing the data in tabular viewer</a></li>
-<li><a href="#add-support-for-overlay-of-data-over-Map2D">Add support for overlay of data over Map2D</a></li>
-<li><a href="#add-double-click-navigation-between-viewers">Add the feature that will allow us to double click a row in the table and automatically zoom into the region of interest in Map2D</a></li>
+<li><a href="#adding-support-for-the-new-file-type">Add support for the new file type</a></li>
+<li><a href="#adding-capabilities-to-the-node">Add support for importing the file into a project</a></li>
+<li><a href="#making-our-data-recognizable-by-table-and-map2d-viewers">Add basic support for viewing the data in tabular viewer and overlay of data over Map2D</a></li>
 </ul>
 
 <p>The prerequisite for this tutorial is that you have the development environment set up. If you don&rsquo;t have that yet, make sure to go through <a href="http://www.batmass.org/tutorial/setting-up-development-environment/">the setting up dev environment tutorial</a>.</p>
@@ -697,7 +695,7 @@ public static final String TYPE = &quot;umpire-se&quot;;
 <pre><code class="language-java">public class OpenFeature2DTable extends AbstractContextAwareAction&lt;FeatureTableModelData&gt; {}
 </code></pre>
 
-<p>So this is a <code>ContextAwareAction</code> which operates on <code>FeatureTableModelData</code>. That means that it expects to find an instance of <code>FeatureTableModelData</code> in the global Lookup (if you don&rsquo;t know what a lookup is in the context of platform applications, read <a href="https://dzone.com/articles/netbeans-lookups-explained">this</a>). When we select our node for the imported file so far it doesn&rsquo;t expose this particular feature. <em>BatMass</em> defines a single way to add things to a node&rsquo;s lookup - via registering an implementation of <code>CapabilityProvider</code> interface for a node using <code>@NodeCapabilityRegistration</code> annotation. This interface has a single method <code>addCapabilitiesToLookup(InstanceContent, FileDescriptor)</code> - when the method is invoked you are given the <code>InstanceContent</code> that powers this node&rsquo;s lookup (again, if you don&rsquo;t know what I&rsquo;m talking about, read <a href="(https://dzone.com/articles/netbeans-lookups-explained">the link I&rsquo;ve suggested above</a>)) and a <code>FileDescriptor</code>, which is the <em>BatMass</em> way of representing a link to a file in the filesystem.</p>
+<p>So this is a <code>ContextAwareAction</code> which operates on <code>FeatureTableModelData</code>. That means that it expects to find an instance of <code>FeatureTableModelData</code> in the global Lookup (if you don&rsquo;t know what a lookup is in the context of platform applications, read <a href="https://dzone.com/articles/netbeans-lookups-explained">this</a>). When we select our node for the imported file so far it doesn&rsquo;t expose this particular feature. <em>BatMass</em> defines a single way to add things to a node&rsquo;s lookup - via registering an implementation of <code>CapabilityProvider</code> interface for a node using <code>@NodeCapabilityRegistration</code> annotation. This interface has a single method <code>addCapabilitiesToLookup(InstanceContent, FileDescriptor)</code> - when the method is invoked you are given the <code>InstanceContent</code> that powers this node&rsquo;s lookup (again, if you don&rsquo;t know what I&rsquo;m talking about, read <a href="https://dzone.com/articles/netbeans-lookups-explained">the link I&rsquo;ve suggested above</a>) and a <code>FileDescriptor</code>, which is the <em>BatMass</em> way of representing a link to a file in the filesystem.</p>
 
 <p>You can find an example to copy-paste from in <code>FileSupport (BatMass)</code> module, package <code>umich.ms.batmass.filesupport.files.types.agilent.cef.providers</code>, class <code>AgilentCefDataProvider</code>.</p>
 
