@@ -46,15 +46,17 @@
       }
     </style>
 
-    
-    
-    
-      <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.3.0/styles/monokai-sublime.min.css">
-    
+
 
     <link rel="stylesheet" href="http://www.batmass.org/stylesheets/application.css">
     <link rel="stylesheet" href="http://www.batmass.org/stylesheets/palettes.css">
 
+
+    
+    
+    
+      <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.3.0/styles/agate.min.css">
+    
 
     
     
@@ -146,7 +148,7 @@
         </div>
       
       <div class="name">
-        <strong>BatMass <span class="version">0.0.4</span></strong>
+        <strong>BatMass <span class="version">0.1.0</span></strong>
         
           <br>
           chhh/batmass
@@ -401,7 +403,7 @@ and explore</p>
 
 <h2 id="parsing-lc-ms-data-mzml-mzxml-files">Parsing LC/MS data (mzML/mzXML files)</h2>
 
-<p>Unfortunately, it&rsquo;s near impossible to easily access raw mass spec data from the original vendor file formats using java. You can convert most data from proprietary formats (<em>.RAW</em> files for Thermo, <em>.d</em> directories for Agilent, etc.) using <code>msconvert</code> program from [ProteoWizard]().</p>
+<p>Unfortunately, it&rsquo;s near impossible to easily access raw mass spec data from the original vendor file formats using java. You can convert most data from proprietary formats (<em>.RAW</em> files for Thermo, <em>.d</em> directories for Agilent, etc.) using <code>msconvert</code> program from <a href="http://proteowizard.sourceforge.net/">ProteoWizard</a>.</p>
 
 <p>The API is separated into two parts. First you create a data source from your file. The data source can be used by itself, if you just want to iterate over spectra by yourself. It can also be attached to a special data structure, which handles data loading, management, indexing and garbage collection.</p>
 
