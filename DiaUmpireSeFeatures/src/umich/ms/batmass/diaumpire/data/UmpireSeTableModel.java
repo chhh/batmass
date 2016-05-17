@@ -82,8 +82,12 @@ public class UmpireSeTableModel extends AbstractFeatureTableModel {
             case 3:
                 return c.getRtHi();
             case 4:
-                return c.getPeakArea();
+                return c.getScanNumLo();
             case 5:
+                return c.getScanNumHi();
+            case 6:
+                return c.getPeakArea();
+            case 7:
                 return c.getPeakHeight();
         }
         return null;
@@ -103,7 +107,8 @@ public class UmpireSeTableModel extends AbstractFeatureTableModel {
         double mzLo = Double.POSITIVE_INFINITY;
         double mzHi = Double.NEGATIVE_INFINITY;
         double[] masses = c.getMz();
-        for (double m : masses) {
+        for (int i = 0; i < c.getNumPeaks(); i++) {
+            double m = masses[i];
             if (m < mzLo)
                 mzLo = m;
             if (m > mzHi)

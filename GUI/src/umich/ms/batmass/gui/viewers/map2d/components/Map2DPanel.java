@@ -468,18 +468,34 @@ public class Map2DPanel extends JPanel {
 
         BaseMap2D baseMap = curZoomLvl.getBaseMap();
         ColorMap colorMap = curZoomLvl.getColorMap();
+        Map2DPanelOptions opts = getOptions();
 
         // TODO: WARNING: ACHTUNG: this is a hack to evade a condition when the map is empty
 
         BufferedImage img = new BufferedImage(baseMap.map[0].length, baseMap.map.length, BufferedImage.TYPE_INT_ARGB);
         double[][] ints = baseMap.getMap();
         Map2DZoomLevel.RangeNormalizer intensityNormalizer = curZoomLvl.getIntensityNormalizer();
-        for (int x = 0; x < baseMap.getWidth(); x++) {
-            for (int y = 0; y < baseMap.getHeight(); y++) {
-                img.setRGB(
-                        x,
-                        baseMap.getHeight() - y - 1,
-                        colorMap.getColor(intensityNormalizer.getScaled(ints[y][x])));
+        
+        // check if a hard cutoff is set
+        if (opts.getCutoff() > 0) {
+            double cutoff = opts.getCutoff();
+            for (int x = 0; x < baseMap.getWidth(); x++) {
+                for (int y = 0; y < baseMap.getHeight(); y++) {
+                    if (ints[y][x] > cutoff)
+                        img.setRGB(
+                                x, baseMap.getHeight() - y - 1,
+                                colorMap.getColor(intensityNormalizer.getScaled(ints[y][x])));
+                    else 
+                        img.setRGB(x, baseMap.getHeight() - y - 1, colorMap.getColor(0));
+                }
+            }
+        } else {
+            for (int x = 0; x < baseMap.getWidth(); x++) {
+                for (int y = 0; y < baseMap.getHeight(); y++) {
+                    img.setRGB(
+                            x, baseMap.getHeight() - y - 1,
+                            colorMap.getColor(intensityNormalizer.getScaled(ints[y][x])));
+                }
             }
         }
         

@@ -16,13 +16,16 @@
 package umich.ms.batmass.gui.viewers.map2d.components;
 
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.lang.ref.WeakReference;
+import java.text.ParseException;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TreeMap;
@@ -33,7 +36,9 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
+import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.ListDataEvent;
@@ -48,6 +53,7 @@ import umich.ms.batmass.gui.viewers.map2d.actions.UpdateMapAction;
 import umich.ms.datatypes.LCMSData;
 import umich.ms.datatypes.scan.IScan;
 import umich.ms.datatypes.scancollection.IScanCollection;
+import umich.ms.datatypes.scancollection.ScanIndex;
 import umich.ms.util.DoubleRange;
 import umich.ms.util.IntervalST;
 
@@ -63,6 +69,7 @@ public class Map2DToolbar extends BMToolBar implements PropertyChangeListener {
     protected DefaultComboBoxModel<DoubleRange> mzRangesModel;
     
     protected JCheckBox checkBoxDenoise;
+    protected JFormattedTextField fmtIntensityCutoff;
 
     protected JButton btnUpdate;
 
@@ -146,6 +153,15 @@ public class Map2DToolbar extends BMToolBar implements PropertyChangeListener {
         add(checkBoxDenoise);
         add(Box.createHorizontalStrut(toolbarBtnHSpacing));
         add(lblDenoise);
+        add(Box.createHorizontalStrut(toolbarBtnHSpacing));
+        
+        fmtIntensityCutoff = new JFormattedTextField(0.0d);
+        fmtIntensityCutoff.setMinimumSize(new Dimension(50, 25));
+        fmtIntensityCutoff.setPreferredSize(new Dimension(75, 25));
+        JLabel lblCutoff = new JLabel("Cut");
+        add(lblCutoff);
+        add(Box.createHorizontalStrut(toolbarBtnHSpacing));
+        add(fmtIntensityCutoff);
         add(Box.createHorizontalStrut(toolbarBtnHSpacing));
 
         // Link button
@@ -241,7 +257,6 @@ public class Map2DToolbar extends BMToolBar implements PropertyChangeListener {
         });
         cmbMsLevel.setEnabled(msLevels.length >= 2);
 
-
         // m/z range selector
         TreeMap<Integer, IntervalST<Double, TreeMap<Integer, IScan>>> rangeGrps = scans.getMapMsLevel2rangeGroups();
         IntervalST<Double, TreeMap<Integer, IScan>> mzRangesAtCurLevel = rangeGrps.get(curMsLevel);
@@ -305,6 +320,23 @@ public class Map2DToolbar extends BMToolBar implements PropertyChangeListener {
             }
         });
         checkBoxDenoise.setEnabled(true);
+        
+        // Cutoff value
+        fmtIntensityCutoff.setValue(options.getCutoff());
+        fmtIntensityCutoff.setEnabled(true);
+        fmtIntensityCutoff.setEditable(true);
+        fmtIntensityCutoff.addPropertyChangeListener("value", new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                Object newValue = evt.getNewValue();
+                if (newValue == null || (Double)newValue < 0) {
+                    fmtIntensityCutoff.setValue(0d);
+                    options.setCutoff(0d);
+                } else {
+                    options.setCutoff((Double)newValue);
+                }
+            }
+        });
 
         // Link button
         btnLinkDnD.setEnabled(true);
@@ -315,8 +347,10 @@ public class Map2DToolbar extends BMToolBar implements PropertyChangeListener {
         // make sure no children of the toolbar can be focused
         for (int i=0; i < getComponentCount(); i++) {
             Component comp = getComponent(i);
-            if (JComboBox.class.isAssignableFrom(comp.getClass())) {
-                // combo-boxes should be focusable, so you could use the keybord
+            if (JComboBox.class.isAssignableFrom(comp.getClass())
+                    || JFormattedTextField.class.isAssignableFrom(comp.getClass())
+                    || JTextField.class.isAssignableFrom(comp.getClass())) {
+                // combo-boxes and text boxes should be focusable, so you could use the keybord
                 comp.setFocusable(true);
             } else {
                 comp.setFocusable(false);

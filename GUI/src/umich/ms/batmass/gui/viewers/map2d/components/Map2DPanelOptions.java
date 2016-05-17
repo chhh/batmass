@@ -38,6 +38,29 @@ public class Map2DPanelOptions {
     public static final String PROP_MZRANGE = "mzRange";
     protected Boolean doDenoise;
     public static final String PROP_DODENOISE = "doDenoise";
+    protected double cutoff = 0.0;
+    public static final String PROP_CUTOFF = "cutoff";
+
+    /**
+     * Get the value of cutoff
+     *
+     * @return the value of cutoff
+     */
+    public double getCutoff() {
+        return cutoff;
+    }
+
+    /**
+     * Set the value of cutoff
+     *
+     * @param cutoff new value of cutoff
+     */
+    public void setCutoff(double cutoff) {
+        double oldCutoff = this.cutoff;
+        this.cutoff = cutoff;
+        propertyChangeSupport.firePropertyChange(PROP_CUTOFF, oldCutoff, cutoff);
+    }
+
 
     private transient final PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
 
@@ -45,6 +68,7 @@ public class Map2DPanelOptions {
         this.msLevel = null;
         this.mzRange = null;
         this.doDenoise = false;
+        this.cutoff = 0;
     }
 
     public Map2DPanelOptions(Integer msLevel, DoubleRange mzRange, Boolean doDenoise) {
@@ -155,14 +179,18 @@ public class Map2DPanelOptions {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 11 * hash + Objects.hashCode(this.msLevel);
-        hash = 11 * hash + Objects.hashCode(this.mzRange);
-        hash = 11 * hash + Objects.hashCode(this.doDenoise);
+        hash = 97 * hash + Objects.hashCode(this.msLevel);
+        hash = 97 * hash + Objects.hashCode(this.mzRange);
+        hash = 97 * hash + Objects.hashCode(this.doDenoise);
+        hash = 97 * hash + (int) (Double.doubleToLongBits(this.cutoff) ^ (Double.doubleToLongBits(this.cutoff) >>> 32));
         return hash;
     }
 
     @Override
     public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
         if (obj == null) {
             return false;
         }
@@ -170,6 +198,9 @@ public class Map2DPanelOptions {
             return false;
         }
         final Map2DPanelOptions other = (Map2DPanelOptions) obj;
+        if (Double.doubleToLongBits(this.cutoff) != Double.doubleToLongBits(other.cutoff)) {
+            return false;
+        }
         if (!Objects.equals(this.msLevel, other.msLevel)) {
             return false;
         }
@@ -182,5 +213,5 @@ public class Map2DPanelOptions {
         return true;
     }
 
-
+        
 }
