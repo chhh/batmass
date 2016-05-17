@@ -486,7 +486,7 @@ public class Map2DPanel extends JPanel {
                                 x, baseMap.getHeight() - y - 1,
                                 colorMap.getColor(intensityNormalizer.getScaled(ints[y][x])));
                     else 
-                        img.setRGB(x, baseMap.getHeight() - y - 1, colorMap.getColor(0));
+                        img.setRGB(x, baseMap.getHeight() - y - 1, colorMap.getColor(intensityNormalizer.getScaled(0)));
                 }
             }
         } else {

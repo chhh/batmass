@@ -82,6 +82,7 @@ public class Map2DZoomLevel {
                 getColorPalette(),
                 intensityNormalizer.getScaled(baseMap.getTotalIntensityMinNonZero()),
                 intensityNormalizer.getScaled(max));
+        int a = 1;
     }
     
     /**

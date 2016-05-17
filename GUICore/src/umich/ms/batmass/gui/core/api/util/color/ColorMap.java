@@ -40,7 +40,7 @@ public class ColorMap {
     /**
      * Creates a new ColorMap instance using the given internal color map
      * array and minimum and maximum index values.
-     * @param map the color palette, an int array of color values
+     * @param palette the color palette, an int array of color values
      * @param min the minimum value in the color map
      * @param max the maximum value in the color map
      */
