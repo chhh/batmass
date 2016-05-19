@@ -494,21 +494,26 @@ public class UmpireSeDataProvider extends AbstractCapabilityProvider{
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        UmpireSeIsoCluster f = features.get(rowIndex);
+        UmpireSeFeature f = features.get(rowIndex);
+        UmpireSeIsoCluster c = f.getCluster();
 
         switch (columnIndex) {
             case 0:
-                return f.getMz()[0];
+                return c.getMz()[0];
             case 1:
-                return f.getCharge();
+                return c.getCharge();
             case 2:
-                return f.getRtLo();
+                return c.getRtLo();
             case 3:
-                return f.getRtHi();
+                return c.getRtHi();
             case 4:
-                return f.getPeakArea();
+                return c.getScanNumLo();
             case 5:
-                return f.getPeakHeight();
+                return c.getScanNumHi();
+            case 6:
+                return c.getPeakArea();
+            case 7:
+                return c.getPeakHeight();
         }
         return null;
     }
@@ -520,26 +525,26 @@ public class UmpireSeDataProvider extends AbstractCapabilityProvider{
 &lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;@Override
 public MzRtRegion rowToRegion(int row) {
     if (row &amp;lt; 0 || row &amp;gt;= features.size())
-        throw new IllegalStateException(String.format(&amp;quot;Conversion from illegal
-          row index was requested, no such row index: [%s]&amp;quot;, row));
-    UmpireSeIsoCluster f = features.get(row);
+        throw new IllegalStateException(String.format(&amp;quot;Conversion from illegal row index was requested, no such row index: [%s]&amp;quot;, row));
+    UmpireSeFeature f = features.get(row);
+    UmpireSeIsoCluster c = f.getCluster();
     if (f == null) {
-        throw new IllegalStateException(String.format(&amp;quot;Should not happen, row
-          index was ok, but the feature at this id was null.&amp;quot;));
+        throw new IllegalStateException(String.format(&amp;quot;Should not happen, row index was ok, but the feature at this id was null.&amp;quot;));
     }
 
     // find the boundaries
     double mzLo = Double.POSITIVE_INFINITY;
     double mzHi = Double.NEGATIVE_INFINITY;
-    double[] masses = {f.getMz1(), f.getMz2(), f.getMz3(), f.getMz4()};
-    for (double m : masses) {
+    double[] masses = c.getMz();
+    for (int i = 0; i &amp;lt; c.getNumPeaks(); i++) {
+        double m = masses[i];
         if (m &amp;lt; mzLo)
             mzLo = m;
         if (m &amp;gt; mzHi)
             mzHi = m;
     }
-    double rtLo = f.getRtLo();
-    double rtHi = f.getRtHi();
+    double rtLo = c.getRtLo();
+    double rtHi = c.getRtHi();
 
     // add half a dalton to the sides and 30 seconds each way in RT direction
     return new MzRtRegion(mzLo-0.5, mzHi+0.5, rtLo-0.5, rtHi+0.5);
