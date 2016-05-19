@@ -29,8 +29,6 @@ import javax.swing.event.UndoableEditEvent;
 import org.netbeans.api.annotations.common.StaticResource;
 import org.netbeans.api.progress.BaseProgressUtils;
 import org.netbeans.api.progress.ProgressHandle;
-import org.netbeans.api.progress.ProgressHandleFactory;
-import org.netbeans.api.progress.ProgressUtils;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.UndoRedo;
 import org.openide.util.Exceptions;
@@ -45,7 +43,6 @@ import umich.ms.batmass.gui.viewers.map2d.components.Map2DComponent;
 import umich.ms.batmass.gui.viewers.map2d.components.Map2DPanel;
 import umich.ms.batmass.gui.viewers.map2d.components.Map2DZoomEventListener;
 import umich.ms.batmass.gui.viewers.map2d.events.ZoomEvent;
-import umich.ms.batmass.gui.viewers.map2d.todelete.ProcessingUmpireFeatures;
 import umich.ms.batmass.nbputils.SwingHelper;
 import umich.ms.datatypes.LCMSData;
 import umich.ms.datatypes.LCMSDataSubset;
@@ -70,7 +67,6 @@ public class Map2DTopComponent extends BMTopComponent implements Map2DZoomEventL
     
     protected Map2DComponent mapComponent = null;
     //protected volatile LCMSData data = null;
-    protected volatile ProcessingUmpireFeatures puf = null;
     protected static final LCMSDataSubset INITIAL_SUBSET = LCMSDataSubset.MS1_WITH_SPECTRA;
 
     /**
@@ -151,29 +147,6 @@ public class Map2DTopComponent extends BMTopComponent implements Map2DZoomEventL
         setDisplayName(path.getFileName().toString());
     }
 
-    
-    /**
-     * @deprecated This is not used anywhere anymore, I guess it's safe to delete this one.
-     * TODO: this has not been tested. The idea is that if the TC is still in the
-     * process of being opened, then the map2DPanel might not yet have been created.
-     * If so, we just set PUF for this TC, and it will automatically supply PUF
-     * for map2DPanel, when it's created. If map2DPanel exists, and it's PUF
-     * is different from the current one, then we replace it with the new one
-     * and cause a redraw by calling initMap().
-     * MOST LIKELY THIS WON'T WORK AS EXPECTED.
-     * @param puf 
-     */
-    @Deprecated
-    public void overlayFeatures(ProcessingUmpireFeatures puf) {
-        this.puf = puf;
-        if (mapComponent != null) {
-            Map2DPanel map2DPanel = mapComponent.getMap2DPanel();
-            if (map2DPanel != null && map2DPanel.getPuf() != puf) {
-                map2DPanel.setPuf(puf);
-                map2DPanel.initMap();
-            }
-        }
-    }
     
     public void addData(final FeatureTableModelData<?> data) {
         

@@ -29,23 +29,23 @@ import umich.ms.batmass.filesupport.files.types.umpireid.data.UmpireIdTreeTableM
  *
  * @author Dmitry Avtonomov
  */
-@NodeCapabilityRegistration(
-        fileCategory = SerFsLCMSIDAsIdsTypeResolver.CATEGORY,
-        fileType = SerFsLCMSIDAsIdsTypeResolver.TYPE
-)
-public class SerFsLCMSIDDataProvider extends AbstractCapabilityProvider {
+//@NodeCapabilityRegistration(
+//        fileCategory = SerFsLCMSIDAsIdsTypeResolver.CATEGORY,
+//        fileType = SerFsLCMSIDAsIdsTypeResolver.TYPE
+//)
+public class SerFsLCMSIDDataProvider { //extends AbstractCapabilityProvider {
 
-    @Override
-    public void addCapabilitiesToLookup(InstanceContent ic, FileDescriptor desc) {
-
-        URI uri = Utilities.toURI(desc.getPath().toFile());
-        UmpireIdSource source = new UmpireIdSource(uri);
-
-        UmpireIdData dataUmpireId = new UmpireIdData(source);
-        ic.add(dataUmpireId);
-
-        UmpireIdTreeTableModelData dataTreeTableModel = new UmpireIdTreeTableModelData(source);
-        ic.add(dataTreeTableModel);
-    }
+//    @Override
+//    public void addCapabilitiesToLookup(InstanceContent ic, FileDescriptor desc) {
+//
+//        URI uri = Utilities.toURI(desc.getPath().toFile());
+//        UmpireIdSource source = new UmpireIdSource(uri);
+//
+//        UmpireIdData dataUmpireId = new UmpireIdData(source);
+//        ic.add(dataUmpireId);
+//
+//        UmpireIdTreeTableModelData dataTreeTableModel = new UmpireIdTreeTableModelData(source);
+//        ic.add(dataTreeTableModel);
+//    }
 
 }

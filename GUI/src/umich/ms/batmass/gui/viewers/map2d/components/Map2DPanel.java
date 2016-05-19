@@ -15,7 +15,6 @@
  */
 package umich.ms.batmass.gui.viewers.map2d.components;
 
-import MSUmpire.PeakDataStructure.PeakCluster;
 import com.github.davidmoten.rtree.Entry;
 import java.awt.AlphaComposite;
 import java.awt.Color;
@@ -58,7 +57,6 @@ import umich.ms.batmass.gui.viewers.featuretable.messages.MsgFeatureClick;
 import umich.ms.batmass.gui.viewers.map2d.events.ZoomEvent;
 import umich.ms.batmass.gui.viewers.map2d.messages.MsgZoom1D;
 import umich.ms.batmass.gui.viewers.map2d.messages.MsgZoom2D;
-import umich.ms.batmass.gui.viewers.map2d.todelete.ProcessingUmpireFeatures;
 import umich.ms.batmass.nbputils.OutputWndPrinter;
 import umich.ms.datatypes.scan.IScan;
 import umich.ms.datatypes.scancollection.IScanCollection;
@@ -78,7 +76,6 @@ public class Map2DPanel extends JPanel {
             new DoubleRange(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
 
     protected IScanCollection scans;
-    protected ProcessingUmpireFeatures puf;
     private Features<ILCMSFeature2D<?>> features;
     /**
      * If this this map is larger than the available screen space, it will be
@@ -271,14 +268,6 @@ public class Map2DPanel extends JPanel {
         return zoomLevels;
     }
 
-    public ProcessingUmpireFeatures getPuf() {
-        return puf;
-    }
-
-    public void setPuf(ProcessingUmpireFeatures puf) {
-        this.puf = puf;
-    }
-    
     public void setFeatures(Features<ILCMSFeature2D<?>> features) {
         this.features = features;
     }
@@ -530,72 +519,6 @@ public class Map2DPanel extends JPanel {
             
         }
 
-
-        // if we have features available, need to draw them over the image
-        ProcessingUmpireFeatures pufs = getPuf();
-        List<PeakCluster> featuresInView = new ArrayList<>();
-        Color colorUnidentified = Color.RED;
-        Color colorIdentified = Color.GREEN;
-
-        double minRt = baseMap.getRtStart();
-        double maxRt = baseMap.getRtEnd();
-        double minMz = baseMap.getMzStart();
-        double maxMz = baseMap.getMzEnd();
-
-        double pcMinRt, pcMaxRt, pcMinMz, pcMaxMz;
-        int pcLastNonNullIdx;
-
-        // we check for MS level 1, because I don't yet know how to get MS2 features from CC datastructure.
-        if (pufs != null && getCurrentZoomLevel().getMsLevel() == 1) {
-            for (PeakCluster pc : pufs.getPeakClusters()) {
-                // start iterating from 1, because element [0] should never be null
-                for (pcLastNonNullIdx = 1; pcLastNonNullIdx < pc.IsoPeakIndex.length; pcLastNonNullIdx++) {
-                    if (pc.IsoPeakIndex[pcLastNonNullIdx] == 0) {
-                        break;
-                    }
-                }
-                pcLastNonNullIdx--;
-
-                pcMinMz = pc.mz[0];
-                pcMaxMz = pc.mz[pcLastNonNullIdx];
-                pcMinRt = pc.startRT;
-                pcMaxRt = pc.endRT;
-                if (pcMaxRt > minRt && pcMinRt < maxRt && pcMaxMz > minMz && pcMinMz < maxMz) {
-                    featuresInView.add(pc);
-                }
-            }
-
-            Graphics2D g = (Graphics2D) img.getGraphics();
-            double widthAddon;
-            for (PeakCluster pc : featuresInView) {
-                widthAddon = 30d * pc.mz[0] / 1e6;
-                for (pcLastNonNullIdx = 1; pcLastNonNullIdx < pc.IsoPeakIndex.length; pcLastNonNullIdx++) {
-                    if (pc.IsoPeakIndex[pcLastNonNullIdx] == 0) {
-                        break;
-                    }
-                }
-                pcLastNonNullIdx--;
-
-                pcMinMz = pc.mz[0];
-                pcMaxMz = pc.mz[pcLastNonNullIdx];
-                pcMinRt = pc.startRT;
-                pcMaxRt = pc.endRT;
-                Rectangle featureRect = baseMap.convertMzRtBoxToPixelCoords(pcMinMz, pcMaxMz, pcMinRt, pcMaxRt, widthAddon);
-                if (!pc.Identified) {
-                    g.setColor(colorUnidentified);
-                } else {
-                    g.setColor(colorIdentified);
-                }
-                g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, 0.3f));
-                g.fill(featureRect);
-                g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP));
-                g.draw(featureRect);
-            }
-            g.dispose();
-        }
-        
-        
-        
         curZoomLvl.setImg(img);
         return img;
     }

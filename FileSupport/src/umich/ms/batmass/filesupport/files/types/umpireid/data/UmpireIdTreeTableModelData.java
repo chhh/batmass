@@ -27,25 +27,25 @@ import umich.ms.batmass.data.core.lcms.features.data.TreeTableModelData;
  *
  * @author Dmitry Avtonomov
  */
-public class UmpireIdTreeTableModelData extends TreeTableModelData<UmpireIds> {
-
-    public UmpireIdTreeTableModelData(DataSource<UmpireIds> source) {
-        super(source);
-    }
-
-    @Override
-    public BMOutlineModel create() {
-        UmpireIds data = this.getData();
-        if (data == null) {
-            throw new IllegalStateException("You must have loaded the data into the container"
-                    + " before calling create() to get OutlineModel");
-        }
-        
-        UmpireIdTreeModel treeModel = new UmpireIdTreeModel(data);
-        UmpireIdRowModel rowModel = new UmpireIdRowModel();
-        String firstColName = "Peptide ion";
-        UmpireIdOutlineModel outlineModel = new UmpireIdOutlineModel(treeModel, rowModel, true, firstColName);
-
-        return outlineModel;
-    }
+public class UmpireIdTreeTableModelData { //extends TreeTableModelData<UmpireIds> {
+//
+//    public UmpireIdTreeTableModelData(DataSource<UmpireIds> source) {
+//        super(source);
+//    }
+//
+//    @Override
+//    public BMOutlineModel create() {
+//        UmpireIds data = this.getData();
+//        if (data == null) {
+//            throw new IllegalStateException("You must have loaded the data into the container"
+//                    + " before calling create() to get OutlineModel");
+//        }
+//        
+//        UmpireIdTreeModel treeModel = new UmpireIdTreeModel(data);
+//        UmpireIdRowModel rowModel = new UmpireIdRowModel();
+//        String firstColName = "Peptide ion";
+//        UmpireIdOutlineModel outlineModel = new UmpireIdOutlineModel(treeModel, rowModel, true, firstColName);
+//
+//        return outlineModel;
+//    }
 }

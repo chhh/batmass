@@ -29,56 +29,56 @@ import umich.ms.batmass.data.core.lcms.features.data.BMOutlineModel;
  *
  * @author Dmitry Avtonomov
  */
-public class UmpireIdOutlineModel extends DefaultOutlineModel implements BMOutlineModel {
+public class UmpireIdOutlineModel { //extends DefaultOutlineModel implements BMOutlineModel {
 
-    public UmpireIdOutlineModel(TreeModel treeModel, RowModel rowModel, boolean largeModel, String nodesColumnLabel) {
-        super(treeModel, rowModel, largeModel, nodesColumnLabel);
-    }
-
-    @Override
-    public RenderDataProvider getRenderDataProvider() {
-        return new RenderDataProvider() {
-
-            @Override
-            public String getDisplayName(Object o) {
-                if (o instanceof UmpireId) {
-                    UmpireId id = (UmpireId) o;
-                    return id.buildKey();
-                }
-                if (o instanceof UmpirePSM) {
-                    UmpirePSM psm = (UmpirePSM) o;
-                    return String.format("%.4f[%+d] @ %.2f(#%d)",
-                            psm.getObservedPrecursorMz(), psm.getCharge(), psm.getRt(), psm.getScanNum());
-                }
-                
-                return "UNKNOWN";
-                //throw new IllegalStateException(String.format("Code should never reach this line. Class of o was: %s", o.getClass().getName()));
-            }
-
-            @Override
-            public boolean isHtmlDisplayName(Object o) {
-                return false;
-            }
-
-            @Override
-            public Color getBackground(Object o) {
-                return null;
-            }
-
-            @Override
-            public Color getForeground(Object o) {
-                return null;
-            }
-
-            @Override
-            public String getTooltipText(Object o) {
-                return null;
-            }
-
-            @Override
-            public Icon getIcon(Object o) {
-                return null;
-            }
-        };
-    }
+//    public UmpireIdOutlineModel(TreeModel treeModel, RowModel rowModel, boolean largeModel, String nodesColumnLabel) {
+//        super(treeModel, rowModel, largeModel, nodesColumnLabel);
+//    }
+//
+//    @Override
+//    public RenderDataProvider getRenderDataProvider() {
+//        return new RenderDataProvider() {
+//
+//            @Override
+//            public String getDisplayName(Object o) {
+//                if (o instanceof UmpireId) {
+//                    UmpireId id = (UmpireId) o;
+//                    return id.buildKey();
+//                }
+//                if (o instanceof UmpirePSM) {
+//                    UmpirePSM psm = (UmpirePSM) o;
+//                    return String.format("%.4f[%+d] @ %.2f(#%d)",
+//                            psm.getObservedPrecursorMz(), psm.getCharge(), psm.getRt(), psm.getScanNum());
+//                }
+//                
+//                return "UNKNOWN";
+//                //throw new IllegalStateException(String.format("Code should never reach this line. Class of o was: %s", o.getClass().getName()));
+//            }
+//
+//            @Override
+//            public boolean isHtmlDisplayName(Object o) {
+//                return false;
+//            }
+//
+//            @Override
+//            public Color getBackground(Object o) {
+//                return null;
+//            }
+//
+//            @Override
+//            public Color getForeground(Object o) {
+//                return null;
+//            }
+//
+//            @Override
+//            public String getTooltipText(Object o) {
+//                return null;
+//            }
+//
+//            @Override
+//            public Icon getIcon(Object o) {
+//                return null;
+//            }
+//        };
+//    }
 }

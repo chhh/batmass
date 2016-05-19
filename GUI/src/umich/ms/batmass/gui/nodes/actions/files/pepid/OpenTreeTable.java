@@ -18,17 +18,19 @@ package umich.ms.batmass.gui.nodes.actions.files.pepid;
 import java.awt.event.ActionEvent;
 import java.util.Collection;
 import javax.swing.Action;
+import javax.swing.ImageIcon;
+import org.netbeans.api.annotations.common.StaticResource;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
 import org.openide.awt.ActionRegistration;
+import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.Utilities;
 import umich.ms.batmass.data.core.lcms.features.data.TreeTableModelData;
 import umich.ms.batmass.filesupport.core.spi.nodes.NodeInfo;
 import umich.ms.batmass.gui.nodes.actions.files.features.FeaturesSubmenuView;
-import static umich.ms.batmass.gui.nodes.actions.files.features.OpenOutlineView.ICON;
 import umich.ms.batmass.gui.viewers.treetable.TreeTableTopComponent;
 import umich.ms.batmass.nbputils.actions.AbstractContextAwareAction;
 
@@ -53,6 +55,9 @@ import umich.ms.batmass.nbputils.actions.AbstractContextAwareAction;
 @NbBundle.Messages("CTL_OpenTreeTable=Table")
 @SuppressWarnings({"rawtypes"})
 public class OpenTreeTable extends AbstractContextAwareAction<TreeTableModelData> {
+    @StaticResource
+    private static final String ICON_PATH = "umich/ms/batmass/gui/resources/list.png";
+    public static final ImageIcon ICON = ImageUtilities.loadImageIcon(ICON_PATH, false);
 
     public OpenTreeTable() {
         this(Utilities.actionsGlobalContext());
