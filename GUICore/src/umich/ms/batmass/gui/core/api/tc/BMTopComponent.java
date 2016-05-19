@@ -62,11 +62,6 @@ public class BMTopComponent extends TopComponent {
         associateLookup(lkp);
     }
 
-//    @Override
-//    public Lookup getLookup() {
-//        return lkp;
-//    }
-
     /**
      * Just adds an object to the instance content of this TC.
      * @param o to be added

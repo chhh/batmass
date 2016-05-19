@@ -470,8 +470,6 @@ public class Map2DPanel extends JPanel {
         ColorMap colorMap = curZoomLvl.getColorMap();
         Map2DPanelOptions opts = getOptions();
 
-        // TODO: WARNING: ACHTUNG: this is a hack to evade a condition when the map is empty
-
         BufferedImage img = new BufferedImage(baseMap.map[0].length, baseMap.map.length, BufferedImage.TYPE_INT_ARGB);
         double[][] ints = baseMap.getMap();
         Map2DZoomLevel.RangeNormalizer intensityNormalizer = curZoomLvl.getIntensityNormalizer();
