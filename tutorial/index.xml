@@ -965,14 +965,16 @@ the latest version of NetBeans&lt;/a&gt; (which is 8.1
 as of this writing). You can select the &lt;em&gt;Java SE&lt;/em&gt; version among all downloads.&lt;/p&gt;
 
 &lt;ul&gt;
-&lt;li&gt;Download the platform files: &lt;a href=&#34;batmass-nbp-download-link&#34;&gt;from BatMass github repository&lt;/a&gt;.&lt;/li&gt;
+&lt;li&gt;Download the platform files: &lt;a href=&#34;https://github.com/chhh/batmass/releases/download/v.0.1.0/nb81-batmass.zip&#34;&gt;from BatMass github repository&lt;/a&gt;.&lt;/li&gt;
+&lt;li&gt;Unpack the downloaded archive, it contains four zip files&lt;/li&gt;
 &lt;li&gt;Unpack the following 3 files to the same location, e.g. &lt;code&gt;/&amp;lt;path&amp;gt;/nbp&lt;/code&gt;:
 
 &lt;ul&gt;
-&lt;li&gt;&lt;code&gt;netbeans-*-harness.zip&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;netbeans-*-ide.zip&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;netbeans-*-platform.zip&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;netbeans-...-harness.zip&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;netbeans-...-ide.zip&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;netbeans-...-platform.zip&lt;/code&gt;&lt;/li&gt;
 &lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;Do not unpack &lt;code&gt;netbeans-8.1-...-platform-src.zip&lt;/code&gt;&lt;/li&gt;
 &lt;li&gt;You should now have &lt;code&gt;/&amp;lt;path&amp;gt;/nbp/harness&lt;/code&gt;, &lt;code&gt;/&amp;lt;path&amp;gt;/nbp/ide&lt;/code&gt;,
 &lt;code&gt;/&amp;lt;path&amp;gt;/nbp/platform&lt;/code&gt;&lt;/li&gt;
 &lt;li&gt;Start the NetBeans IDE.&lt;/li&gt;
