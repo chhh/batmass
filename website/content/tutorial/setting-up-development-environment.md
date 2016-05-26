@@ -43,11 +43,13 @@ _ItelliJ_ as well, but we will not be covering this option, so [go ahead and get
 the latest version of NetBeans](https://netbeans.org/downloads/) (which is 8.1
 as of this writing). You can select the _Java SE_ version among all downloads.
 
-* Download the platform files: [from BatMass github repository](batmass-nbp-download-link).
+* Download the platform files: [from BatMass github repository](https://github.com/chhh/batmass/releases/download/v.0.1.0/nb81-batmass.zip).
+* Unpack the downloaded archive, it contains four zip files
 * Unpack the following 3 files to the same location, e.g. `/<path>/nbp`:
-  * `netbeans-*-harness.zip`
-  * `netbeans-*-ide.zip`
-  * `netbeans-*-platform.zip`
+  * `netbeans-...-harness.zip`
+  * `netbeans-...-ide.zip`
+  * `netbeans-...-platform.zip`
+* Do not unpack `netbeans-8.1-...-platform-src.zip`
 * You should now have `/<path>/nbp/harness`, `/<path>/nbp/ide`,
 `/<path>/nbp/platform`
 * Start the NetBeans IDE.
@@ -140,7 +142,3 @@ If all is well and you can start the project, you should also be able to
 create the installers for it. Right click `BatMass` project, `Package as ->
 Installers`. This is a time-consuming process, when done, you'll find the
 installers for different platforms in `batmass-projects/batmass/dist`.
-
-
-
-[batmass-nbp-download-link]: https://github.com/chhh/batmass/releases/download/v.0.04/nb81-batmass.tar
