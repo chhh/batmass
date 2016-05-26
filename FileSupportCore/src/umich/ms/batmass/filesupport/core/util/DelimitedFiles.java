@@ -109,6 +109,18 @@ public class DelimitedFiles {
             parser.parse(curNumberIdx, -result, lastNumberLen, lastDotPos);
         }
     }
+    
+    
+    public static void readLineOfNumbersSlow(final String line, final char delimiter, StringParsingDelegate parser) {
+        String[] split = line.split(new String(new char[] {delimiter}));
+        for (int i = 0; i < split.length; i++) {
+            parser.parse(i, split[i]);
+        }
+    }
+    
+    public abstract static class StringParsingDelegate {
+        public abstract void parse(final int idx, String s);
+    }
 
     public abstract static class NumberParsingDelegate {
         public abstract void parse(final int idx, int number, int length, int decimalPos);

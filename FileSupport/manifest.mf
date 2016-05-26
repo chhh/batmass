@@ -3,5 +3,5 @@ OpenIDE-Module: umich.ms.batmass.filesupport
 OpenIDE-Module-Install: umich/ms/batmass/filesupport/Installer.class
 OpenIDE-Module-Layer: umich/ms/batmass/filesupport/layer.xml
 OpenIDE-Module-Localizing-Bundle: umich/ms/batmass/filesupport/Bundle.properties
-OpenIDE-Module-Specification-Version: 1.0
+OpenIDE-Module-Specification-Version: 1.0.1
 

@@ -81,14 +81,16 @@ public class UmpireSeIsoClusters {
         findHeaderIndex(headers, COL_NAME_MZ4, colMapping, 8);
         findHeaderIndex(headers, COL_NAME_PEAK_HEIGHT, colMapping, 9);
         findHeaderIndex(headers, COL_NAME_PEAK_AREA, colMapping, 10);
-        UmpireSeNumberParser parser = new UmpireSeNumberParser(colMapping);
+        //UmpireSeNumberParser parser = new UmpireSeNumberParser(colMapping);
+        UmpireSeSlowNumberParser parser = new UmpireSeSlowNumberParser(colMapping);
         
         UmpireSeIsoClusters result = new UmpireSeIsoClusters();
         List<UmpireSeIsoCluster> clusters = result.getClusters();
         try (BufferedReader br = new BufferedReader(new FileReader(path.toFile()))) {
             String line = br.readLine(); // skip the first line
             while ((line = br.readLine()) != null) {
-                DelimitedFiles.readLineOfNumbers(line, ',', '.', parser);
+                //DelimitedFiles.readLineOfNumbers(line, ',', '.', parser);
+                DelimitedFiles.readLineOfNumbersSlow(line, ',', parser);
                 UmpireSeIsoCluster p = parser.cluster;
                 UmpireSeIsoCluster c = new UmpireSeIsoCluster();
                 c.charge = p.charge;
