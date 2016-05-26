@@ -23,6 +23,8 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import javax.swing.ComboBoxModel;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
@@ -39,6 +41,7 @@ import umich.ms.batmass.colorpicker.com.bric.swing.ColorPicker;
 import umich.ms.batmass.gui.core.api.util.color.ColorHelper;
 import umich.ms.batmass.gui.core.components.util.textinput.DocumentFilters;
 import umich.ms.batmass.gui.viewers.map2d.components.BaseMap2D;
+import umich.ms.batmass.gui.viewers.map2d.norm.RangeNormalizers;
 import umich.ms.batmass.nbputils.config.BmConfig;
 
 
@@ -68,6 +71,14 @@ final class Map2DOptionsPanel extends javax.swing.JPanel {
                 }
             }
         });
+    }
+
+    private ComboBoxModel<String> createIntensityNormComboModel() {
+        DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
+        model.addElement(RangeNormalizers.LOG.name());
+        model.addElement(RangeNormalizers.SQUARE_ROOT.name());
+        model.addElement(RangeNormalizers.NONE.name());
+        return model;
     }
 
     private static class ColorListModel extends DefaultListModel<Color> {
@@ -108,7 +119,7 @@ final class Map2DOptionsPanel extends javax.swing.JPanel {
 
         panelColors = new javax.swing.JPanel();
         colorScrollPane = new javax.swing.JScrollPane();
-        colorList = new javax.swing.JList<Color>();
+        colorList = new javax.swing.JList<>();
         btnMoveColorUp = new javax.swing.JButton();
         btnMoveDown = new javax.swing.JButton();
         btnAddColor = new javax.swing.JButton();
@@ -121,6 +132,8 @@ final class Map2DOptionsPanel extends javax.swing.JPanel {
         checkBoxBasePeak = new javax.swing.JCheckBox();
         checkBoxProfileModeGapFilling = new javax.swing.JCheckBox();
         checkBoxMzCloseZoomInterp = new javax.swing.JCheckBox();
+        comboIntensityNorm = new javax.swing.JComboBox<>();
+        jLabel1 = new javax.swing.JLabel();
         panelMisc = new javax.swing.JPanel();
         btnReset = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
@@ -266,6 +279,10 @@ final class Map2DOptionsPanel extends javax.swing.JPanel {
             }
         });
 
+        comboIntensityNorm.setModel(createIntensityNormComboModel());
+
+        org.openide.awt.Mnemonics.setLocalizedText(jLabel1, org.openide.util.NbBundle.getMessage(Map2DOptionsPanel.class, "Map2DOptionsPanel.jLabel1.text")); // NOI18N
+
         javax.swing.GroupLayout panel2DMapOptionsLayout = new javax.swing.GroupLayout(panel2DMapOptions);
         panel2DMapOptions.setLayout(panel2DMapOptionsLayout);
         panel2DMapOptionsLayout.setHorizontalGroup(
@@ -273,23 +290,37 @@ final class Map2DOptionsPanel extends javax.swing.JPanel {
             .addGroup(panel2DMapOptionsLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(panel2DMapOptionsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(checkBoxInterpRt, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(checkBoxBasePeak, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(checkBoxProfileModeGapFilling, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(checkBoxMzCloseZoomInterp, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panel2DMapOptionsLayout.createSequentialGroup()
+                        .addComponent(checkBoxInterpRt)
+                        .addGap(18, 18, 18)
+                        .addComponent(checkBoxBasePeak)
+                        .addGap(18, 18, 18)
+                        .addComponent(checkBoxProfileModeGapFilling)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(panel2DMapOptionsLayout.createSequentialGroup()
+                        .addGroup(panel2DMapOptionsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(panel2DMapOptionsLayout.createSequentialGroup()
+                                .addComponent(jLabel1)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(comboIntensityNorm, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(checkBoxMzCloseZoomInterp))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
         panel2DMapOptionsLayout.setVerticalGroup(
             panel2DMapOptionsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panel2DMapOptionsLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(checkBoxInterpRt)
+                .addContainerGap(10, Short.MAX_VALUE)
+                .addGroup(panel2DMapOptionsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(checkBoxInterpRt)
+                    .addComponent(checkBoxBasePeak)
+                    .addComponent(checkBoxProfileModeGapFilling))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(checkBoxMzCloseZoomInterp)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(checkBoxBasePeak)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(checkBoxProfileModeGapFilling)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(checkBoxMzCloseZoomInterp))
+                .addGroup(panel2DMapOptionsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(comboIntensityNorm, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel1))
+                .addGap(21, 21, 21))
         );
 
         panelMisc.setBorder(javax.swing.BorderFactory.createTitledBorder(org.openide.util.NbBundle.getMessage(Map2DOptionsPanel.class, "Map2DOptionsPanel.panelMisc.border.title"))); // NOI18N
@@ -363,22 +394,6 @@ final class Map2DOptionsPanel extends javax.swing.JPanel {
             colorList.setSelectedIndex(prevColorIdx);
         }
     }//GEN-LAST:event_btnMoveColorUpActionPerformed
-
-    private void checkBoxInterpRtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkBoxInterpRtActionPerformed
-        controller.changed();
-    }//GEN-LAST:event_checkBoxInterpRtActionPerformed
-
-    private void checkBoxBasePeakActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkBoxBasePeakActionPerformed
-        controller.changed();
-    }//GEN-LAST:event_checkBoxBasePeakActionPerformed
-
-    private void checkBoxProfileModeGapFillingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkBoxProfileModeGapFillingActionPerformed
-        controller.changed();
-    }//GEN-LAST:event_checkBoxProfileModeGapFillingActionPerformed
-
-    private void checkBoxMzCloseZoomInterpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkBoxMzCloseZoomInterpActionPerformed
-        controller.changed();
-    }//GEN-LAST:event_checkBoxMzCloseZoomInterpActionPerformed
 
     private void btnMoveDownActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMoveDownActionPerformed
         controller.changed();
@@ -481,6 +496,22 @@ final class Map2DOptionsPanel extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_btnResetActionPerformed
 
+    private void checkBoxMzCloseZoomInterpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkBoxMzCloseZoomInterpActionPerformed
+        controller.changed();
+    }//GEN-LAST:event_checkBoxMzCloseZoomInterpActionPerformed
+
+    private void checkBoxProfileModeGapFillingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkBoxProfileModeGapFillingActionPerformed
+        controller.changed();
+    }//GEN-LAST:event_checkBoxProfileModeGapFillingActionPerformed
+
+    private void checkBoxBasePeakActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkBoxBasePeakActionPerformed
+        controller.changed();
+    }//GEN-LAST:event_checkBoxBasePeakActionPerformed
+
+    private void checkBoxInterpRtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkBoxInterpRtActionPerformed
+        controller.changed();
+    }//GEN-LAST:event_checkBoxInterpRtActionPerformed
+
     void load() throws ConfigurationException, IOException {
         config.clear();
         config = Map2DOptions.getInstance().getConfig();
@@ -507,6 +538,8 @@ final class Map2DOptionsPanel extends javax.swing.JPanel {
         }
         colorList.setModel(colorListModel);
 //        colorList.setModel(new ColorListModel(getColorsFromConfig(config)));
+
+        comboIntensityNorm.setSelectedItem(config.getString("intensityNormalizer"));
     }
 
     private void updateConfigToUIState() {
@@ -516,6 +549,7 @@ final class Map2DOptionsPanel extends javax.swing.JPanel {
         config.setProperty("doProfileModeGapFilling", checkBoxProfileModeGapFilling.isSelected());
         config.setProperty("colorLevels", Integer.parseInt(textFieldNumColors.getText()));
         config.setProperty("colorPivots", getColorsFromUI());
+        config.setProperty("intensityNormalizer", comboIntensityNorm.getModel().getSelectedItem());
     }
 
     void store() throws ConfigurationException, IOException {
@@ -559,7 +593,9 @@ final class Map2DOptionsPanel extends javax.swing.JPanel {
     private javax.swing.JCheckBox checkBoxProfileModeGapFilling;
     private javax.swing.JList<Color> colorList;
     private javax.swing.JScrollPane colorScrollPane;
+    private javax.swing.JComboBox<String> comboIntensityNorm;
     private javax.swing.JButton jButton1;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel panel2DMapOptions;
     private javax.swing.JPanel panelColors;

@@ -15,6 +15,7 @@
  */
 package umich.ms.batmass.gui.viewers.map2d.components;
 
+import umich.ms.batmass.gui.viewers.map2d.norm.RangeNormalizer;
 import com.github.davidmoten.rtree.Entry;
 import java.awt.AlphaComposite;
 import java.awt.Color;
@@ -461,7 +462,7 @@ public class Map2DPanel extends JPanel {
 
         BufferedImage img = new BufferedImage(baseMap.map[0].length, baseMap.map.length, BufferedImage.TYPE_INT_ARGB);
         double[][] ints = baseMap.getMap();
-        Map2DZoomLevel.RangeNormalizer intensityNormalizer = curZoomLvl.getIntensityNormalizer();
+        RangeNormalizer intensityNormalizer = curZoomLvl.getIntensityNormalizer();
         
         // check if a hard cutoff is set
         if (opts.getCutoff() > 0) {

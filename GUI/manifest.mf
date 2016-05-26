@@ -2,5 +2,5 @@ Manifest-Version: 1.0
 OpenIDE-Module: umich.ms.batmass.gui
 OpenIDE-Module-Layer: umich/ms/batmass/gui/layer.xml
 OpenIDE-Module-Localizing-Bundle: umich/ms/batmass/gui/Bundle.properties
-OpenIDE-Module-Specification-Version: 1.0
+OpenIDE-Module-Specification-Version: 1.1.0
 

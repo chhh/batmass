@@ -15,13 +15,20 @@
  */
 package umich.ms.batmass.gui.viewers.map2d.components;
 
+import umich.ms.batmass.gui.viewers.map2d.norm.RangeNormalizer;
 import java.awt.Color;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
+import org.apache.commons.configuration.CompositeConfiguration;
+import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.math3.util.FastMath;
 import umich.ms.batmass.gui.core.api.data.MzRtRegion;
 import umich.ms.batmass.gui.core.api.util.color.ColorMap;
+import umich.ms.batmass.gui.viewers.map2d.norm.RangeNormalizers;
+import umich.ms.batmass.gui.viewers.map2d.options.Map2DOptions;
 import umich.ms.datatypes.scancollection.IScanCollection;
 import umich.ms.util.Interval1D;
 
@@ -119,12 +126,29 @@ public class Map2DZoomLevel {
         initMapAxesColors(screenBounds, mapDimensions, scans, msLevel, precursorMzRange, doDenoise);
         img = null;
     }
+    
+    /**
+     * TODO: this is a rather ugly solution overall, needs refactoring.
+     * @throws ConfigurationException
+     * @throws IOException
+     */
+    private void setStaticVarsFromConfig() throws ConfigurationException, IOException {
+        
+        
+    }
 
-    private Map2DZoomLevel.RangeNormalizer createNormalizer(double minNonZero, double max) {
+    private RangeNormalizer createNormalizer(double minNonZero, double max) {
         double curRange = max - minNonZero;
+        
+        CompositeConfiguration config = Map2DOptions.getInstance().getConfig();
+        // TODO: the default value is set here, in case the user config is messed up
+        String normalizerName = config.getString("intensityNormalizer", "LOG");
 
-        double base = FastMath.exp((FastMath.log(max) - FastMath.log(minNonZero)) / targetRange);
-        return new RangeNormalizerImplLog(base);
+        RangeNormalizers norm = RangeNormalizers.valueOf(normalizerName);
+        RangeNormalizer rangeNormalizer = norm.getRangeNormalizer();
+        rangeNormalizer.configure(max, minNonZero, targetRange);
+        
+        return rangeNormalizer;
 //        return new RangeNormalizerImplDoNothing();
 
         // TODO: replaced this version, which was not doing any normalization in the intensity
@@ -144,62 +168,7 @@ public class Map2DZoomLevel {
 
     }
 
-    public static class RangeNormalizerImplDoNothing implements RangeNormalizer {
-        @Override
-        public double getScaled(double x) {
-            return x;
-        }
-
-        @Override
-        public double getOriginal(double x) {
-            return x;
-        }
-
-        @Override
-        public boolean equals(RangeNormalizer other) {
-            return other instanceof RangeNormalizerImplDoNothing;
-        }
-    }
-
-    public static class RangeNormalizerImplLog implements RangeNormalizer {
-        private final double base;
-
-        public RangeNormalizerImplLog(double base) {
-            this.base = base;
-        }
-
-        public double getBase() {
-            return base;
-        }
-
-        @Override
-        public double getScaled(double x) {
-            return FastMath.log(base, x);
-            //return FastMath.log(x)/FastMath.log(base);
-            //return Math.log(x)/Math.log(base);
-        }
-
-        @Override
-        public double getOriginal(double x) {
-            return FastMath.pow(base, x);
-        }
-
-        @Override
-        public boolean equals(RangeNormalizer other) {
-            if (other instanceof RangeNormalizerImplLog) {
-                RangeNormalizerImplLog norm = (RangeNormalizerImplLog)other;
-                return norm.getBase() == this.getBase();
-            }
-            return false;
-        }
-    }
-
-    public static interface RangeNormalizer {
-        public double getScaled(double x);
-        public double getOriginal(double x);
-        public boolean equals(RangeNormalizer other);
-    }
-
+    
     public Rectangle getScreenBounds() {
         return new Rectangle(width, height);
     }
