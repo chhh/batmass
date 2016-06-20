@@ -31,6 +31,9 @@ import umich.ms.batmass.gui.core.components.util.interfaces.SpectrumFile;
  * $Revision: 1.9 $ $Date: 2009/08/17 15:15:28 $
  */
 /**
+ * This file was originally a part of compomics-utilities: https://github.com/compomics/compomics-utilities.
+ * The file might have been modified compared to the orignal. 
+ * 
  * This class presents a JPanel that will hold and display a mass spectrum in
  * centroid or profile mode.
  *
