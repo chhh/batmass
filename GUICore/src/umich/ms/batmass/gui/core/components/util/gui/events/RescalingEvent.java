@@ -25,6 +25,9 @@ import javax.swing.JPanel;
  */
 
 /**
+ * This file was originally a part of compomics-utilities: https://github.com/compomics/compomics-utilities.
+ * The file might have been modified compared to the orignal. 
+ * 
  * This class implements a resizing event that occurred on a SpectrumPanel.
  *
  * @author Lennart Martens
