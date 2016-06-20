@@ -21,6 +21,9 @@ import javax.swing.border.EtchedBorder;
 import umich.ms.batmass.gui.core.components.base.GraphicsPanel;
 
 /**
+ * This file was originally a part of compomics-utilities: https://github.com/compomics/compomics-utilities.
+ * The file might have been modified compared to the orignal. 
+ * 
  * This class provides a JPanel that can display a chromatogram.
  *
  * @author Lennart Martens
