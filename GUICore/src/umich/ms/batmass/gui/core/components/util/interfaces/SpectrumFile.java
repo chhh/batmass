@@ -27,6 +27,9 @@ import java.util.HashMap;
  */
 
 /**
+ * This file was originally a part of compomics-utilities: https://github.com/compomics/compomics-utilities.
+ * The file might have been modified compared to the orignal. 
+ * 
  * This interface describes the behaviour for a spectrum file
  * (ie., PKL file, Mascot Generic file, dat file, ...).
  *
