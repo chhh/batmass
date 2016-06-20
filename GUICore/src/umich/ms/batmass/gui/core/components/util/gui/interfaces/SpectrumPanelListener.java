@@ -26,6 +26,9 @@ import umich.ms.batmass.gui.core.components.util.gui.events.RescalingEvent;
  */
 
 /**
+ * This file was originally a part of compomics-utilities: https://github.com/compomics/compomics-utilities.
+ * The file might have been modified compared to the orignal.
+ * 
  * This interface describes the behaviour for a listener that wants to receive information
  * about events that occurred on a SpectrumPanel.
  *
