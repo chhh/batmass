@@ -28,6 +28,9 @@ import javax.swing.JOptionPane;
 import javax.swing.JTable;
 
 /**
+ * This file was originally a part of compomics-utilities: https://github.com/compomics/compomics-utilities.
+ * The file might have been modified compared to the orignal. 
+ * 
  * Includes general help methods that are used by the other classes.
  *
  * @author Harald Barsnes
