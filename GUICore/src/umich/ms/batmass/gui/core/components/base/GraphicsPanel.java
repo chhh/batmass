@@ -48,6 +48,9 @@ import umich.ms.batmass.nbputils.OutputWndPrinter;
 import umich.ms.viewers.util.Util;
 
 /**
+ * This file was originally a part of compomics-utilities: https://github.com/compomics/compomics-utilities.
+ * The file might have been modified compared to the orignal. 
+ * 
  * This class presents a JPanel that will hold and display a mass spectrum in
  * centroid or profile mode, or a chromatogram.
  *
