@@ -11,6 +11,11 @@ imageClass: batmass-about-image
 ## About BatMass
 BatMass is a mass-spectrometry data visualization tool, with the main focus on being fast and interactive while providing comprehensive visualizations without any parameter tweaking. It is written in pure Java and built on top of the [NetBeans Platform](https://netbeans.org/features/platform/all-docs.html).
 
+### Referencing the work
+If you use BatMass for your research or work, please cite the following paper:  
+**[Avtonomov D.M. et al:
+J. Proteome Res. June 16, 2016.
+DOI: 10.1021/acs.jproteome.6b00021.](https://dx.doi.org/10.1021/acs.jproteome.6b00021)**
 
 ## Features
 - Support for the open standard _mzML_ and _mzXML_ mass spectrometry data types. We are hoping to bring native vendor format support as well.

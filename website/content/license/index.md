@@ -4,7 +4,7 @@ date: 2016-04-14T00:59:00-04:00
 title: License
 ---
 
-Copyright [2016] [Dmitry Avtonomov]
+Copyright 2016 Dmitry Avtonomov
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
