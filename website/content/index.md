@@ -9,13 +9,18 @@ imageClass: batmass-about-image
 
 
 ## About BatMass
-BatMass is a mass-spectrometry data visualization tool, with the main focus on being fast and interactive while providing comprehensive visualizations without any parameter tweaking. It is written in pure Java and built on top of the [NetBeans Platform](https://netbeans.org/features/platform/all-docs.html).
+BatMass is a mass-spectrometry data visualization tool, with the main focus on being fast and interactive while providing comprehensive visualizations without any parameter tweaking. It is written in pure Java and built on top of the [NetBeans Platform](https://netbeans.org/features/platform/all-docs.html). BatMass development is kindly supported by
+<span style='margin-right:5px'>
+  <a href='https://www.yourkit.com/java/profiler/index.jsp'>YourKit Java Profiler</a>
+</span>
+<img src='/images/yklogo-84x20.png' style='vertical-align:text-bottom'/>
 
 ### Referencing the work
 If you use BatMass for your research or work, please cite the following paper:  
 **[Avtonomov D.M. et al:
 J. Proteome Res. June 16, 2016.
 DOI: 10.1021/acs.jproteome.6b00021.](https://dx.doi.org/10.1021/acs.jproteome.6b00021)**
+
 
 ## Features
 - Support for the open standard _mzML_ and _mzXML_ mass spectrometry data types. We are hoping to bring native vendor format support as well.
@@ -26,6 +31,44 @@ DOI: 10.1021/acs.jproteome.6b00021.](https://dx.doi.org/10.1021/acs.jproteome.6b
 
 See the [getting started guide]({{< relref "getting-started/index.md" >}}) for instructions how to get
 it up and running.
+
+<!-- BatMass development is kindly supported by
+<span style='margin-right:5px'>
+  <a href='https://www.yourkit.com/java/profiler/index.jsp'>YourKit Java Profiler</a>
+</span>
+<img src='/images/yklogo-114x27.png' style='vertical-align:text-bottom'/>
+and is built with
+<span style='margin-right:5px'>
+  <a href=''>Intellij IDEA</a>
+</span>
+<img src='/images/intellij-idea-40x40.png' style='vertical-align:text-bottom'/>
+<span style='margin-right:5px'>
+  ,
+  <a href='https://netbeans.org/features/platform/all-docs.html'>NetBeans Platform</a>
+</span>
+<img src='/images/netbeans-logo-40x40.png'/>
+
+<table >
+  <tr>
+    <td style='vertical-align:middle'><img src='/images/yklogo-114x27.png'/></td>
+    <td style='vertical-align:middle'><a href='https://www.yourkit.com/java/profiler/index.jsp'>YourKit Java Profiler</a></td>
+  </tr>
+  <tr>
+    <td style='vertical-align:middle'><img src='/images/intellij-idea-40x40.png'/></td>
+    <td style='vertical-align:middle'><a href='https://www.jetbrains.com/idea/'>Intellij IDEA</a> IDE</td>
+  </tr>
+  <tr>
+    <td style='vertical-align:middle align:right'><img src='/images/netbeans-logo-40x40.png'/></td>
+    <td style='vertical-align:middle'><a href='https://netbeans.org/features/platform/all-docs.html'>NetBeans Platform</a> community</td>
+  </tr>
+</table> -->
+
+<!-- <img src='/images/yklogo-114x27.png' style='vertical-align:middle'/><span style='vertical-align:middle'>&nbsp;<a href='https://www.yourkit.com/java/profiler/index.jsp'>YourKit Java Profiler</a></span>   -->
+
+<!-- ![YourKit logo](/images/yklogo-114x27.png) [YourKit Java Profiler](https://www.yourkit.com/java/profiler/index.jsp)  
+![IDEA logo](/images/intellij-idea-40x40.png) [Intellij IDEA](https://www.jetbrains.com/idea/) IDE from [JetBrains](https://www.jetbrains.com/)  
+![NetBeans logo](/images/netbeans-logo-40x40.png) [NetBeans Platform](https://netbeans.org/features/platform/all-docs.html) community   -->
+
 
 
 ## Demo Video
