@@ -1296,7 +1296,11 @@ The startup configuration is stored in &lt;code&gt;&amp;lt;batmass-install-path&
 
 &lt;h2 id=&#34;about-batmass&#34;&gt;About BatMass&lt;/h2&gt;
 
-&lt;p&gt;BatMass is a mass-spectrometry data visualization tool, with the main focus on being fast and interactive while providing comprehensive visualizations without any parameter tweaking. It is written in pure Java and built on top of the &lt;a href=&#34;https://netbeans.org/features/platform/all-docs.html&#34;&gt;NetBeans Platform&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;BatMass is a mass-spectrometry data visualization tool, with the main focus on being fast and interactive while providing comprehensive visualizations without any parameter tweaking. It is written in pure Java and built on top of the &lt;a href=&#34;https://netbeans.org/features/platform/all-docs.html&#34;&gt;NetBeans Platform&lt;/a&gt;. BatMass development is kindly supported by
+&lt;span style=&#39;margin-right:5px&#39;&gt;
+  &lt;a href=&#39;https://www.yourkit.com/java/profiler/index.jsp&#39;&gt;YourKit Java Profiler&lt;/a&gt;
+&lt;/span&gt;
+&lt;img src=&#39;http://www.batmass.org/images/yklogo-84x20.png&#39; style=&#39;vertical-align:text-bottom&#39;/&gt;&lt;/p&gt;
 
 &lt;h3 id=&#34;referencing-the-work&#34;&gt;Referencing the work&lt;/h3&gt;
 
@@ -1317,6 +1321,43 @@ DOI: 10.1021/acs.jproteome.6b00021.&lt;/a&gt;&lt;/strong&gt;&lt;/p&gt;
 
 &lt;p&gt;See the &lt;a href=&#34;http://www.batmass.org/getting-started/&#34;&gt;getting started guide&lt;/a&gt; for instructions how to get
 it up and running.&lt;/p&gt;
+
+&lt;!-- BatMass development is kindly supported by
+&lt;span style=&#39;margin-right:5px&#39;&gt;
+  &lt;a href=&#39;https://www.yourkit.com/java/profiler/index.jsp&#39;&gt;YourKit Java Profiler&lt;/a&gt;
+&lt;/span&gt;
+&lt;img src=&#39;http://www.batmass.org/images/yklogo-114x27.png&#39; style=&#39;vertical-align:text-bottom&#39;/&gt;
+and is built with
+&lt;span style=&#39;margin-right:5px&#39;&gt;
+  &lt;a href=&#39;&#39;&gt;Intellij IDEA&lt;/a&gt;
+&lt;/span&gt;
+&lt;img src=&#39;http://www.batmass.org/images/intellij-idea-40x40.png&#39; style=&#39;vertical-align:text-bottom&#39;/&gt;
+&lt;span style=&#39;margin-right:5px&#39;&gt;
+  ,
+  &lt;a href=&#39;https://netbeans.org/features/platform/all-docs.html&#39;&gt;NetBeans Platform&lt;/a&gt;
+&lt;/span&gt;
+&lt;img src=&#39;http://www.batmass.org/images/netbeans-logo-40x40.png&#39;/&gt;
+
+&lt;table &gt;
+  &lt;tr&gt;
+    &lt;td style=&#39;vertical-align:middle&#39;&gt;&lt;img src=&#39;http://www.batmass.org/images/yklogo-114x27.png&#39;/&gt;&lt;/td&gt;
+    &lt;td style=&#39;vertical-align:middle&#39;&gt;&lt;a href=&#39;https://www.yourkit.com/java/profiler/index.jsp&#39;&gt;YourKit Java Profiler&lt;/a&gt;&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td style=&#39;vertical-align:middle&#39;&gt;&lt;img src=&#39;http://www.batmass.org/images/intellij-idea-40x40.png&#39;/&gt;&lt;/td&gt;
+    &lt;td style=&#39;vertical-align:middle&#39;&gt;&lt;a href=&#39;https://www.jetbrains.com/idea/&#39;&gt;Intellij IDEA&lt;/a&gt; IDE&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td style=&#39;vertical-align:middle align:right&#39;&gt;&lt;img src=&#39;http://www.batmass.org/images/netbeans-logo-40x40.png&#39;/&gt;&lt;/td&gt;
+    &lt;td style=&#39;vertical-align:middle&#39;&gt;&lt;a href=&#39;https://netbeans.org/features/platform/all-docs.html&#39;&gt;NetBeans Platform&lt;/a&gt; community&lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/table&gt; --&gt;
+
+&lt;!-- &lt;img src=&#39;http://www.batmass.org/images/yklogo-114x27.png&#39; style=&#39;vertical-align:middle&#39;/&gt;&lt;span style=&#39;vertical-align:middle&#39;&gt;&amp;nbsp;&lt;a href=&#39;https://www.yourkit.com/java/profiler/index.jsp&#39;&gt;YourKit Java Profiler&lt;/a&gt;&lt;/span&gt;   --&gt;
+
+&lt;!-- ![YourKit logo](/images/yklogo-114x27.png) [YourKit Java Profiler](https://www.yourkit.com/java/profiler/index.jsp)  
+![IDEA logo](/images/intellij-idea-40x40.png) [Intellij IDEA](https://www.jetbrains.com/idea/) IDE from [JetBrains](https://www.jetbrains.com/)  
+![NetBeans logo](/images/netbeans-logo-40x40.png) [NetBeans Platform](https://netbeans.org/features/platform/all-docs.html) community   --&gt;
 
 &lt;h2 id=&#34;demo-video&#34;&gt;Demo Video&lt;/h2&gt;
 
