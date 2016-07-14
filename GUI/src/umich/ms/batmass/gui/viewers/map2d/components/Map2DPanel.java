@@ -17,6 +17,7 @@ package umich.ms.batmass.gui.viewers.map2d.components;
 
 import umich.ms.batmass.gui.viewers.map2d.norm.RangeNormalizer;
 import com.github.davidmoten.rtree.Entry;
+import com.github.davidmoten.rtree.RTree;
 import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Container;
@@ -55,6 +56,8 @@ import umich.ms.batmass.gui.core.api.data.MzRtRegion;
 import umich.ms.batmass.gui.core.api.util.ScreenUtils;
 import umich.ms.batmass.gui.core.api.util.color.ColorMap;
 import umich.ms.batmass.gui.viewers.featuretable.messages.MsgFeatureClick;
+import umich.ms.batmass.gui.viewers.map2d.PassiveMap2DOverlay;
+import umich.ms.batmass.gui.viewers.map2d.PassiveMap2DOverlayProvider;
 import umich.ms.batmass.gui.viewers.map2d.events.ZoomEvent;
 import umich.ms.batmass.gui.viewers.map2d.messages.MsgZoom1D;
 import umich.ms.batmass.gui.viewers.map2d.messages.MsgZoom2D;
@@ -105,6 +108,8 @@ public class Map2DPanel extends JPanel {
     protected Map2DPanelOptions displayedOptions;
     // handling events/messages
     protected BusHandler busHandler;
+    
+    LinkedList<PassiveMap2DOverlayProvider> passiveOverlays;
 
     // these fields might go to the Options panel
     private static final double zoomCoef = 1.4d;
@@ -161,6 +166,8 @@ public class Map2DPanel extends JPanel {
             public void componentHidden(ComponentEvent e) {
             }
         });
+        
+        passiveOverlays = new LinkedList<>();
     }
 
     public BusHandler getBusHandler() {
@@ -277,6 +284,13 @@ public class Map2DPanel extends JPanel {
         return features;
     }
 
+    public void addPassiveOverlayProvider(PassiveMap2DOverlayProvider provider) {
+        passiveOverlays.add(provider);
+    }
+    
+    public boolean removePassiveOverlayProvider(PassiveMap2DOverlayProvider provider) {
+        return passiveOverlays.remove(provider);
+    }
 
     /**
      * The main method that should be called to initialize building the map
@@ -512,13 +526,20 @@ public class Map2DPanel extends JPanel {
                 
                 Rectangle featureRect = baseMap.convertMzRtBoxToPixelCoords(box.x1(), box.x2(), box.y1() + rtSpan, box.y2() + rtSpan, 0d);
                 g.setColor(feature.getColor());
-                g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, 0.15f));
+                g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, 0.1f));
                 g.fill(featureRect);
                 g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP));
                 g.draw(featureRect);
             }
             
         }
+        
+        // passive overlays
+        for (PassiveMap2DOverlayProvider overlayProvider : passiveOverlays) {
+            RTree<PassiveMap2DOverlay, com.github.davidmoten.rtree.geometry.Rectangle> index = overlayProvider.getIndex();
+        }
+        
+        
 
         curZoomLvl.setImg(img);
         return img;

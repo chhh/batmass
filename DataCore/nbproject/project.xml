@@ -40,11 +40,19 @@
                     </run-dependency>
                 </dependency>
                 <dependency>
+                    <code-name-base>umich.ms.batmass.libs.guavamini</code-name-base>
+                    <build-prerequisite/>
+                    <compile-dependency/>
+                    <run-dependency>
+                        <specification-version>0.1.1</specification-version>
+                    </run-dependency>
+                </dependency>
+                <dependency>
                     <code-name-base>umich.ms.batmass.libs.rtree</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>
                     <run-dependency>
-                        <specification-version>0.5.9</specification-version>
+                        <specification-version>0.7.999</specification-version>
                     </run-dependency>
                 </dependency>
                 <dependency>

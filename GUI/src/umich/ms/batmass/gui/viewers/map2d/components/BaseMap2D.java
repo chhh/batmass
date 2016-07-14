@@ -636,8 +636,6 @@ public final class BaseMap2D {
         return featureRect;
     }
 
-
-
     private void addPeakRaw(int x, int y, double intensity) {
         mapRaw[y][x] += intensity;
     }

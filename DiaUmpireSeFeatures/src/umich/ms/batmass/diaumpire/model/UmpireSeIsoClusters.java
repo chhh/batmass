@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import umich.ms.batmass.filesupport.core.util.DelimitedFiles;
+import umich.ms.batmass.nbputils.OutputWndPrinter;
 
 /**
  * A simple array-list storage for parsed LCMS features from Umpire PeakCluster csv files.
@@ -86,26 +87,34 @@ public class UmpireSeIsoClusters {
         
         UmpireSeIsoClusters result = new UmpireSeIsoClusters();
         List<UmpireSeIsoCluster> clusters = result.getClusters();
+        int cnt = 0;
         try (BufferedReader br = new BufferedReader(new FileReader(path.toFile()))) {
             String line = br.readLine(); // skip the first line
             while ((line = br.readLine()) != null) {
                 //DelimitedFiles.readLineOfNumbers(line, ',', '.', parser);
                 DelimitedFiles.readLineOfNumbersSlow(line, ',', parser);
                 UmpireSeIsoCluster p = parser.cluster;
-                UmpireSeIsoCluster c = new UmpireSeIsoCluster();
-                c.charge = p.charge;
+                cnt++;
                 for (int i = 0; i < p.mz.length; i++) {
-                    c.mz[i] = p.mz[i];
+                    if (p.mz[i] <= 0)
+                        continue;
+                    UmpireSeIsoCluster c = new UmpireSeIsoCluster();
+                    c.charge = p.charge;
+                    c.mz[0] = p.mz[i];
+                    c.peakArea = p.peakArea;
+                    c.peakHeight = p.peakHeight;
+                    c.rtHi = p.rtHi;
+                    c.rtLo = p.rtLo;
+                    c.scanNumHi = p.scanNumHi;
+                    c.scanNumLo = p.scanNumLo;
+                    clusters.add(c);
                 }
-                c.peakArea = p.peakArea;
-                c.peakHeight = p.peakHeight;
-                c.rtHi = p.rtHi;
-                c.rtLo = p.rtLo;
-                c.scanNumHi = p.scanNumHi;
-                c.scanNumLo = p.scanNumLo;
-                clusters.add(c);
             }
         }
+        
+        OutputWndPrinter.printOut("DIA-Umpire", 
+                String.format("DIA-Umpire feature loader, loaded %d LCMS features as single traces "
+                        + "from %d original isotopic clusters.", result.clusters.size(), cnt));
         return result;
     }
     
