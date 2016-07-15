@@ -37,6 +37,7 @@ import umich.ms.batmass.data.core.lcms.features.ILCMSFeature2D;
 import umich.ms.batmass.gui.core.api.BMComponentJPanel;
 import umich.ms.batmass.gui.core.api.comm.eventbus.ViewerLinkSupport;
 import umich.ms.batmass.gui.viewers.map2d.actions.GoToAction;
+import umich.ms.batmass.gui.viewers.map2d.actions.HomeMapAction;
 import umich.ms.batmass.gui.viewers.map2d.actions.UpdateMapAction;
 import umich.ms.datatypes.LCMSData;
 import umich.ms.datatypes.LCMSDataSubset;
@@ -58,6 +59,7 @@ public class Map2DComponent extends BMComponentJPanel {
     // actions
     private UpdateMapAction updateAction;
     private GoToAction goToAction;
+    private HomeMapAction homeAction;
 
     // message bus
     protected ViewerLinkSupport linkSupport;
@@ -169,10 +171,12 @@ public class Map2DComponent extends BMComponentJPanel {
         am.put(UpdateMapAction.ACTION_ID, updateAction);
         goToAction = new GoToAction(map2DPanel);
         am.put(GoToAction.ACTION_ID, goToAction);
+        homeAction = new HomeMapAction(map2DPanel);
         
         InputMap im = this.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
         im.put(UpdateMapAction.ACCELERATOR,  UpdateMapAction.ACTION_ID);
         im.put(GoToAction.ACCELERATOR, GoToAction.ACTION_ID);
+        im.put(HomeMapAction.ACCELERATOR, HomeMapAction.ACTION_ID);
         
     }
     

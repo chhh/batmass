@@ -40,6 +40,7 @@ public class Map2DPanelOptions {
     public static final String PROP_DODENOISE = "doDenoise";
     protected double cutoff = 0.0;
     public static final String PROP_CUTOFF = "cutoff";
+    protected Boolean ms2Overlay;
 
     /**
      * Get the value of cutoff
@@ -69,9 +70,11 @@ public class Map2DPanelOptions {
         this.mzRange = null;
         this.doDenoise = false;
         this.cutoff = 0;
+        this.ms2Overlay = false;
     }
 
     public Map2DPanelOptions(Integer msLevel, DoubleRange mzRange, Boolean doDenoise) {
+        this();
         this.msLevel = msLevel;
         this.mzRange = mzRange;
         this.doDenoise = doDenoise;
@@ -158,6 +161,16 @@ public class Map2DPanelOptions {
         propertyChangeSupport.firePropertyChange(PROP_DODENOISE, oldIsDoDenoise, doDenoise);
     }
 
+    public Boolean getMs2Overlay() {
+        return ms2Overlay;
+    }
+
+    public void setMs2Overlay(Boolean ms2Overlay) {
+        this.ms2Overlay = ms2Overlay;
+    }
+    
+    
+
     /**
      * Add PropertyChangeListener.
      *
@@ -178,11 +191,12 @@ public class Map2DPanelOptions {
 
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 97 * hash + Objects.hashCode(this.msLevel);
-        hash = 97 * hash + Objects.hashCode(this.mzRange);
-        hash = 97 * hash + Objects.hashCode(this.doDenoise);
-        hash = 97 * hash + (int) (Double.doubleToLongBits(this.cutoff) ^ (Double.doubleToLongBits(this.cutoff) >>> 32));
+        int hash = 5;
+        hash = 79 * hash + Objects.hashCode(this.msLevel);
+        hash = 79 * hash + Objects.hashCode(this.mzRange);
+        hash = 79 * hash + Objects.hashCode(this.doDenoise);
+        hash = 79 * hash + (int) (Double.doubleToLongBits(this.cutoff) ^ (Double.doubleToLongBits(this.cutoff) >>> 32));
+        hash = 79 * hash + Objects.hashCode(this.ms2Overlay);
         return hash;
     }
 
@@ -210,8 +224,10 @@ public class Map2DPanelOptions {
         if (!Objects.equals(this.doDenoise, other.doDenoise)) {
             return false;
         }
+        if (!Objects.equals(this.ms2Overlay, other.ms2Overlay)) {
+            return false;
+        }
         return true;
     }
-
         
 }

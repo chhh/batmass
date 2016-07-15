@@ -23,9 +23,7 @@ import java.awt.event.ItemListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.lang.ref.WeakReference;
-import java.text.ParseException;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TreeMap;
@@ -53,7 +51,6 @@ import umich.ms.batmass.gui.viewers.map2d.actions.UpdateMapAction;
 import umich.ms.datatypes.LCMSData;
 import umich.ms.datatypes.scan.IScan;
 import umich.ms.datatypes.scancollection.IScanCollection;
-import umich.ms.datatypes.scancollection.ScanIndex;
 import umich.ms.util.DoubleRange;
 import umich.ms.util.IntervalST;
 
@@ -72,6 +69,7 @@ public class Map2DToolbar extends BMToolBar implements PropertyChangeListener {
     protected JFormattedTextField fmtIntensityCutoff;
 
     protected JButton btnUpdate;
+    protected JButton btnHome;
 
     protected JButton btnGoTo;
 
@@ -145,6 +143,11 @@ public class Map2DToolbar extends BMToolBar implements PropertyChangeListener {
         // GoTo scan button
         btnGoTo = new JButton();
         add(btnGoTo);
+        add(Box.createHorizontalStrut(toolbarBtnHSpacing));
+        
+        // Home button (zoom out)
+        btnHome = new JButton();
+        add (btnHome);
         add(Box.createHorizontalStrut(toolbarBtnHSpacing));
         
         checkBoxDenoise = new JCheckBox();
