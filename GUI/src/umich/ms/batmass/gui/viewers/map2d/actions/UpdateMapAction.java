@@ -35,10 +35,12 @@ import org.openide.util.ImageUtilities;
 import org.openide.util.NbBundle;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.Utilities;
+import static umich.ms.batmass.gui.viewers.map2d.actions.GoToAction.ACCELERATOR;
 import umich.ms.batmass.gui.viewers.map2d.components.Map2DComponent;
 import umich.ms.batmass.gui.viewers.map2d.components.Map2DPanel;
 import umich.ms.batmass.gui.viewers.map2d.components.Map2DPanelOptions;
 import umich.ms.batmass.nbputils.SwingHelper;
+import umich.ms.batmass.nbputils.actions.ActionUtils;
 import umich.ms.datatypes.LCMSDataSubset;
 import umich.ms.fileio.exceptions.FileParsingException;
 import umich.ms.util.DoubleRange;
@@ -72,7 +74,7 @@ public class UpdateMapAction extends AbstractAction {
         StringBuilder tooltip = new StringBuilder();
         tooltip.append(NbBundle.getMessage(UpdateMapAction.class, "UpdateMapAction.tooltip")); // NOI18N
         tooltip.append(" (");
-        tooltip.append(Utilities.keyToString(ACCELERATOR));
+        tooltip.append(ActionUtils.fromNbKeyStrokeToHuman(Utilities.keyToString(ACCELERATOR)));
         tooltip.append(")");
         putValue(Action.SHORT_DESCRIPTION, tooltip.toString());
         

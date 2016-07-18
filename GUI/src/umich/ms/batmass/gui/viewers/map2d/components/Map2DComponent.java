@@ -87,10 +87,6 @@ public class Map2DComponent extends BMComponentJPanel {
      * Creates new form MapContainer
      */
     public Map2DComponent() {
-        // WARNING: ACHTUNG: removed the GUI-builder call to initComponents(),
-        // creating everything manually now
-        //initComponents();
-
         ic.add(ic); // needed for D&D linking between viewers
         // listening for LCMSData in the lookup
         dataLkpResult = lkp.lookupResult(LCMSData.class);
@@ -103,9 +99,9 @@ public class Map2DComponent extends BMComponentJPanel {
         
         
         subsets = Collections.newSetFromMap(new ConcurrentHashMap<LCMSDataSubset, Boolean>());
-
+        
         initComponentsManually();
-        //populateActionInputMaps();
+        populateActionInputMaps();
     }
 
     
@@ -172,6 +168,7 @@ public class Map2DComponent extends BMComponentJPanel {
         goToAction = new GoToAction(map2DPanel);
         am.put(GoToAction.ACTION_ID, goToAction);
         homeAction = new HomeMapAction(map2DPanel);
+        am.put(HomeMapAction.ACTION_ID, homeAction);
         
         InputMap im = this.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
         im.put(UpdateMapAction.ACCELERATOR,  UpdateMapAction.ACTION_ID);
@@ -194,6 +191,7 @@ public class Map2DComponent extends BMComponentJPanel {
 
         map2DInfoLabel = new Map2DInfoLabel();
         map2DInfoLabel.setBorder(new EmptyBorder(2, 4, 2, 4));
+        
         map2DPanel.setInfoDisplayer(map2DInfoLabel);
 
         linkSupport = new ViewerLinkSupport(
@@ -209,11 +207,7 @@ public class Map2DComponent extends BMComponentJPanel {
         add(map2DPanel, BorderLayout.CENTER);
         add(map2DInfoLabel, BorderLayout.SOUTH);
     }
-
-    public Map2DInfoLabel getMap2DInfoLabel() {
-        return map2DInfoLabel;
-    }
-
+    
     public Map2DPanel getMap2DPanel() {
         return map2DPanel;
     }

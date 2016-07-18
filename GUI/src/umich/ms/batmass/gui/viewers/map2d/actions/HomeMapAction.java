@@ -26,8 +26,9 @@ import org.openide.util.ImageUtilities;
 import org.openide.util.NbBundle;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.Utilities;
-import umich.ms.batmass.gui.viewers.map2d.components.Map2DComponent;
+import static umich.ms.batmass.gui.viewers.map2d.actions.GoToAction.ACCELERATOR;
 import umich.ms.batmass.gui.viewers.map2d.components.Map2DPanel;
+import umich.ms.batmass.nbputils.actions.ActionUtils;
 
 /**
  *
@@ -41,7 +42,7 @@ public class HomeMapAction extends AbstractAction {
     private static final String ICON_PATH = "umich/ms/batmass/gui/viewers/map2d/icons/icon_home.png";
     private static final String ACTION_NAME = "Home";
     public static final String ACTION_ID = "HOME_MAP_ACTION";
-    public static final KeyStroke ACCELERATOR = Utilities.stringToKey("DAS-Z");
+    public static final KeyStroke ACCELERATOR = Utilities.stringToKey("AS-Z");
 
     protected WeakReference<Map2DPanel> mapPanelRef;
 
@@ -57,7 +58,8 @@ public class HomeMapAction extends AbstractAction {
         
         StringBuilder tt = new StringBuilder();
         tt.append(NbBundle.getMessage(HomeMapAction.class, "HomeMapAction.tooltip")); // NOI18N
-        tt.append("( ").append(Utilities.keyToString(ACCELERATOR)).append(" )");
+        tt.append("( ").append(ActionUtils.fromNbKeyStrokeToHuman(Utilities.keyToString(ACCELERATOR))).append(" )");
+        putValue(Action.SHORT_DESCRIPTION, tt.toString());
         
     }
     

@@ -47,6 +47,7 @@ import umich.ms.batmass.gui.core.api.swing.BMToolBar;
 import umich.ms.batmass.gui.core.api.swing.CustomComboBoxRenderer;
 import umich.ms.batmass.gui.core.awt.ModifiedFlowLayout;
 import umich.ms.batmass.gui.viewers.map2d.actions.GoToAction;
+import umich.ms.batmass.gui.viewers.map2d.actions.HomeMapAction;
 import umich.ms.batmass.gui.viewers.map2d.actions.UpdateMapAction;
 import umich.ms.datatypes.LCMSData;
 import umich.ms.datatypes.scan.IScan;
@@ -82,6 +83,7 @@ public class Map2DToolbar extends BMToolBar implements PropertyChangeListener {
     protected Map2DPanelOptions options;
     private UpdateMapAction updateAction;
     private GoToAction goToAction;
+    private HomeMapAction homeAction;
 
     protected static final int toolbarBtnHSpacing = 3;
 
@@ -152,16 +154,22 @@ public class Map2DToolbar extends BMToolBar implements PropertyChangeListener {
         
         checkBoxDenoise = new JCheckBox();
         checkBoxDenoise.setSelected(false);
+        String checkBoxDenoiseTooltip = "Denoising based on checking isotopic peaks";
+        checkBoxDenoise.setToolTipText(checkBoxDenoiseTooltip);
         JLabel lblDenoise = new JLabel("Denoise");
+        lblDenoise.setToolTipText(checkBoxDenoiseTooltip);
         add(checkBoxDenoise);
         add(Box.createHorizontalStrut(toolbarBtnHSpacing));
         add(lblDenoise);
         add(Box.createHorizontalStrut(toolbarBtnHSpacing));
         
+        String fmtIntensityCutoffTooltip = "Apply hard cutoff at the specified intensity level.";
         fmtIntensityCutoff = new JFormattedTextField(0.0d);
         fmtIntensityCutoff.setMinimumSize(new Dimension(50, 25));
         fmtIntensityCutoff.setPreferredSize(new Dimension(75, 25));
+        fmtIntensityCutoff.setToolTipText(fmtIntensityCutoffTooltip);
         JLabel lblCutoff = new JLabel("Cut");
+        lblCutoff.setToolTipText(fmtIntensityCutoffTooltip);
         add(lblCutoff);
         add(Box.createHorizontalStrut(toolbarBtnHSpacing));
         add(fmtIntensityCutoff);
@@ -224,6 +232,10 @@ public class Map2DToolbar extends BMToolBar implements PropertyChangeListener {
         action = am.get(UpdateMapAction.ACTION_ID);
         assert(action != null && action instanceof UpdateMapAction);
         this.updateAction = (UpdateMapAction)action;
+        
+        action = am.get(HomeMapAction.ACTION_ID);
+        assert(action != null && action instanceof HomeMapAction);
+        this.homeAction = (HomeMapAction)action;
 
         this.options = mapComp.getMap2DPanel().getOptions().copy();
 
@@ -313,6 +325,10 @@ public class Map2DToolbar extends BMToolBar implements PropertyChangeListener {
         // GoTo button
         btnGoTo.setAction(goToAction);
         btnGoTo.setEnabled(true);
+        
+        // Home button
+        btnHome.setAction(homeAction);
+        btnHome.setEnabled(true);
 
         // Do Denoise checkbox
         checkBoxDenoise.setSelected(options.getDoDenoise());

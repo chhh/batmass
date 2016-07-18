@@ -33,6 +33,7 @@ import umich.ms.batmass.gui.core.api.util.RequestFocusListener;
 import umich.ms.batmass.gui.viewers.map2d.components.BaseMap2D;
 import umich.ms.batmass.gui.viewers.map2d.components.Map2DPanel;
 import umich.ms.batmass.gui.viewers.map2d.components.Map2DZoomLevel;
+import umich.ms.batmass.nbputils.actions.ActionUtils;
 
 
 /**
@@ -62,7 +63,7 @@ public class GoToAction extends AbstractAction {
         StringBuilder tooltip = new StringBuilder();
         tooltip.append(SHORT_DESC);
         tooltip.append(" (");
-        tooltip.append(org.openide.util.Utilities.keyToString(ACCELERATOR));
+        tooltip.append(ActionUtils.fromNbKeyStrokeToHuman(Utilities.keyToString(ACCELERATOR)));
         tooltip.append(")");
         putValue(Action.SHORT_DESCRIPTION, tooltip.toString());
     }

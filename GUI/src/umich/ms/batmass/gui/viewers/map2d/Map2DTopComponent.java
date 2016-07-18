@@ -221,19 +221,22 @@ public class Map2DTopComponent extends BMTopComponent implements Map2DZoomEventL
     }
 
     private void setKeybindings() {
-        InputMap im = this.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
-        ActionMap am = this.getActionMap();
-
-        if (mapComponent != null && mapComponent.getMap2DPanel() != null) {
-            GoToAction goToAction = new GoToAction(this.mapComponent.getMap2DPanel());
-            //KeyStroke ctrlG = Utilities.stringToKey("D-G");
-            //im.put(ctrlG, goToAction.getValue(Action.NAME));
-            im.put(GoToAction.ACCELERATOR, goToAction.getValue(Action.NAME));
-            am.put(goToAction.getValue(Action.NAME), goToAction);
+        InputMap im0 = this.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+        ActionMap am0 = this.getActionMap();
+        
+        if (mapComponent != null) {
+            InputMap im1 = mapComponent.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+            im0.setParent(im1);
+            ActionMap am1 = mapComponent.getActionMap();
+            am0.setParent(am1);
             
-            UpdateMapAction updateMapAction = new UpdateMapAction(mapComponent);
-            im.put(UpdateMapAction.ACCELERATOR, updateMapAction.getValue(Action.NAME));
-            am.put(updateMapAction.getValue(Action.NAME), updateMapAction);
+            Map2DPanel map2DPanel = mapComponent.getMap2DPanel();
+            if (map2DPanel != null) {
+                InputMap im2 = map2DPanel.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+                im1.setParent(im2);
+                ActionMap am2 = map2DPanel.getActionMap();
+                am1.setParent(am2);
+            }
         }
     }
 
