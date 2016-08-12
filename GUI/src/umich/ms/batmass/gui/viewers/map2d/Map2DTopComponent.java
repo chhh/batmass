@@ -20,7 +20,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicBoolean;
-import javax.swing.Action;
 import javax.swing.ActionMap;
 import javax.swing.ImageIcon;
 import javax.swing.InputMap;
@@ -37,8 +36,6 @@ import umich.ms.batmass.data.core.api.DataLoadingException;
 import umich.ms.batmass.data.core.lcms.features.data.FeatureTableModelData;
 import umich.ms.batmass.gui.core.api.tc.BMTopComponent;
 import umich.ms.batmass.gui.management.UnloadableLCMSData;
-import umich.ms.batmass.gui.viewers.map2d.actions.GoToAction;
-import umich.ms.batmass.gui.viewers.map2d.actions.UpdateMapAction;
 import umich.ms.batmass.gui.viewers.map2d.components.Map2DComponent;
 import umich.ms.batmass.gui.viewers.map2d.components.Map2DPanel;
 import umich.ms.batmass.gui.viewers.map2d.components.Map2DZoomEventListener;
@@ -125,8 +122,9 @@ public class Map2DTopComponent extends BMTopComponent implements Map2DZoomEventL
                     mapComponent.load(Map2DComponent.INITIAL_SUBSET, data);
                 } catch (FileParsingException ex) {
                     Exceptions.printStackTrace(ex);
+                } finally {
+                    ph.finish();
                 }
-                ph.finish();
                 SwingHelper.invokeOnEDT(postDataLoaded);
             }
         };
@@ -187,8 +185,9 @@ public class Map2DTopComponent extends BMTopComponent implements Map2DZoomEventL
                 } catch (DataLoadingException ex) {
                     Exceptions.printStackTrace(ex);
                     isDataLoadSuccess.set(false);
+                } finally {
+                    ph.finish();
                 }
-                ph.finish();
                 SwingHelper.invokeOnEDT(postDataLoaded);
             }
         };
@@ -196,8 +195,7 @@ public class Map2DTopComponent extends BMTopComponent implements Map2DZoomEventL
 
         SwingHelper.invokeOnEDTSynch(preDataLoaded);
         String dialogTitle = "Loading data";
-        BaseProgressUtils.runOffEventThreadWithProgressDialog(loadData, dialogTitle, 
-                ph, false, 0, 300);
+        BaseProgressUtils.runOffEventThreadWithProgressDialog(loadData, dialogTitle, ph, false, 0, 300);
         ph.start();
     }
 

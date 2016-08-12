@@ -110,7 +110,10 @@ public class UpdateMapAction extends AbstractAction {
             @Override
             public void run() {
                 mapPanel.setOptions(optionsNew);
+                mapPanel.resetZoomLevels();
+                mapPanel.setDefaultViewport(null);
                 mapPanel.initMap();
+                mapPanel.zoomOut(true, null, true, true);
             }
         };
         DiffNode msLevelChange = diff.getChild("msLevel");
@@ -130,28 +133,29 @@ public class UpdateMapAction extends AbstractAction {
             }
             final LCMSDataSubset subsetToLoad = new LCMSDataSubset(null, null, msLevels, mzRanges);
 
+            String dialogTitle = "Loading data (Update Map Action)";
+            String progressHandleName = "Updating currently loaded spectra";
+            final ProgressHandle ph = ProgressHandle.createHandle(progressHandleName);
             final Runnable loadData;
             loadData = new Runnable() {
                 @Override
                 public void run() {
-                    // unload old data
-                    Set<LCMSDataSubset> excludeFutureLoadedSubset = Collections.singleton(subsetToLoad);
-                    mapComponent.unlaodFromAll(excludeFutureLoadedSubset);
-
-                    // load new data
+                    
                     try {
+                        // unload old data
+                        Set<LCMSDataSubset> excludeFutureLoadedSubset = Collections.singleton(subsetToLoad);
+                        mapComponent.unlaodFromAll(excludeFutureLoadedSubset);
+                        // load new data
                         mapComponent.loadIntoAll(subsetToLoad);
                     } catch (FileParsingException ex) {
                         Exceptions.printStackTrace(ex);
+                    } finally {
+                        ph.finish();
                     }
 
                     SwingHelper.invokeOnEDT(postDataLoaded);
                 }
             };
-
-            String dialogTitle = "Loading data";
-            String progressHandleName = "Updating currently loaded spectra";
-            final ProgressHandle ph = ProgressHandle.createHandle(progressHandleName);
             BaseProgressUtils.runOffEventThreadWithProgressDialog(loadData, dialogTitle, ph, false, 0, 300);
             ph.start();
 

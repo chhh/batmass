@@ -192,9 +192,29 @@ public class Map2DPanel extends JPanel {
      * @param viewport can be null, then the whole MS1 region will be set
      */
     public final void setDefaultViewport(MzRtRegion viewport) {
-        if (viewport == null && scans != null) {
+        if (scans != null && getOptions() != null) {
+            if (getOptions().msLevel == null)
+                throw new IllegalStateException("When setting default viewport the Options.MsLevel must be non-null.");
+            
             // this should happen only when the TopComponent is opened for the first time
-            TreeMap<Integer, IScan> scanMapAtLevel = scans.getMapMsLevel2index().get(1).getNum2scan();
+            int msLevel = getOptions().msLevel;
+            DoubleRange mzRange = getOptions().getMzRange();
+            TreeMap<Integer, IScan> scanMapAtLevel = null;
+            if (mzRange == null || mzRange.equals(Map2DPanel.OPT_DISPLAY_ALL_MZ_REGIONS)) {
+                scanMapAtLevel = scans.getMapMsLevel2index().get(msLevel).getNum2scan();
+            } else {
+                IntervalST<Double, TreeMap<Integer, IScan>> rangeIndex = scans.getMapMsLevel2rangeGroups().get(msLevel);
+                for (IntervalST.Node<Double, TreeMap<Integer, IScan>> node : rangeIndex) {
+                    DoubleRange nodeRange = DoubleRange.fromInterval1D(node.getInterval());
+                    if (nodeRange.overlapRelative(mzRange) > 0.95) {
+                        scanMapAtLevel = node.getValue();
+                        break;
+                    }    
+                }
+            }
+            if (scanMapAtLevel == null)
+                throw new IllegalStateException("Could not find matching precursor interval range.");
+            
             double rtStart = scanMapAtLevel.firstEntry().getValue().getRt();
             double rtEnd = scanMapAtLevel.lastEntry().getValue().getRt();
             double mzStart = Double.POSITIVE_INFINITY;
@@ -202,24 +222,31 @@ public class Map2DPanel extends JPanel {
             IScan scan;
             for (Map.Entry<Integer, IScan> num2scan : scanMapAtLevel.entrySet()) {
                 scan = num2scan.getValue();
-
+                
                 Double scanMzWindowLower = scan.getScanMzWindowLower();
                 Double scanMzWindowUpper = scan.getScanMzWindowUpper();
                 if (scanMzWindowLower == null || scanMzWindowUpper == null) {
-                    // if we had such a bad scan, we'll then have to read the spectrum
-                    boolean autoloadSpectraOrigVal = scans.isAutoloadSpectra();
-                    scans.isAutoloadSpectra(true);
-                    try {
-                        ISpectrum spec = scan.fetchSpectrum();
-                        if (spec != null) {
-                            scanMzWindowLower = spec.getMinMZ();
-                            scanMzWindowUpper = spec.getMaxMZ();
-                        }
-                    } catch (FileParsingException ex) {
-                        Exceptions.printStackTrace(ex); // TODO: ahhhh, so bad
-                    } finally {
-                        scans.isAutoloadSpectra(autoloadSpectraOrigVal);
+                    ISpectrum spectrum = scan.getSpectrum();
+                    if (spectrum != null && spectrum.getMZs().length > 0) {
+                        scanMzWindowLower = spectrum.getMZs()[0];
+                        scanMzWindowUpper = spectrum.getMZs()[spectrum.getMZs().length-1];
                     }
+                    
+                    // Removed this as it was too much extra work
+//                    // if we had such a bad scan, we'll then have to read the spectrum
+//                    boolean autoloadSpectraOrigVal = scans.isAutoloadSpectra();
+//                    scans.isAutoloadSpectra(true);
+//                    try {
+//                        ISpectrum spec = scan.fetchSpectrum();
+//                        if (spec != null) {
+//                            scanMzWindowLower = spec.getMinMZ();
+//                            scanMzWindowUpper = spec.getMaxMZ();
+//                        }
+//                    } catch (FileParsingException ex) {
+//                        Exceptions.printStackTrace(ex); // TODO: ahhhh, so bad
+//                    } finally {
+//                        scans.isAutoloadSpectra(autoloadSpectraOrigVal);
+//                    }
                 }
                 if (scanMzWindowLower != null && scanMzWindowLower < mzStart) {
                     mzStart = scanMzWindowLower;
@@ -270,6 +297,11 @@ public class Map2DPanel extends JPanel {
 
     public Map2DZoomLevel getCurrentZoomLevel() {
         return curZoomLevel;
+    }
+    
+    public void resetZoomLevels() {
+        curZoomLevel = null;
+        zoomLevels = new LinkedList<>();
     }
 
     public LinkedList<Map2DZoomLevel> getZoomLevels() {

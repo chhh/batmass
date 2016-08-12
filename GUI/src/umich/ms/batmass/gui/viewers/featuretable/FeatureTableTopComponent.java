@@ -108,8 +108,9 @@ public class FeatureTableTopComponent extends BMTopComponent {
                 } catch (DataLoadingException ex) {
                     Exceptions.printStackTrace(ex);
                     isDataLoadSuccess.set(false);
+                } finally {
+                    ph.finish();
                 }
-                ph.finish();
                 SwingHelper.invokeOnEDT(postDataLoaded);
             }
         };
