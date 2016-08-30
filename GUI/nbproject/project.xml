@@ -243,11 +243,35 @@
                     </run-dependency>
                 </dependency>
                 <dependency>
+                    <code-name-base>umich.ms.batmass.libs.guava180</code-name-base>
+                    <build-prerequisite/>
+                    <compile-dependency/>
+                    <run-dependency>
+                        <specification-version>18.0</specification-version>
+                    </run-dependency>
+                </dependency>
+                <dependency>
+                    <code-name-base>umich.ms.batmass.libs.guavamini</code-name-base>
+                    <build-prerequisite/>
+                    <compile-dependency/>
+                    <run-dependency>
+                        <specification-version>0.1.1</specification-version>
+                    </run-dependency>
+                </dependency>
+                <dependency>
                     <code-name-base>umich.ms.batmass.libs.javaobjectdiff</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>
                     <run-dependency>
                         <specification-version>0.92</specification-version>
+                    </run-dependency>
+                </dependency>
+                <dependency>
+                    <code-name-base>umich.ms.batmass.libs.jts</code-name-base>
+                    <build-prerequisite/>
+                    <compile-dependency/>
+                    <run-dependency>
+                        <specification-version>1.14</specification-version>
                     </run-dependency>
                 </dependency>
                 <dependency>
@@ -263,7 +287,7 @@
                     <build-prerequisite/>
                     <compile-dependency/>
                     <run-dependency>
-                        <specification-version>0.5.9</specification-version>
+                        <specification-version>0.7.9991</specification-version>
                     </run-dependency>
                 </dependency>
                 <dependency>
@@ -271,7 +295,15 @@
                     <build-prerequisite/>
                     <compile-dependency/>
                     <run-dependency>
-                        <specification-version>1.0.9</specification-version>
+                        <specification-version>1.1.7</specification-version>
+                    </run-dependency>
+                </dependency>
+                <dependency>
+                    <code-name-base>umich.ms.batmass.libs.rxjavaextras</code-name-base>
+                    <build-prerequisite/>
+                    <compile-dependency/>
+                    <run-dependency>
+                        <specification-version>0.7.9.10</specification-version>
                     </run-dependency>
                 </dependency>
                 <dependency>
