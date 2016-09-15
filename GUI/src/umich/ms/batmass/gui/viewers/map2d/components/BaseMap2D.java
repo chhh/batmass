@@ -608,6 +608,11 @@ public final class BaseMap2D {
         return (int)(((mz - mzLo) / mzSpan) * width);
     }
 
+    
+    public Rectangle convertMzRtBoxToPixelCoords(double mzLo, double mzHi, double rtLo, double rtHi, double widthAddon) {
+        return convertMzRtBoxToPixelCoords(mzLo, mzHi, rtLo, rtHi, widthAddon, 2, 2);
+    }
+    
     /**
      * Convert mz-rt coordinates to pixel coordinates in BaseMap.
      * @param mzLo
@@ -617,7 +622,7 @@ public final class BaseMap2D {
      * @param widthAddon will be subtracted from mzLo and added to mzHi
      * @return 
      */
-    public Rectangle convertMzRtBoxToPixelCoords(double mzLo, double mzHi, double rtLo, double rtHi, double widthAddon) {
+    public Rectangle convertMzRtBoxToPixelCoords(double mzLo, double mzHi, double rtLo, double rtHi, double widthAddon, int minW, int minH) {
         int pixelMzLo = this.extrapolateMzToX(mzLo - widthAddon);
         if (pixelMzLo < 0) pixelMzLo = 0;
         int pixelRtHi = this.extrapolateRtToY(rtHi);
@@ -627,9 +632,9 @@ public final class BaseMap2D {
         int pixelRtLo = this.extrapolateRtToY(rtLo);
         if (pixelRtLo > this.getHeight() - 1) pixelRtLo = this.getHeight() - 1;
         int pixelWidth = pixelMzHi - pixelMzLo;
-        if (pixelWidth < 2) pixelWidth = 2;
+        if (pixelWidth < minW) pixelWidth = minW;
         int pixelHeight = pixelRtHi - pixelRtLo;
-        if (pixelHeight < 2) pixelHeight = 2;
+        if (pixelHeight < minH) pixelHeight = minH;
         Rectangle featureRect = new Rectangle(
                 pixelMzLo, this.getHeight() - pixelRtHi - 1,
                 pixelWidth, pixelHeight);

@@ -41,27 +41,7 @@ public class Map2DPanelOptions {
     protected double cutoff = 0.0;
     public static final String PROP_CUTOFF = "cutoff";
     protected Boolean ms2Overlay;
-
-    /**
-     * Get the value of cutoff
-     *
-     * @return the value of cutoff
-     */
-    public double getCutoff() {
-        return cutoff;
-    }
-
-    /**
-     * Set the value of cutoff
-     *
-     * @param cutoff new value of cutoff
-     */
-    public void setCutoff(double cutoff) {
-        double oldCutoff = this.cutoff;
-        this.cutoff = cutoff;
-        propertyChangeSupport.firePropertyChange(PROP_CUTOFF, oldCutoff, cutoff);
-    }
-
+    public static final String PROP_MSNOVERLAY = "msnOverlay";
 
     private transient final PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
 
@@ -72,21 +52,7 @@ public class Map2DPanelOptions {
         this.cutoff = 0;
         this.ms2Overlay = false;
     }
-
-    public Map2DPanelOptions(Integer msLevel, DoubleRange mzRange, Boolean doDenoise) {
-        this();
-        this.msLevel = msLevel;
-        this.mzRange = mzRange;
-        this.doDenoise = doDenoise;
-    }
-
-//    /**
-//     * Copy constructor. Will not cope the change support.
-//     * @param other
-//     */
-//    public Map2DPanelOptions(Map2DPanelOptions other) {
-//        //this(other.msLevel, other.mzRange, other.doDenoise);
-//    }
+    
     /**
      * Like a copy-constructor. Copies the properties, property change support 
      * is initialized to an empty one.
@@ -101,6 +67,26 @@ public class Map2DPanelOptions {
             Exceptions.printStackTrace(ex);
         } 
        return opts;
+    }
+    
+    /**
+     * Get the value of cutoff.
+     *
+     * @return the value of cutoff
+     */
+    public double getCutoff() {
+        return cutoff;
+    }
+
+    /**
+     * Set the value of cutoff.
+     *
+     * @param cutoff new value of cutoff
+     */
+    public void setCutoff(double cutoff) {
+        double oldCutoff = this.cutoff;
+        this.cutoff = cutoff;
+        propertyChangeSupport.firePropertyChange(PROP_CUTOFF, oldCutoff, cutoff);
     }
 
     /**
@@ -156,9 +142,9 @@ public class Map2DPanelOptions {
      * @param doDenoise new value of doDenoise
      */
     public void setDoDenoise(Boolean doDenoise) {
-        Boolean oldIsDoDenoise = this.doDenoise;
+        Boolean old = this.doDenoise;
         this.doDenoise = doDenoise;
-        propertyChangeSupport.firePropertyChange(PROP_DODENOISE, oldIsDoDenoise, doDenoise);
+        propertyChangeSupport.firePropertyChange(PROP_DODENOISE, old, this.doDenoise);
     }
 
     public Boolean getMs2Overlay() {
@@ -166,7 +152,9 @@ public class Map2DPanelOptions {
     }
 
     public void setMs2Overlay(Boolean ms2Overlay) {
+        Boolean old = this.ms2Overlay;
         this.ms2Overlay = ms2Overlay;
+        propertyChangeSupport.firePropertyChange(PROP_MSNOVERLAY, old, this.ms2Overlay);
     }
     
     

@@ -31,16 +31,22 @@ import javax.swing.Action;
 import javax.swing.ActionMap;
 import javax.swing.Box;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
+import javax.swing.JToggleButton;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
+import org.netbeans.api.annotations.common.StaticResource;
+import org.openide.util.ImageUtilities;
 import umich.ms.batmass.gui.core.api.comm.dnd.DnDButton;
 import umich.ms.batmass.gui.core.api.comm.eventbus.ViewerLinkSupport;
 import umich.ms.batmass.gui.core.api.swing.BMToolBar;
@@ -60,6 +66,9 @@ import umich.ms.util.IntervalST;
  * @author Dmitry Avtonomov
  */
 public class Map2DToolbar extends BMToolBar implements PropertyChangeListener {
+    @StaticResource
+    private static final String ICON_PATH = "umich/ms/batmass/gui/viewers/map2d/icons/icon_msn.png";
+    
     protected JComboBox<Integer> cmbMsLevel;
     protected DefaultComboBoxModel<Integer> msLevelsModel;
     
@@ -73,6 +82,7 @@ public class Map2DToolbar extends BMToolBar implements PropertyChangeListener {
     protected JButton btnHome;
 
     protected JButton btnGoTo;
+    protected JToggleButton btnMsNDisplay;
 
     protected ViewerLinkSupport linkSupport;
     protected DnDButton btnLinkDnD;
@@ -149,7 +159,12 @@ public class Map2DToolbar extends BMToolBar implements PropertyChangeListener {
         
         // Home button (zoom out)
         btnHome = new JButton();
-        add (btnHome);
+        add(btnHome);
+        
+        btnMsNDisplay = new JToggleButton();
+        ImageIcon btnMsNDisplayIcon = ImageUtilities.loadImageIcon(ICON_PATH, false);
+        btnMsNDisplay.setIcon(btnMsNDisplayIcon);
+        add(btnMsNDisplay);
         add(Box.createHorizontalStrut(toolbarBtnHSpacing));
         
         checkBoxDenoise = new JCheckBox();
@@ -329,7 +344,18 @@ public class Map2DToolbar extends BMToolBar implements PropertyChangeListener {
         // Home button
         btnHome.setAction(homeAction);
         btnHome.setEnabled(true);
-
+        
+        // MSn event display button
+        btnMsNDisplay.setEnabled(true);
+        btnMsNDisplay.setSelected(options.getMs2Overlay());
+        btnMsNDisplay.setToolTipText("Draw locations of MS/MS events.");
+        btnMsNDisplay.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                options.setMs2Overlay(btnMsNDisplay.isSelected());
+            }
+        });
+        
         // Do Denoise checkbox
         checkBoxDenoise.setSelected(options.getDoDenoise());
         checkBoxDenoise.addItemListener(new ItemListener() {

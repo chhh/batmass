@@ -27,12 +27,14 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
+import java.awt.Shape;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.InputEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
+import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
@@ -63,7 +65,9 @@ import umich.ms.batmass.gui.viewers.map2d.messages.MsgZoom1D;
 import umich.ms.batmass.gui.viewers.map2d.messages.MsgZoom2D;
 import umich.ms.batmass.nbputils.OutputWndPrinter;
 import umich.ms.datatypes.scan.IScan;
+import umich.ms.datatypes.scan.props.PrecursorInfo;
 import umich.ms.datatypes.scancollection.IScanCollection;
+import umich.ms.datatypes.scancollection.ScanIndex;
 import umich.ms.datatypes.spectrum.ISpectrum;
 import umich.ms.fileio.exceptions.FileParsingException;
 import umich.ms.util.DoubleRange;
@@ -563,12 +567,83 @@ public class Map2DPanel extends JPanel {
                 g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP));
                 g.draw(featureRect);
             }
-            
+            g.dispose();
         }
         
         // passive overlays
         for (PassiveMap2DOverlayProvider overlayProvider : passiveOverlays) {
             RTree<PassiveMap2DOverlay, com.github.davidmoten.rtree.geometry.Rectangle> index = overlayProvider.getIndex();
+        }
+        
+        // TODO: move MSn overlay to the passive overlays list
+        if (opts.ms2Overlay) {
+            int msLevel = curZoomLvl.getMsLevel();
+            TreeMap<Integer, ScanIndex> map = scans.getMapMsLevel2index();
+            ScanIndex indexAtMsLevel = map.get(msLevel);
+            
+            boolean isDia = false;
+            TreeMap<Integer, IntervalST<Double, TreeMap<Integer, IScan>>> mapMsLevel2rangeGroups = scans.getMapMsLevel2rangeGroups();
+            if (mapMsLevel2rangeGroups != null) {
+                IntervalST<Double, TreeMap<Integer, IScan>> mapGroupsAtNextLevel = mapMsLevel2rangeGroups.get(msLevel + 1);
+                if (mapGroupsAtNextLevel != null) {
+                    if (mapGroupsAtNextLevel.size() > 1 && mapGroupsAtNextLevel.size() < 256) {
+                        isDia = true;
+                    }
+                }
+            }
+            
+            TreeMap<Integer, IScan> num2scan = indexAtMsLevel.getNum2scan();
+            double defaultMzWidth = 1.5d;
+            double defaultMzWidthHalf = defaultMzWidth / 2d;
+            Graphics2D g = (Graphics2D) img.getGraphics();
+            int w, h;
+            for (Map.Entry<Integer, IScan> entry : num2scan.entrySet()) {
+                IScan scan = entry.getValue();
+                Double parentRt = scan.getRt();
+                if (scan.getChildScans() == null)
+                    continue;
+                if (scan.getChildScans().isEmpty())
+                    continue;
+                for (Integer childScan : scan.getChildScans()) {
+                    IScan s = scans.getScanByNum(childScan);
+                    double childRt = s.getRt();
+                    PrecursorInfo p = s.getPrecursor();
+                    if (p == null)
+                        continue;
+                    Double wndLo = p.getMzRangeStart();
+                    Double wndHi = p.getMzRangeEnd();
+                    
+                    if (wndLo == null && wndHi == null)
+                        continue;
+                    Rectangle rect = null;
+                    Shape shape = null;
+                    if (wndLo != null) {
+                        if (wndHi == null || wndHi.equals(wndLo)) {
+                            // scan with one point isolation window
+                            w = 3;
+                            h = isDia ? 1 : 2;
+                            rect = baseMap.convertMzRtBoxToPixelCoords(
+                                    wndLo - defaultMzWidthHalf, wndLo + defaultMzWidthHalf, 
+                                    childRt, childRt, 0, w, h);
+                            shape = rect;
+                        } else {
+                            // scan with fully described isolation window
+                            w = 2;
+                            h = isDia ? 1 : 2;
+                            rect = baseMap.convertMzRtBoxToPixelCoords(
+                                    wndLo, wndHi + defaultMzWidthHalf, 
+                                    childRt, childRt, 0, w, h);
+                            shape = rect;
+                        }
+                    }
+                    if (rect != null) {
+                        g.setColor(Color.MAGENTA);
+                        g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, 0.7f));
+                        g.fill(shape);
+                    }
+                }
+            }
+            g.dispose();
         }
         
         
