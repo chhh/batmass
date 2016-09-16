@@ -41,7 +41,9 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.NavigableMap;
 import java.util.TreeMap;
+import java.util.concurrent.TimeUnit;
 import javax.swing.JPanel;
 import javax.swing.JToolTip;
 import javax.swing.SwingUtilities;
@@ -119,7 +121,9 @@ public class Map2DPanel extends JPanel {
     private static final double zoomCoef = 1.4d;
     protected static final Color gray50 = new Color(128, 128, 128, 128);
     protected static int MIN_ALLOWED_COMPONENT_PIXEL_SIZE = 10;
-    
+    protected static double MASS_PROTON = 1.007276466879;
+    protected static double MASS_NEUTRON = 1.00866491588;
+                                          
 
     public Map2DPanel() {
         constructorInit();
@@ -592,54 +596,65 @@ public class Map2DPanel extends JPanel {
                 }
             }
             
-            TreeMap<Integer, IScan> num2scan = indexAtMsLevel.getNum2scan();
+            MzRtRegion mapDimensions = curZoomLvl.getAxes().getMapDimensions();
+            NavigableMap<Double, List<IScan>> rt2scan = indexAtMsLevel.getRt2scan().subMap(mapDimensions.getRtLo(), true, mapDimensions.getRtHi(), true);
+            //TreeMap<Integer, IScan> num2scan = indexAtMsLevel.getNum2scan();
             double defaultMzWidth = 1.5d;
             double defaultMzWidthHalf = defaultMzWidth / 2d;
             Graphics2D g = (Graphics2D) img.getGraphics();
             int w, h;
-            for (Map.Entry<Integer, IScan> entry : num2scan.entrySet()) {
-                IScan scan = entry.getValue();
-                Double parentRt = scan.getRt();
-                if (scan.getChildScans() == null)
-                    continue;
-                if (scan.getChildScans().isEmpty())
-                    continue;
-                for (Integer childScan : scan.getChildScans()) {
-                    IScan s = scans.getScanByNum(childScan);
-                    double childRt = s.getRt();
-                    PrecursorInfo p = s.getPrecursor();
-                    if (p == null)
+            for (Map.Entry<Double, List<IScan>> entry : rt2scan.entrySet()) {
+                List<IScan> scanList = entry.getValue();
+                for (IScan scan : scanList) {
+                    Double parentRt = scan.getRt();
+                    if (scan.getChildScans() == null)
                         continue;
-                    Double wndLo = p.getMzRangeStart();
-                    Double wndHi = p.getMzRangeEnd();
-                    
-                    if (wndLo == null && wndHi == null)
+                    if (scan.getChildScans().isEmpty())
                         continue;
-                    Rectangle rect = null;
-                    Shape shape = null;
-                    if (wndLo != null) {
-                        if (wndHi == null || wndHi.equals(wndLo)) {
-                            // scan with one point isolation window
-                            w = 3;
-                            h = isDia ? 1 : 2;
-                            rect = baseMap.convertMzRtBoxToPixelCoords(
-                                    wndLo - defaultMzWidthHalf, wndLo + defaultMzWidthHalf, 
-                                    childRt, childRt, 0, w, h);
-                            shape = rect;
-                        } else {
-                            // scan with fully described isolation window
-                            w = 2;
-                            h = isDia ? 1 : 2;
-                            rect = baseMap.convertMzRtBoxToPixelCoords(
-                                    wndLo, wndHi + defaultMzWidthHalf, 
-                                    childRt, childRt, 0, w, h);
-                            shape = rect;
+                    for (Integer childScan : scan.getChildScans()) {
+                        IScan s = scans.getScanByNum(childScan);
+                        double childRt = s.getRt();
+                        PrecursorInfo p = s.getPrecursor();
+                        if (p == null)
+                            continue;
+                        Double wndLo = p.getMzRangeStart();
+                        Double wndHi = p.getMzRangeEnd();
+
+                        if (wndLo == null && wndHi == null)
+                            continue;
+                        Rectangle rect = null;
+                        Shape shape = null;
+                        if (wndLo != null) {
+                            if (wndLo > mapDimensions.getMzHi())
+                                continue;
+                            if (wndHi == null || wndHi.equals(wndLo)) {
+                                // scan with one point isolation window
+                                double hi = wndLo + defaultMzWidthHalf;
+                                if (hi < mapDimensions.getMzLo())
+                                    continue;
+                                w = 3;
+                                h = isDia ? 1 : 2;
+                                rect = baseMap.convertMzRtBoxToPixelCoords(
+                                        wndLo - defaultMzWidthHalf, hi, 
+                                        childRt, childRt, 0, w, h);
+                                shape = rect;
+                            } else {
+                                // scan with fully described isolation window
+                                if (wndHi < mapDimensions.getMzLo())
+                                    continue;
+                                w = 2;
+                                h = isDia ? 1 : 2;
+                                rect = baseMap.convertMzRtBoxToPixelCoords(
+                                        wndLo, wndHi, 
+                                        childRt, childRt, 0, w, h);
+                                shape = rect;
+                            }
                         }
-                    }
-                    if (rect != null) {
-                        g.setColor(Color.MAGENTA);
-                        g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, 0.7f));
-                        g.fill(shape);
+                        if (rect != null) {
+                            g.setColor(Color.MAGENTA);
+                            g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, 0.7f));
+                            g.fill(shape);
+                        }
                     }
                 }
             }
@@ -1241,22 +1256,31 @@ public class Map2DPanel extends JPanel {
             }
 
             double ppm = Double.NaN;
-            if (zoomBoxMzRt.getMzSpan() < 1d) {
+            double z = Double.NaN;
+            double mzSpan = zoomBoxMzRt.getMzSpan();
+            if (mzSpan > 0 && mzSpan < 1.01) {
                 if (mouseHandler.clickPoint.x < e.getX()) {
                     // this means the mouse was dragged to the left, so mzHi of the
                     // selection box should be used for PPM calc
-                    ppm = (zoomBoxMzRt.getMzSpan() / zoomBoxMzRt.getMzHi()) * 1e6d;
+                    ppm = (mzSpan / zoomBoxMzRt.getMzHi()) * 1e6d;
                 } else {
                     // otherwise mzLo is used
-                    ppm = (zoomBoxMzRt.getMzSpan() / zoomBoxMzRt.getMzLo()) * 1e6d;
+                    ppm = (mzSpan / zoomBoxMzRt.getMzLo()) * 1e6d;
                 }
+                z = MASS_NEUTRON / mzSpan;
             }
             StringBuilder sb = new StringBuilder(128);
             sb.append(String.format("mz: %.2f - %.2f (%.4f", zoomBoxMzRt.getMzLo(), zoomBoxMzRt.getMzHi(), zoomBoxMzRt.getMzSpan()));
             if (ppm < 500d) {
                 sb.append(String.format("=%.0fppm", ppm));
             }
+            if (!Double.isNaN(z)) {
+                double zRounded = Math.round(z);
+                if (Math.abs(zRounded - z) < 0.1)
+                    sb.append(String.format(", z:%d", (int)z));
+            }
             sb.append("), ");
+            
             sb.append(String.format("rt: %.2f - %.2f (%.2f), ab: %,.0f (max: %,.0f)",
                     zoomBoxMzRt.getRtLo(), zoomBoxMzRt.getRtHi(), zoomBoxMzRt.getRtSpan(), sum, max));
             tooltipText = sb.toString();
