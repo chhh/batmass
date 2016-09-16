@@ -34,16 +34,13 @@ import java.awt.event.InputEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
-import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.NavigableMap;
 import java.util.TreeMap;
-import java.util.concurrent.TimeUnit;
 import javax.swing.JPanel;
 import javax.swing.JToolTip;
 import javax.swing.SwingUtilities;
@@ -51,7 +48,6 @@ import javax.swing.ToolTipManager;
 import javax.swing.event.EventListenerList;
 import net.engio.mbassy.bus.MBassador;
 import net.engio.mbassy.listener.Handler;
-import org.openide.util.Exceptions;
 import umich.ms.batmass.data.core.lcms.features.Features;
 import umich.ms.batmass.data.core.lcms.features.ILCMSFeature2D;
 import umich.ms.batmass.gui.core.api.comm.eventbus.AbstractBusPubSub;
@@ -71,7 +67,6 @@ import umich.ms.datatypes.scan.props.PrecursorInfo;
 import umich.ms.datatypes.scancollection.IScanCollection;
 import umich.ms.datatypes.scancollection.ScanIndex;
 import umich.ms.datatypes.spectrum.ISpectrum;
-import umich.ms.fileio.exceptions.FileParsingException;
 import umich.ms.util.DoubleRange;
 import umich.ms.util.IntervalST;
 
@@ -1256,9 +1251,9 @@ public class Map2DPanel extends JPanel {
             }
 
             double ppm = Double.NaN;
-            double z = Double.NaN;
+            double zApprox = Double.NaN;
             double mzSpan = zoomBoxMzRt.getMzSpan();
-            if (mzSpan > 0 && mzSpan < 1.01) {
+            if (mzSpan > 0 && mzSpan < 1.06) {
                 if (mouseHandler.clickPoint.x < e.getX()) {
                     // this means the mouse was dragged to the left, so mzHi of the
                     // selection box should be used for PPM calc
@@ -1267,22 +1262,26 @@ public class Map2DPanel extends JPanel {
                     // otherwise mzLo is used
                     ppm = (mzSpan / zoomBoxMzRt.getMzLo()) * 1e6d;
                 }
-                z = MASS_NEUTRON / mzSpan;
+                zApprox = MASS_NEUTRON / mzSpan;
             }
             StringBuilder sb = new StringBuilder(128);
             sb.append(String.format("mz: %.2f - %.2f (%.4f", zoomBoxMzRt.getMzLo(), zoomBoxMzRt.getMzHi(), zoomBoxMzRt.getMzSpan()));
             if (ppm < 500d) {
                 sb.append(String.format("=%.0fppm", ppm));
             }
-            if (!Double.isNaN(z)) {
-                double zRounded = Math.round(z);
-                if (Math.abs(zRounded - z) < 0.1)
-                    sb.append(String.format(", z:%d", (int)z));
+            if (!Double.isNaN(zApprox)) {
+                int z = (int)Math.round(zApprox);
+                if (Math.abs((double)z - zApprox) < 0.1d) {
+                    sb.append(String.format(" z:%d", z));
+                }
             }
             sb.append("), ");
             
-            sb.append(String.format("rt: %.2f - %.2f (%.2f), ab: %,.0f (max: %,.0f)",
-                    zoomBoxMzRt.getRtLo(), zoomBoxMzRt.getRtHi(), zoomBoxMzRt.getRtSpan(), sum, max));
+            double rtSpan = zoomBoxMzRt.getRtSpan();
+            int minutes = (int)Math.floor(rtSpan);
+            int seconds = (int)((rtSpan - minutes) * 60d + 0.5d);
+            sb.append(String.format("rt: %.2f - %.2f (%dm %ds), ab: %,.0f (max: %,.0f)",
+                    zoomBoxMzRt.getRtLo(), zoomBoxMzRt.getRtHi(), minutes, seconds, sum, max));
             tooltipText = sb.toString();
 
 //            tooltipText = String.format("mz: %.2f - %.2f (%.4f), "
