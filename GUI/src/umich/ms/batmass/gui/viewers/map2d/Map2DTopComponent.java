@@ -64,6 +64,7 @@ public class Map2DTopComponent extends BMTopComponent implements Map2DZoomEventL
     
     protected Map2DComponent mapComponent = null;
     //protected volatile LCMSData data = null;
+//    protected static final LCMSDataSubset INITIAL_SUBSET = LCMSDataSubset.MS1_WITH_SPECTRA;
     protected static final LCMSDataSubset INITIAL_SUBSET = LCMSDataSubset.MS1_WITH_SPECTRA;
 
     /**

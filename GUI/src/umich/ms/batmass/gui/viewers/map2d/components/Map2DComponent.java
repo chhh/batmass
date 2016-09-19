@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.swing.ActionMap;
 import javax.swing.ImageIcon;
@@ -41,6 +42,8 @@ import umich.ms.batmass.gui.viewers.map2d.actions.HomeMapAction;
 import umich.ms.batmass.gui.viewers.map2d.actions.UpdateMapAction;
 import umich.ms.datatypes.LCMSData;
 import umich.ms.datatypes.LCMSDataSubset;
+import umich.ms.datatypes.scancollection.IScanCollection;
+import umich.ms.datatypes.scancollection.ScanIndex;
 import umich.ms.fileio.exceptions.FileParsingException;
 
 /**
@@ -226,7 +229,18 @@ public class Map2DComponent extends BMComponentJPanel {
      */
     public final void load(LCMSDataSubset subset, LCMSData data) throws FileParsingException {
         subsets.add(subset);
+        // TODO: ADDED THIS, REMOVE AFTER TESTING
+        data.getSource().setTasksPerCpuPerBatch(1);
         data.load(subset, this);
+        IScanCollection scans = data.getScans();
+        TreeMap<Integer, ScanIndex> mapMsLevel2index = scans.getMapMsLevel2index();
+        Integer msLevelLo = mapMsLevel2index.firstKey();
+        if (subset.getMsLvls() != null && !subset.getMsLvls().contains(msLevelLo)) {
+            data.unload(subset, this, null);
+            LCMSDataSubset newSubset = new LCMSDataSubset();
+            newSubset.setMsLvls(Collections.singleton(msLevelLo));
+            data.load(newSubset, this);
+        }
     }
 
     /**

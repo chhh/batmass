@@ -218,7 +218,7 @@ public final class BaseMap2D {
         ISpectrum spectrum;
         Integer mzIdxLo, mzIdxHi;
         int x, y;
-        boolean hasProfile = false;
+        boolean hasProfile = true;
         double[] masses, intensities;
         filledRowIds = new int[scansByRtSpanAtMsLevel.size()];
         int idx = 0;
@@ -379,7 +379,7 @@ public final class BaseMap2D {
 
             if (hasProfile && doProfileModeGapFilling) {
                 double pixelSizeMz = getMzSpan() / availableWidth;
-                if (pixelSizeMz < 0.01) {
+                if (pixelSizeMz < 0.05) {
                     fillProfileGaps(0, y, pixelSizeMz);
                 }
             }
@@ -565,7 +565,7 @@ public final class BaseMap2D {
             if (map[y][j] == 0) {
                 curRepeatSize++;
             } else {
-                if (pixelSize * curRepeatSize < 0.01) {
+                if (pixelSize * curRepeatSize < 0.2) {
                     curNonZeroVal = map[y][j];
                     if (curRepeatSize != 0 && curRepeatSize > targetRepeatLength && prevNonZeroVal != 0) {
                         // we have found an appropriate repeat
