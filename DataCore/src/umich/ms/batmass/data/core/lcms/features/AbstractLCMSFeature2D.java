@@ -85,10 +85,10 @@ public abstract class AbstractLCMSFeature2D<T extends ILCMSTrace> implements ILC
      * @return
      */
     protected Rectangle2D.Double createBoundsFromTraces() {
-        //double mzLoLo = Double.POSITIVE_INFINITY;
-        //double mzHiHi = Double.NEGATIVE_INFINITY;
-        //double rtLoLo = Double.POSITIVE_INFINITY;
-        //double rtHiHi = Double.NEGATIVE_INFINITY;
+        double mzLo = Double.POSITIVE_INFINITY;
+        double mzHi = Double.NEGATIVE_INFINITY;
+        double rtLo = Double.POSITIVE_INFINITY;
+        double rtHi = Double.NEGATIVE_INFINITY;
 
         if (traces.length == 0) {
             throw new IllegalStateException("Traces array can't be empty!");
@@ -98,7 +98,8 @@ public abstract class AbstractLCMSFeature2D<T extends ILCMSTrace> implements ILC
         Rectangle2D.Double boundBox = new Rectangle2D.Double();
         ILCMSTrace trace = traces[0];
         
-        boundBox.setRect(trace.getShape().getBounds2D());
+        Rectangle2D bounds2D = trace.getShape().getBounds2D();
+        boundBox.setRect(bounds2D);
         // and now add all other bounding boxes (we don't need that, traces are
         // sorted by m/z, so we should be able to just take the last trace)
         //for (int i = 1; i < traces.length; i++) {

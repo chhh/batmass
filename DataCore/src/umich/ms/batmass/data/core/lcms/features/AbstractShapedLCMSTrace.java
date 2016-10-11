@@ -54,7 +54,7 @@ public class AbstractShapedLCMSTrace extends AbstractLCMSTrace {
             synchronized (this) {
                 s = shape;
                 if (s == null) {
-                    s = new Rectangle2D.Double(mz-spread, rtLo, spread*2d, rtHi-rtLo);
+                    s = new Rectangle2D.Double(mz-spread, rtLo, spread*2d, Math.abs(rtHi-rtLo));
                     shape = s;
                 }
             }

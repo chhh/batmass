@@ -36,7 +36,8 @@ public class FeatureUtils {
         //double x2 = rect.getMaxX();
         //double y1 = rect.getY();
         //double y2 = rect.getMaxY();
-        return Geometries.rectangle(rect.getMinX(), rect.getY(), rect.getMaxX(), rect.getMaxY());
+        double y1 = Math.min(rect.getMinY(), rect.getMaxY());
+        return Geometries.rectangle(rect.getMinX(), y1, rect.getMaxX(), y1 + rect.getHeight());
     }
 
     public static Rectangle2D geometryRtreeToAwt(Rectangle rect) {

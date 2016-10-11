@@ -60,4 +60,10 @@ public interface ILCMSFeature2D<T extends ILCMSTrace> {
      * @return 
      */
     Color getColor();
+    
+    /**
+     * To be used when drawing this feature.
+     * @return 
+     */
+    Float getOpacity();
 }

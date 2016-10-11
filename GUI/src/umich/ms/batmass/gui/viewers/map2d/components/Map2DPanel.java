@@ -18,6 +18,8 @@ package umich.ms.batmass.gui.viewers.map2d.components;
 import umich.ms.batmass.gui.viewers.map2d.norm.RangeNormalizer;
 import com.github.davidmoten.rtree.Entry;
 import com.github.davidmoten.rtree.RTree;
+import com.github.davidmoten.rtree.geometry.Geometries;
+import com.github.davidmoten.rtree.geometry.Geometry;
 import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Container;
@@ -36,11 +38,13 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.NavigableMap;
 import java.util.TreeMap;
+import java.util.concurrent.atomic.AtomicInteger;
 import javax.swing.JPanel;
 import javax.swing.JToolTip;
 import javax.swing.SwingUtilities;
@@ -48,8 +52,11 @@ import javax.swing.ToolTipManager;
 import javax.swing.event.EventListenerList;
 import net.engio.mbassy.bus.MBassador;
 import net.engio.mbassy.listener.Handler;
+import rx.Observable;
+import rx.functions.Action1;
 import umich.ms.batmass.data.core.lcms.features.Features;
 import umich.ms.batmass.data.core.lcms.features.ILCMSFeature2D;
+import umich.ms.batmass.data.core.lcms.features.api.FeatureUtils;
 import umich.ms.batmass.gui.core.api.comm.eventbus.AbstractBusPubSub;
 import umich.ms.batmass.gui.core.api.data.MzRtPoint;
 import umich.ms.batmass.gui.core.api.data.MzRtRegion;
@@ -548,7 +555,8 @@ public class Map2DPanel extends JPanel {
             // search for features overlapping the viewport
             Rectangle2D.Double query = new Rectangle2D.Double(minMz, minRt, maxMz-minMz, maxRt-minRt);
             Iterable<Entry<ILCMSFeature2D<?>, com.github.davidmoten.rtree.geometry.Rectangle>> q = feats.getMs1().query(query);
-
+            
+            
             // draw the featrues
             Graphics2D g = (Graphics2D) img.getGraphics();
             ILCMSFeature2D<?> feature;
@@ -557,12 +565,12 @@ public class Map2DPanel extends JPanel {
                 feature = entry.value();
                 box = entry.geometry();
                 
-                
-                float rtSpan = box.y1() - box.y2();
-                
-                Rectangle featureRect = baseMap.convertMzRtBoxToPixelCoords(box.x1(), box.x2(), box.y1() + rtSpan, box.y2() + rtSpan, 0d);
+                Rectangle featureRect = baseMap.convertMzRtBoxToPixelCoords(box.x1(), box.x2(), box.y1(), box.y2(), 0d);
                 g.setColor(feature.getColor());
-                g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, 0.1f));
+                
+                float opacity = feature.getOpacity() == null ? 0.1f : feature.getOpacity();
+                
+                g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, opacity));
                 g.fill(featureRect);
                 g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP));
                 g.draw(featureRect);
@@ -662,6 +670,22 @@ public class Map2DPanel extends JPanel {
         curZoomLvl.setImg(img);
         return img;
     }
+    
+//    private void searchShifted(RTree<ILCMSFeature2D<?>, com.github.davidmoten.rtree.geometry.Rectangle> tree, com.github.davidmoten.rtree.geometry.Rectangle r, double dx1, double dy1, double dx2, double dy2) {
+//        com.github.davidmoten.rtree.geometry.Rectangle searchRect;
+//        searchRect = Geometries.rectangle(r.x1()+dx1, r.y1()+dy1, r.x2()+dx2, r.y2()+dy2);
+//        System.out.printf("Tree:\n%s\n", tree.asString());
+//        System.out.printf("Searchign for: %s\n", searchRect);
+//        Observable<Entry<ILCMSFeature2D<?>, com.github.davidmoten.rtree.geometry.Rectangle>> search = tree.search(searchRect);
+//        final AtomicInteger counter = new AtomicInteger(0);
+//        search.toBlocking().forEach(new Action1<Entry<ILCMSFeature2D<?>, com.github.davidmoten.rtree.geometry.Rectangle>>() {
+//            @Override
+//            public void call(Entry<ILCMSFeature2D<?>, com.github.davidmoten.rtree.geometry.Rectangle> t) {
+//                counter.incrementAndGet();
+//            }
+//        });
+//        System.out.printf("Found: %d entries\n", counter.get());
+//    }
 
 
 

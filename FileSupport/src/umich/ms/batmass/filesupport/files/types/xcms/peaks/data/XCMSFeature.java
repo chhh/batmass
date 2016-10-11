@@ -95,4 +95,9 @@ public class XCMSFeature extends AbstractLCMSFeature2D<XCMSTrace>{
         return new Rectangle2D.Double(mzLo, rtHi, mzHi - mzLo, rtHi - rtLo);
     }
 
+    @Override
+    public Float getOpacity() {
+        return null;
+    }
+
 }

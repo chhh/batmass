@@ -17,6 +17,8 @@ package umich.ms.batmass.data.core.lcms.features;
 
 import com.github.davidmoten.rtree.Entry;
 import com.github.davidmoten.rtree.RTree;
+import com.github.davidmoten.rtree.geometry.Geometries;
+import com.github.davidmoten.rtree.geometry.Geometry;
 import com.github.davidmoten.rtree.geometry.Point;
 import com.github.davidmoten.rtree.geometry.Rectangle;
 import java.awt.geom.Point2D;
@@ -24,8 +26,10 @@ import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.netbeans.api.annotations.common.NonNull;
 import rx.Observable;
+import rx.functions.Action1;
 import umich.ms.batmass.data.core.lcms.features.api.FeatureUtils;
 import umich.ms.util.DoubleRange;
 import umich.ms.util.Interval1D;
@@ -251,16 +255,16 @@ public class Features<T extends ILCMSFeature2D<?>> {
         public void add(T f) {
             list.add(f);
             Rectangle2D bbox = f.getBounds();
-            Rectangle rectangle = FeatureUtils.geometryAwtToRtree(bbox);
-            tree = tree.add(f, rectangle);
+            Rectangle r = Geometries.rectangle(bbox.getMinX(), bbox.getMinY(), bbox.getMaxX(), bbox.getMaxY());
+            tree = tree.add(f, r);
         }
 
         public void addAll(Collection<? extends T> features) {
             list.addAll(features);
             for (T f : features) {
                 Rectangle2D bbox = f.getBounds();
-                Rectangle rectangle = FeatureUtils.geometryAwtToRtree(bbox);
-                tree = tree.add(f, rectangle);
+                Rectangle r = FeatureUtils.geometryAwtToRtree(bbox);
+                tree = tree.add(f, r);
             }
         }
 

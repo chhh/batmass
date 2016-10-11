@@ -57,7 +57,7 @@ public interface ILCMSTrace {
      * {@link Rectangle2D} using [m/z +/- spread] for m/z span and rtLo, rtHi
      * for RT span.<br/>
      * Shape's X coordinate = m/z, Y coordinate = <b>RT in minutes</b>.<br/>
-     * Coordinates start at bottom right corner, RT goes "up" (positive Y axis
+     * Coordinates start at bottom left corner, RT goes "up" (positive Y axis
      * direction), m/z goes "right" (positive X axis directions).
      * @return it's OK to return null, if no particular shape is detected by
      * your feature finding algorithm.

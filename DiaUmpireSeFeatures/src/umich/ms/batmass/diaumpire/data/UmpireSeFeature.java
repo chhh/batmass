@@ -91,4 +91,9 @@ public class UmpireSeFeature extends AbstractLCMSFeature2D<AbstractLCMSTrace>{
 
         return new Rectangle2D.Double(mzLo, rtHi, mzHi - mzLo, rtHi - rtLo);
     }
+
+    @Override
+    public Float getOpacity() {
+        return null;
+    }
 }
