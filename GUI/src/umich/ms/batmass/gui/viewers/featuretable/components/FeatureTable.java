@@ -15,9 +15,13 @@
  */
 package umich.ms.batmass.gui.viewers.featuretable.components;
 
+import java.awt.Color;
+import java.awt.Component;
 import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 import net.engio.mbassy.bus.MBassador;
@@ -75,8 +79,22 @@ public class FeatureTable extends ETable {
                 }
             }
         });
+        
+        setDefaultRenderer(Color.class, new ColorTableCellRenderer());
     }
     
+    private class ColorTableCellRenderer extends DefaultTableCellRenderer {
+
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+            Color color = (Color) value;
+            c.setBackground(color);
+            setText(String.format("R=%d, G=%d, B=%d", color.getRed(), color.getGreen(), color.getBlue()));
+            return c;
+        }
+        
+    }
     
 
     @Override
