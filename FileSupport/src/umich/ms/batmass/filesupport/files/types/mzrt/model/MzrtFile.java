@@ -15,9 +15,13 @@
  */
 package umich.ms.batmass.filesupport.files.types.mzrt.model;
 
+import com.google.common.base.Charsets;
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -28,6 +32,7 @@ import java.util.Map;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
+import org.apache.commons.csv.QuoteMode;
 import umich.ms.batmass.data.core.api.DataLoadingException;
 
 /**
@@ -59,6 +64,71 @@ public class MzrtFile {
     
     public void load() throws DataLoadingException {
         
+        int[] counts = new int[3]; // [0] - \r\n, [1] - \n, [2] - \r
+        final String[] separators = {"\r\n", "\n", "\r"};
+        // detecting line separator
+        try (InputStreamReader isr = new InputStreamReader(new BufferedInputStream(new FileInputStream(file.toFile())), Charsets.UTF_8)) {
+            int c;
+            int encountered = 0;
+            boolean isPrevR = false;
+            int cutoff = 50;
+            readLoop:
+            while ((c = isr.read()) != -1) {
+                char ch = (char)c;
+                switch (ch) {
+                    case '\r':
+                        if (++counts[2] > cutoff) {
+                            break readLoop;
+                        }
+                        isPrevR = true;
+                        break;
+                    case '\n':
+                        if (isPrevR) {
+                            counts[2]--;
+                            if (++counts[0] > cutoff) {
+                                break readLoop;
+                            }
+                        } else {
+                            if (++counts[1] > cutoff) {
+                                break readLoop;
+                            }
+                        }
+                        isPrevR = false;
+                        break;
+                    default:
+                        isPrevR = false;
+                }
+            }
+        } catch (IOException ex) {
+            throw new DataLoadingException("Could not detect line separator", ex);
+        }
+        
+        List<Integer> idxMax = new ArrayList<>();
+        for (int i = 0; i < counts.length; i++) {
+            if (idxMax.isEmpty()) {
+                idxMax.add(i);
+            } else if (counts[i] > counts[idxMax.get(0)]) {
+                idxMax.clear();
+                idxMax.add(i);
+            } else if (counts[i] == counts[idxMax.get(0)]) {
+                idxMax.add(i);
+            }
+        }
+        
+        String recordSeparator;
+        if (idxMax.size() > 1) {
+            if (idxMax.contains(0)) {
+                recordSeparator = separators[0];
+            } else if (idxMax.contains(1)) {
+                recordSeparator = separators[1];
+            } else {
+                recordSeparator = separators[idxMax.get(0)];
+            }
+        } else {
+            recordSeparator = separators[idxMax.get(0)];
+        }
+        
+        // detecting delimiter
         char delimiter;
         try (BufferedReader br = new BufferedReader(new FileReader(file.toFile()))) {
             List<String> lines = new ArrayList<>();
@@ -74,7 +144,7 @@ public class MzrtFile {
             
             delimiter = guessDelimiter(lines);
         } catch (IOException ex) {
-            throw new DataLoadingException(ex);
+            throw new DataLoadingException("Could not detect delimiter character", ex);
         }
         
         try (BufferedReader br = new BufferedReader(new FileReader(file.toFile()))) {
@@ -82,7 +152,10 @@ public class MzrtFile {
             fmt = fmt.withHeader()
                 .withIgnoreEmptyLines(true)
                 .withTrim(true)
-                .withIgnoreHeaderCase(true);
+                .withIgnoreHeaderCase(true)
+                .withQuoteMode(QuoteMode.NON_NUMERIC)
+                .withRecordSeparator(recordSeparator)
+                .withQuote('"');
             
             CSVParser parser = fmt.parse(br);
             
