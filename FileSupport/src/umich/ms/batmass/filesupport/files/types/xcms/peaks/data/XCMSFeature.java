@@ -27,7 +27,7 @@ import umich.ms.batmass.filesupport.files.types.xcms.peaks.model.XCMSPeakGroup;
  *
  * @author Dmitry Avtonomov
  */
-public class XCMSFeature extends AbstractLCMSFeature2D<XCMSTrace>{
+public class XCMSFeature extends AbstractLCMSFeature2D<XCMSTrace> {
     protected XCMSPeakGroup group;
 
     public XCMSFeature(XCMSTrace[] traces, int charge) {

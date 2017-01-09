@@ -1,5 +1,5 @@
-/* 
- * Copyright 2016 Dmitry Avtonomov.
+/*
+ * Copyright 2017 Dmitry Avtonomov.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,73 +28,74 @@ import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.Utilities;
-import umich.ms.batmass.data.core.lcms.features.data.TreeTableModelData;
+import umich.ms.batmass.data.core.lcms.features.data.FeatureTableModelData;
 import umich.ms.batmass.filesupport.core.spi.nodes.NodeInfo;
 import umich.ms.batmass.gui.nodes.actions.files.features.FeaturesSubmenuView;
-import umich.ms.batmass.gui.viewers.treetable.TreeTableTopComponent;
+import umich.ms.batmass.gui.viewers.featuretable.FeatureTableTopComponent;
 import umich.ms.batmass.nbputils.actions.AbstractContextAwareAction;
 
 /**
  *
  * @author Dmitry Avtonomov
  */
+
 @ActionID(
         category = "BatMass/Nodes",
-        id = "umich.ms.batmass.gui.nodes.actions.files.pepid.OpenTreeTable"
+        id = "umich.ms.batmass.gui.nodes.actions.files.pepid.OpenIdFeature2DTable"
 )
 @ActionRegistration(
-        displayName = "#CTL_OpenTreeTable",
+        displayName = "#CTL_OpenFeature2DTable",
         lazy = false
 )
 @ActionReferences({
     @ActionReference(
             path = NodeInfo.ACTIONS_LAYER_PATH_BASE + PepIdSubmenuView.LAYER_REL_PATH + FeaturesSubmenuView.LAYER_REL_PATH_SUBFOLDER,
-            position = 510
+            position = 520
     )
 })
-@NbBundle.Messages("CTL_OpenTreeTable=Table Old")
+
+@NbBundle.Messages("CTL_OpenFeature2DTable=Table")
 @SuppressWarnings({"rawtypes"})
-public class OpenTreeTable extends AbstractContextAwareAction<TreeTableModelData> {
+public class OpenIdFeature2DTable extends AbstractContextAwareAction<FeatureTableModelData> {
     @StaticResource
     private static final String ICON_PATH = "umich/ms/batmass/gui/resources/list.png";
     public static final ImageIcon ICON = ImageUtilities.loadImageIcon(ICON_PATH, false);
 
-    public OpenTreeTable() {
+
+    public OpenIdFeature2DTable() {
         this(Utilities.actionsGlobalContext());
     }
 
-    public OpenTreeTable(Lookup context) {
+    public OpenIdFeature2DTable(Lookup context) {
         super(context);
-        putValue(Action.NAME, Bundle.CTL_OpenTreeTable());
+        putValue(Action.NAME, umich.ms.batmass.gui.nodes.actions.files.pepid.Bundle.CTL_OpenFeature2DTable());
         putValue(Action.SMALL_ICON, ICON);
     }
 
 
     @Override
-    public Class<TreeTableModelData> getActivationClass() {
-        return TreeTableModelData.class;
+    public Class<FeatureTableModelData> getActivationClass() {
+        return FeatureTableModelData.class;
     }
 
     @Override
-    public boolean isActivated(Collection<? extends TreeTableModelData> instances) {
+    public boolean isActivated(Collection<? extends FeatureTableModelData> instances) {
         return instances.size() == 1;
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-
-        Collection<? extends TreeTableModelData> result = this.getLookupResult();
+        Collection<? extends FeatureTableModelData> result = this.getLookupResult();
         if (result.size() != 1) {
             throw new IllegalStateException("This action can only act when there"
-                    + "is exactly one UmpireIdTreeTableModelData object in global selection.");
+                    + "is exactly one FeatureTableModelData object in global selection.");
         }
-        final TreeTableModelData data = result.iterator().next();
+        final FeatureTableModelData data = result.iterator().next();
 
 
-        TreeTableTopComponent tc = new TreeTableTopComponent();
+        final FeatureTableTopComponent tc = new FeatureTableTopComponent();
         tc.open();
         tc.setData(data);
-
+        
     }
-
 }

@@ -32,7 +32,7 @@ import umich.ms.fileio.filetypes.pepxml.jaxb.standard.SpectrumQuery;
  */
 public class PepxmlTableModel extends AbstractFeatureTableModel {
     
-    protected final List<SpectrumQuery> queries;
+    protected final List<PepxmlFeature> queries;
     protected String[] colNames;
     protected Class[] colTypes;
     protected ValueFetcher[] colFetchers;
@@ -52,12 +52,12 @@ public class PepxmlTableModel extends AbstractFeatureTableModel {
      * 
      * @param queries Must be non-zero length.
      */
-    public PepxmlTableModel(List<SpectrumQuery> queries) {
+    public PepxmlTableModel(List<PepxmlFeature> queries) {
         if (queries.isEmpty())
             throw new IllegalStateException("Given SpectrumQuery list must be non-empty.");
         this.queries = queries;
         ArrayList<String> colN = new ArrayList<>();
-        ArrayList<Class> colT = new ArrayList<>();
+        ArrayList<Class<?>> colT = new ArrayList<>();
         ArrayList<ValueFetcher> colF = new ArrayList<>();
         
         colN.add("Sequence");
@@ -130,7 +130,7 @@ public class PepxmlTableModel extends AbstractFeatureTableModel {
                 return getFirstHit(q).getTotNumIons();
         }});
         
-        SpectrumQuery q = queries.get(0);
+        SpectrumQuery q = queries.get(0).getQuery();
         SearchHit sh = q.getSearchResult().get(0).getSearchHit().get(0);
         List<NameValueType> searchScores = sh.getSearchScore();
         for (int i = 0; i < searchScores.size(); i++) {
@@ -178,7 +178,7 @@ public class PepxmlTableModel extends AbstractFeatureTableModel {
         }
         
         this.colNames = colN.toArray(new String[0]);
-        this.colTypes = colT.toArray(new Class[0]);
+        this.colTypes = colT.toArray(new Class<?>[0]);
         this.colFetchers = colF.toArray(new ValueFetcher[0]);
     }
     
@@ -194,7 +194,7 @@ public class PepxmlTableModel extends AbstractFeatureTableModel {
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        SpectrumQuery q = queries.get(rowIndex);
+        SpectrumQuery q = queries.get(rowIndex).getQuery();
         return colFetchers[columnIndex].fetch(q);
     }
     
