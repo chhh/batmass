@@ -60,7 +60,11 @@ import umich.ms.datatypes.LCMSData;
     @ActionReference(
             path = NodeInfo.ACTIONS_LAYER_PATH_BASE + "/batmass-project-any/batmass-type-any/lcms",
             position = 520
-    )
+    ),
+    @ActionReference(
+            path = NodeInfo.ACTIONS_LAYER_PATH_BASE + "/batmass-project-any/batmass-type-any/pep_id",
+            position = 520
+    ) 
 })
 @NbBundle.Messages("CTL_OverlayOnMap2D=Feature overlay")
 @SuppressWarnings({"rawtypes"})

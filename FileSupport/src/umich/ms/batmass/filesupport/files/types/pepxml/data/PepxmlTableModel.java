@@ -17,6 +17,8 @@ package umich.ms.batmass.filesupport.files.types.pepxml.data;
 
 import java.util.ArrayList;
 import java.util.List;
+import umich.ms.batmass.filesupport.files.types.xcms.peaks.data.XCMSFeature;
+import umich.ms.batmass.filesupport.files.types.xcms.peaks.model.XCMSPeak;
 import umich.ms.batmass.gui.core.api.data.MzRtRegion;
 import umich.ms.batmass.gui.core.components.featuretable.AbstractFeatureTableModel;
 import umich.ms.fileio.filetypes.pepxml.jaxb.standard.AnalysisResult;
@@ -215,7 +217,17 @@ public class PepxmlTableModel extends AbstractFeatureTableModel {
 
     @Override
     public MzRtRegion rowToRegion(int row) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (row < 0 || row >= queries.size())
+            throw new IllegalStateException(String.format("Conversion from illegal row index was requested, no such row index: [%s]", row));
+        PepxmlFeature f = queries.get(row);
+        if (f == null) {
+            throw new IllegalStateException(String.format("Should not happen, row index was ok, but the feature at this id was null."));
+        }
+        
+        PepxmlTrace[] traces = f.getTraces();
+        PepxmlTrace t = traces[0];
+        
+        return new MzRtRegion(t.getMz()-0.5, t.getMz()+0.5, t.getRtLo()-0.5, t.getRtHi()+0.5);
     }
     
 }

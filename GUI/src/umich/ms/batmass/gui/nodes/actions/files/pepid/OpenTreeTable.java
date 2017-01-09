@@ -38,20 +38,20 @@ import umich.ms.batmass.nbputils.actions.AbstractContextAwareAction;
  *
  * @author Dmitry Avtonomov
  */
-@ActionID(
-        category = "BatMass/Nodes",
-        id = "umich.ms.batmass.gui.nodes.actions.files.pepid.OpenTreeTable"
-)
-@ActionRegistration(
-        displayName = "#CTL_OpenTreeTable",
-        lazy = false
-)
-@ActionReferences({
-    @ActionReference(
-            path = NodeInfo.ACTIONS_LAYER_PATH_BASE + PepIdSubmenuView.LAYER_REL_PATH + FeaturesSubmenuView.LAYER_REL_PATH_SUBFOLDER,
-            position = 510
-    )
-})
+//@ActionID(
+//        category = "BatMass/Nodes",
+//        id = "umich.ms.batmass.gui.nodes.actions.files.pepid.OpenTreeTable"
+//)
+//@ActionRegistration(
+//        displayName = "#CTL_OpenTreeTable",
+//        lazy = false
+//)
+//@ActionReferences({
+//    @ActionReference(
+//            path = NodeInfo.ACTIONS_LAYER_PATH_BASE + PepIdSubmenuView.LAYER_REL_PATH + FeaturesSubmenuView.LAYER_REL_PATH_SUBFOLDER,
+//            position = 510
+//    )
+//})
 @NbBundle.Messages("CTL_OpenTreeTable=Table Old")
 @SuppressWarnings({"rawtypes"})
 public class OpenTreeTable extends AbstractContextAwareAction<TreeTableModelData> {
