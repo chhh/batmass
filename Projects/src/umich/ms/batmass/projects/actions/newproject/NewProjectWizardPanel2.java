@@ -100,6 +100,11 @@ public class NewProjectWizardPanel2 implements WizardDescriptor.ValidatingPanel<
         if (!f.isDirectory()) {
             throw new WizardValidationException(null, "The specified path is not a directory", null);
         }
+        File[] files = f.listFiles();
+        if (files != null && files.length > 0) {
+            throw new WizardValidationException(null, "The selected directory is not empty, cowardly refusing to use a non-empty folder.", null);
+        }
+        
         String name = getComponent().getTxtName().getText();
         if (name.trim().length() == 0) {
             throw new WizardValidationException(null, "Project name must contain at least some non-whitespace characters", null);
