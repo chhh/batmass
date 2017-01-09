@@ -1322,27 +1322,53 @@ public class Map2DPanel extends JPanel {
             BaseMap2D baseMap = curZoomLvl.getBaseMap();
             int x = baseMap.extrapolateMzToX(mzRt.getMz());
             int y = baseMap.extrapolateRtToY(mzRt.getRt());
-            double[][] map = curZoomLvl.getBaseMap().getMap();
-
+            double[][] map = baseMap.getMap();
+            double[] maxRowVals = baseMap.maxValInFullRow;
+            
             // search in some radius of the map for the max value
             if (map.length > 0 && map[0].length > 0) {
                 int r = 3; // search radius
                 double maxMapValInRadius = Double.NEGATIVE_INFINITY;
                 for (int yPtr = y-r; yPtr <= y+r; yPtr++) {
-                    if (yPtr < map.length && yPtr > 0) {
+                    if (yPtr >= 0 && yPtr < map.length) {
                         for (int xPtr = x-r; xPtr <= x+r; xPtr++) {
-                        if (xPtr < map[0].length && xPtr > 0 && map[yPtr][xPtr] > maxMapValInRadius) {
-                            maxMapValInRadius = map[yPtr][xPtr];
+                            if (xPtr >= 0 && xPtr < map[yPtr].length && map[yPtr][xPtr] > maxMapValInRadius) {
+                                maxMapValInRadius = map[yPtr][xPtr];
+                            }
                         }
                     }
+                }
+                
+                
+                
+                
+                double maxMapValInRowNearMouse = Double.NEGATIVE_INFINITY;
+                for (int yPtr = y-r; yPtr <= y+r; yPtr++) {
+                    if (yPtr >= 0 && yPtr < map.length) {
+                        for (int xPtr = x-r; xPtr <= x+r; xPtr++) {
+                            if (xPtr >= 0 && xPtr < map[yPtr].length && map[yPtr][xPtr] > maxMapValInRowNearMouse) {
+                                maxMapValInRowNearMouse = map[yPtr][xPtr];
+                            }
+                        }
                     }
                 }
+                
+                double maxMapValInRow = Double.NEGATIVE_INFINITY;
+                for (int yPtr = y; yPtr <= y; yPtr++) {
+                    if (yPtr >= 0 && yPtr < maxRowVals.length) {
+                        maxMapValInRow = maxRowVals[yPtr];
+                    }
+                }
+                
 
                 //we don't typically see data where intensities are lower than 10
                 if (maxMapValInRadius != 0 && maxMapValInRadius < 10d) {
                     tooltipText = String.format("mz: %.4f, rt: %.2f, ab: %,.2f", mzRt.getMz(), mzRt.getRt(), maxMapValInRadius);
                 } else {
                     tooltipText = String.format("mz: %.4f, rt: %.2f, ab: %,.0f", mzRt.getMz(), mzRt.getRt(), maxMapValInRadius);
+                }
+                if (!Double.isInfinite(maxMapValInRowNearMouse) && !Double.isInfinite(maxMapValInRow)) {
+                    tooltipText = String.format("%s, Max ab in row: %,.0f (Ratio: %.4f)", tooltipText, maxMapValInRow, maxMapValInRowNearMouse/maxMapValInRow);
                 }
             } else {
                 tooltipText = String.format("mz: %.4f, rt: %.2f", mzRt.getMz(), mzRt.getRt());

@@ -52,6 +52,7 @@ public final class BaseMap2D {
     public double[][] map;
     /** Values in this map should not be affected by different user selectable options. */
     public double[][] mapRaw;
+    public double[] maxValInFullRow;
     private int[] filledRowIds;
 
     private int width;
@@ -211,6 +212,7 @@ public final class BaseMap2D {
         int scanCount = scansByRtSpanAtMsLevel.size();
         this.map = new double[height][width];
         this.mapRaw = new double[height][width];
+        this.maxValInFullRow = new double[height];
 
         IScan scan;
         TreeMap<Integer, IScan> mapNum2scan = scans.getMapNum2scan();
@@ -280,11 +282,12 @@ public final class BaseMap2D {
                 }
             }
             
+            double maxInt = spectrum.getMaxInt();
             for (int i = mzIdxLo; i <= mzIdxHi; i++) {
 
                 x = extrapolateMzToX(masses[i]);
                 addPeakRaw(x, y, intensities[i]);
-
+                
                 if (applyDenoise && intensities[i] < denoiseThreshold) {
                     continue;
                 }
@@ -372,9 +375,11 @@ public final class BaseMap2D {
 
 //                addPeak(x, y, curIntensity);
                 addPeak(x, y, intensities[i]);
+                maxValInFullRow[y] = maxInt;
 //                if (curIntensity > 1e6) {
 //                    addPeak(x, y, curIntensity);
 //                }
+
             }
 
             if (hasProfile && doProfileModeGapFilling) {
@@ -411,6 +416,7 @@ public final class BaseMap2D {
                 int rowHi = filledRowIds[filledRowIdx+1];
                 for (int rowToFillIdx = rowLo + 1; rowToFillIdx < rowHi; rowToFillIdx++) {
                     System.arraycopy(map[rowLo], 0, map[rowToFillIdx], 0, width);
+                    maxValInFullRow[rowToFillIdx] = maxValInFullRow[rowLo];
                 }
             }
         }
