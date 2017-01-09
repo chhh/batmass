@@ -3,5 +3,5 @@ OpenIDE-Module: umich.ms.batmass.projects/1
 OpenIDE-Module-Install: umich/ms/batmass/projects/Installer.class
 OpenIDE-Module-Layer: umich/ms/batmass/projects/layer.xml
 OpenIDE-Module-Localizing-Bundle: umich/ms/batmass/projects/Bundle.properties
-OpenIDE-Module-Specification-Version: 1.0.0
+OpenIDE-Module-Specification-Version: 1.0.1
 

@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
 OpenIDE-Module: umich.ms.batmass.projects.core
 OpenIDE-Module-Localizing-Bundle: umich/ms/batmass/projects/core/Bundle.properties
-OpenIDE-Module-Specification-Version: 1.0
+OpenIDE-Module-Specification-Version: 1.0.1
 
