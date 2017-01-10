@@ -33,6 +33,7 @@ import umich.ms.batmass.data.core.lcms.features.data.TreeTableModelData;
 import umich.ms.batmass.gui.core.api.tc.BMTopComponent;
 import umich.ms.batmass.gui.viewers.treetable.components.TreeTableComponent;
 import umich.ms.batmass.nbputils.SwingHelper;
+import umich.ms.batmass.nbputils.notifications.NotifyUtil;
 
 /**
  * This was supposed to be a viewer based on Outline from NetBeans.
@@ -98,7 +99,8 @@ public class TreeTableTopComponent extends BMTopComponent {
                 try {
                     data.load(outlineComponent);
                 } catch (DataLoadingException ex) {
-                    Exceptions.printStackTrace(ex);
+                    NotifyUtil.error("Error loading data", "Could not load features", ex, false);
+                    //Exceptions.printStackTrace(ex);
                     isDataLoadSuccess.set(false);
                 } finally {
                     ph.finish();

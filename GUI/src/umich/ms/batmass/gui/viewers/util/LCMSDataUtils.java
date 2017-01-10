@@ -19,6 +19,7 @@ import org.openide.util.Exceptions;
 import org.openide.util.RequestProcessor;
 import org.openide.util.TaskListener;
 import umich.ms.batmass.gui.core.api.util.ConsecutiveRequestProcessor;
+import umich.ms.batmass.nbputils.notifications.NotifyUtil;
 import umich.ms.datatypes.LCMSData;
 import umich.ms.datatypes.LCMSDataSubset;
 import umich.ms.fileio.exceptions.FileParsingException;
@@ -76,7 +77,8 @@ public class LCMSDataUtils {
                 try {
                     data.load(subset, user);
                 } catch (FileParsingException ex) {
-                    Exceptions.printStackTrace(ex);
+                    NotifyUtil.error("Error loading data", "Could not load LC/MS data", ex, false);
+                    //Exceptions.printStackTrace(ex);
                 }
             }
         };

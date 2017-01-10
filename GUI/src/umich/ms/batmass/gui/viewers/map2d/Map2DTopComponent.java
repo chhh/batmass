@@ -41,6 +41,7 @@ import umich.ms.batmass.gui.viewers.map2d.components.Map2DPanel;
 import umich.ms.batmass.gui.viewers.map2d.components.Map2DZoomEventListener;
 import umich.ms.batmass.gui.viewers.map2d.events.ZoomEvent;
 import umich.ms.batmass.nbputils.SwingHelper;
+import umich.ms.batmass.nbputils.notifications.NotifyUtil;
 import umich.ms.datatypes.LCMSData;
 import umich.ms.datatypes.LCMSDataSubset;
 import umich.ms.fileio.exceptions.FileParsingException;
@@ -184,7 +185,8 @@ public class Map2DTopComponent extends BMTopComponent implements Map2DZoomEventL
                 try {
                     data.load(mapComponent);
                 } catch (DataLoadingException ex) {
-                    Exceptions.printStackTrace(ex);
+                    NotifyUtil.error("Error loading data", "Could not load features", ex, false);
+                    //Exceptions.printStackTrace(ex);
                     isDataLoadSuccess.set(false);
                 } finally {
                     ph.finish();
