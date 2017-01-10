@@ -95,7 +95,7 @@ public class NotifyUtil {
         ActionListener actionListener = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                ErrorManager.getDefault ().notify (exception);
+                ErrorManager.getDefault().notify(exception);
                 //MessageUtil.showException(message, exception);
             }
         };

@@ -36,6 +36,7 @@ import umich.ms.batmass.data.core.lcms.features.data.FeatureTableModelData;
 import umich.ms.batmass.gui.core.api.tc.BMTopComponent;
 import umich.ms.batmass.gui.viewers.featuretable.components.FeatureTableComponent;
 import umich.ms.batmass.nbputils.SwingHelper;
+import umich.ms.batmass.nbputils.notifications.NotifyUtil;
 
 /**
  * A tabular viewer component, that is based on ETable from NetBeans. Supports
@@ -106,7 +107,8 @@ public class FeatureTableTopComponent extends BMTopComponent {
                 try {
                     data.load(featureTableComponent);
                 } catch (DataLoadingException ex) {
-                    Exceptions.printStackTrace(ex);
+                    NotifyUtil.error("Error loading data", "Could not load features", ex, false);
+                    //Exceptions.printStackTrace(ex);
                     isDataLoadSuccess.set(false);
                 } finally {
                     ph.finish();

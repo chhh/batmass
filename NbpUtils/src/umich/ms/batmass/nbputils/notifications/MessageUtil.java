@@ -40,7 +40,7 @@ public class MessageUtil {
     * @param messageType As in {@link NotifyDescription} message type constants.
     */
     public static void show(String message, MessageType messageType) {
-        getDialogDisplayer().notify(new NotifyDescriptor.Message(message,
+        getDialogDisplayer().notifyLater(new NotifyDescriptor.Message(message,
         messageType.getNotifyDescriptorType()));
     }
 
@@ -51,7 +51,7 @@ public class MessageUtil {
     * @param exception
     */
     public static void showException(String message, Throwable exception) {
-        getDialogDisplayer().notify(new NotifyDescriptor.Exception(exception, message));
+        getDialogDisplayer().notifyLater(new NotifyDescriptor.Exception(exception, message));
     }
 
     /**
