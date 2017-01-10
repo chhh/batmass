@@ -50,6 +50,12 @@ public class PepxmlFeaturesDataSource extends DefaultDataSource<Features<PepxmlF
                 throw new DataLoadingException("More than 1 MsmsRunSummary was found in pep xml file, not supported.");
             
             MsmsRunSummary sum = msms.getMsmsRunSummary().get(0);
+            
+            Float rt = sum.getSpectrumQuery().get(0).getRetentionTimeSec();
+            if (rt == null)
+                throw new DataLoadingException("Pep xml file had no retention time information.");
+            
+            
             for (SpectrumQuery q : sum.getSpectrumQuery()) {
                 PepxmlFeature feature = PepxmlFeature.create(q);
                 features.add(feature, 1, null);
