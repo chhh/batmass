@@ -6,8 +6,124 @@
     <description>Recent content in Tutorials on BatMass</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 14 Apr 2016 00:33:00 -0400</lastBuildDate>
+    <lastBuildDate>Thu, 14 Apr 2016 00:35:00 -0400</lastBuildDate>
     <atom:link href="http://www.batmass.org/tutorial/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Overlay peptide IDs on 2D map</title>
+      <link>http://www.batmass.org/tutorial/overlay-peptide-ids-on-map2d/</link>
+      <pubDate>Thu, 14 Apr 2016 00:35:00 -0400</pubDate>
+      
+      <guid>http://www.batmass.org/tutorial/overlay-peptide-ids-on-map2d/</guid>
+      <description>
+
+&lt;p&gt;For this tutorial you will need a &lt;em&gt;.pep.xml&lt;/em&gt; file and a corresponding &lt;em&gt;mzML/mzXML&lt;/em&gt; file. The
+&lt;em&gt;.pep.xml&lt;/em&gt; file &lt;strong&gt;MUST&lt;/strong&gt; contain retention time information (&lt;code&gt;retention_time_sec&lt;/code&gt; attribute in
+&lt;code&gt;spectrum_query&lt;/code&gt; tags). You will likely have that if you used &lt;em&gt;mzML/mzXML&lt;/em&gt; or native file formats
+to perform the search (instead of something like an &lt;em&gt;mgf&lt;/em&gt; file).&lt;/p&gt;
+
+&lt;h2 id=&#34;importing-pep-xml-file&#34;&gt;Importing &lt;em&gt;.pep.xml&lt;/em&gt; file&lt;/h2&gt;
+
+&lt;p&gt;In a &lt;em&gt;Proteomics&lt;/em&gt; project right-click &lt;em&gt;Identifications&lt;/em&gt; node and select &lt;code&gt;Import&lt;/code&gt;.&lt;/p&gt;
+
+&lt;h2 id=&#34;overlaying-and-viewing-peptides-as-a-table&#34;&gt;Overlaying and viewing peptides as a table&lt;/h2&gt;
+
+&lt;p&gt;To display the tabular view right-click the imported file, select &lt;code&gt;View -&amp;gt; Table&lt;/code&gt;. The table can be sorted by one or multiple columns. To sort by multiple columns hold &lt;kbd&gt;Shift&lt;/kbd&gt; when clicking
+on column headers.&lt;/p&gt;
+
+&lt;p&gt;To overlay data on 2D map, select both files simultaneously (the &lt;em&gt;.pep.xml&lt;/em&gt; file and the LC/MS file)
+to overlay onto, right-click any of them, there should be an option to &lt;code&gt;Overlay on 2D Map&lt;/code&gt; in the context menu.&lt;/p&gt;
+
+&lt;p&gt;You can now link the Map2D with Table viewer by dragging the link icon
+&lt;img src=&#34;http://www.batmass.org/images/getting-started/icon_link.png&#34; alt=&#34;Link icon&#34; /&gt; from the toolbar of Map2D to the link icon
+&lt;img src=&#34;http://www.batmass.org/images/getting-started/icon_link.png&#34; alt=&#34;Link icon&#34; /&gt; in the Table view toolbar. Now double-clicking
+on a row in the table will automatically zoom the Map2D to the corresponding region.&lt;/p&gt;
+
+&lt;p&gt;If you also click the sonar-like button in the toolbar (see screenshot below) of 2D Map, you&amp;rsquo;ll get all the MS2 events marked in magenta. For these boxes the width means the actual isolation window, if that information was available in mzML, otherwise it defaults to 1.5 Da. This way you&amp;rsquo;ll readily see which MS2 even led to identifications &amp;ndash; magenta box will be crossing the green box, see screenshots.&lt;/p&gt;
+
+&lt;h2 id=&#34;example&#34;&gt;Example&lt;/h2&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://www.batmass.org/images/peptide-overlay/overlay-peptides-on-map2d-instruciton.png&#34; alt=&#34;Overlay peptides instruction&#34; /&gt;
+&lt;img src=&#34;http://www.batmass.org/images/peptide-overlay/overlay-peptides-overview.png&#34; alt=&#34;Overlay peptides overview&#34; /&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Display custom data on 2D map</title>
+      <link>http://www.batmass.org/tutorial/custom-drawing/</link>
+      <pubDate>Thu, 14 Apr 2016 00:34:00 -0400</pubDate>
+      
+      <guid>http://www.batmass.org/tutorial/custom-drawing/</guid>
+      <description>
+
+&lt;p&gt;In this guide I will show how to overlay custom rectangles on Map2D. It supports colors and opacity as well.
+We will need to:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#writing-mzrt-csv-file&#34;&gt;Write an &lt;em&gt;.mzrt.csv&lt;/em&gt; file&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#import-the-file-to-features-section&#34;&gt;Import the file to &lt;em&gt;features&lt;/em&gt; section&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#display-in-a-table-or-overlay-on-2d-map&#34;&gt;Display in a table  or overlay on 2D map&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;There are no prerequisites for this tutorial except for &lt;a href=&#34;http://www.batmass.org/getting-started&#34;&gt;Getting started Tutorial&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h2 id=&#34;writing-mzrt-csv-file&#34;&gt;Writing &lt;em&gt;.mzrt.csv&lt;/em&gt; file&lt;/h2&gt;
+
+&lt;p&gt;All you need is a delimited file of a very simple format. It should be a UTF-8 delimited text file with column headers. Delimiter character is auto-detected, allowed chars are tab (\t), comma and space. The file can contain any columns you like, however it &lt;strong&gt;MUST&lt;/strong&gt; contain the following columns:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;mzLo&lt;/li&gt;
+&lt;li&gt;mzHi&lt;/li&gt;
+&lt;li&gt;rtLo&lt;/li&gt;
+&lt;li&gt;rtHi&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;RT is specified in minutes. This is enough information to draw a rectangle over Map2D. &lt;strong&gt;Optionally&lt;/strong&gt; you can also provide:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;color (must be a valid hex value, e.g. #FF0000 for red)&lt;/li&gt;
+&lt;li&gt;opacity (in the range [0.0 - 1.0])&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;example-mzrt-csv-file&#34;&gt;Example &lt;em&gt;.mzrt.csv&lt;/em&gt; file&lt;/h2&gt;
+
+&lt;p&gt;We will use this file in the example below. Note that the red rectangle was out of range of in m/z dimension
+(the LC/MS file only had m/z valus starting from 300, however the red rectangle calls for
+200-210 range).&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;some-column,mzLo,mzHi,rtLo,rtHi,color,opacity,sequence
+123457,200,210,1,2,#FF0000,0.9,AKJSHDLASHDSALHDSKAHDAJ
+asdfsdaf,300,310,2,3,#00FF00,0.8,HALD SAJDSAHLLJJASD HL
+aa,400,410,3,3.5,#00FFFF,0.75, ASJDLKSA JDLKAS JDLKSAJD
+bb,500,510,4,5,#ff7f50,0.1,ADHSAKDHSAJHSAHDFGHDJG
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;how-it-should-look-like&#34;&gt;How it should look like&lt;/h2&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://www.batmass.org/images/custom-drawing/custom-drawing-table.png&#34; alt=&#34;Custom drawing table&#34; /&gt;
+&lt;img src=&#34;http://www.batmass.org/images/custom-drawing/custom-drawing-overlay.png&#34; alt=&#34;Custom drawing overlay&#34; /&gt;
+Notice how the orange rectangle had opacity 0.1, thus only its border is visible and the contents is
+transparent.&lt;/p&gt;
+
+&lt;h2 id=&#34;import-the-file-to-lc-ms-features-section&#34;&gt;Import the file to &lt;em&gt;LC/MS Features&lt;/em&gt; section&lt;/h2&gt;
+
+&lt;p&gt;In any project right-click &lt;em&gt;LC/MS Features&lt;/em&gt; node and select &lt;code&gt;Import&lt;/code&gt;. You should be able to add
+any file that has double-extension &lt;em&gt;.mzrt.csv&lt;/em&gt;.&lt;/p&gt;
+
+&lt;h2 id=&#34;display-in-a-table-or-overlay-on-2d-map&#34;&gt;Display in a table or overlay on 2D map&lt;/h2&gt;
+
+&lt;p&gt;To display the tabular view right-click the imported file, select &lt;code&gt;View -&amp;gt; Table&lt;/code&gt;. The table can be sorted by one or multiple columns. To sort by multiple columns hold &lt;kbd&gt;Shift&lt;/kbd&gt; when clicking
+on column headers.&lt;/p&gt;
+
+&lt;p&gt;To overlay data on 2D map, select both files simultaneously (the &lt;em&gt;.mzrt.csv&lt;/em&gt; file and the LC/MS file)
+to overlay onto, right-click any of them, there should be an option to &lt;code&gt;Overlay on 2D Map&lt;/code&gt; in the context menu.&lt;/p&gt;
+
+&lt;p&gt;You can now link the Map2D with Table viewer by dragging the link icon
+&lt;img src=&#34;http://www.batmass.org/images/getting-started/icon_link.png&#34; alt=&#34;Link icon&#34; /&gt; from the toolbar of Map2D to the link icon
+&lt;img src=&#34;http://www.batmass.org/images/getting-started/icon_link.png&#34; alt=&#34;Link icon&#34; /&gt; in the Table view toolbar. Now double-clicking
+on a row in the table will automatically zoom the Map2D to the corresponding region.&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>Developing the first plugin</title>

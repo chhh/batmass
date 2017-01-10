@@ -4,12 +4,21 @@
   <url>
     <loc>http://www.batmass.org/</loc>
     <lastmod>2016-04-14T00:59:00-04:00</lastmod>
-    <priority>0</priority>
   </url>
   
   <url>
     <loc>http://www.batmass.org/license/</loc>
     <lastmod>2016-04-14T00:59:00-04:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://www.batmass.org/tutorial/overlay-peptide-ids-on-map2d/</loc>
+    <lastmod>2016-04-14T00:35:00-04:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://www.batmass.org/tutorial/custom-drawing/</loc>
+    <lastmod>2016-04-14T00:34:00-04:00</lastmod>
   </url>
   
   <url>

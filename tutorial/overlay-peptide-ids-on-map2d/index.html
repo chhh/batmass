@@ -8,18 +8,18 @@
   <head lang="en-us">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1">
-    <title>BatMass</title>
+    <title>Overlay peptide IDs on 2D map - BatMass</title>
     <meta name="generator" content="Hugo 0.16" />
 
     
     <meta name="description" content="Mass spectrometry data visualization">
     
-    <link rel="canonical" href="http://www.batmass.org/">
+    <link rel="canonical" href="http://www.batmass.org/tutorial/overlay-peptide-ids-on-map2d/">
     
     <meta name="author" content="Dmitry Avtonomov">
     
 
-    <meta property="og:url" content="http://www.batmass.org/">
+    <meta property="og:url" content="http://www.batmass.org/tutorial/overlay-peptide-ids-on-map2d/">
     <meta property="og:title" content="BatMass">
     <meta property="og:image" content="http://www.batmass.org/images/bm-icon-512.png">
     <meta name="apple-mobile-web-app-title" content="BatMass">
@@ -79,9 +79,6 @@
     <script src="http://www.batmass.org/javascripts/modernizr.js"></script>
 
     
-    <link href="http://www.batmass.org/index.xml" rel="alternate" type="application/rss+xml" title="BatMass" />
-    <link href="http://www.batmass.org/index.xml" rel="feed" type="application/rss+xml" title="BatMass" />
-    
 
   </head>
   <body class="palette-primary-teal palette-accent-indigo">
@@ -110,7 +107,7 @@
     </div>
     <div class="stretch">
       <div class="title">
-        BatMass
+        Overlay peptide IDs on 2D map
       </div>
     </div>
 
@@ -194,14 +191,11 @@
 
 
 
-<a class="current" title="BatMass" href="http://www.batmass.org/">
+<a  title="BatMass" href="http://www.batmass.org/">
 	
 	BatMass
 </a>
 
-
-<ul id="scrollspy">
-</ul>
 
   
 </li>
@@ -358,11 +352,14 @@
 
 
 
-<a  title="Overlay peptide IDs on 2D map" href="http://www.batmass.org/tutorial/overlay-peptide-ids-on-map2d/">
+<a class="current" title="Overlay peptide IDs on 2D map" href="http://www.batmass.org/tutorial/overlay-peptide-ids-on-map2d/">
 	
 	Overlay peptide IDs on 2D map
 </a>
 
+
+<ul id="scrollspy">
+</ul>
 
       
     </ul>
@@ -417,118 +414,42 @@
 
 	<article class="article">
 		<div class="wrapper">
-			
-
-				
-					<img src=http://www.batmass.org/images/batmass-logo-300.png  class=batmass-about-image  />
-				
-
-				<h1 class="text-center">BatMass: mass spectrometry data visualization </h1>
-
-				
-
-<h2 id="about-batmass">About BatMass</h2>
-
-<p>BatMass is a mass-spectrometry data visualization tool, with the main focus on being fast and interactive while providing comprehensive visualizations without any parameter tweaking. It is written in pure Java and built on top of the <a href="https://netbeans.org/features/platform/all-docs.html">NetBeans Platform</a>. BatMass development is kindly supported by
-<span style='margin-right:5px'>
-  <a href='https://www.yourkit.com/java/profiler/index.jsp'>YourKit Java Profiler</a>
-</span>
-<img src='http://www.batmass.org/images/yklogo-84x20.png' style='vertical-align:text-bottom'/></p>
-
-<h3 id="referencing-the-work">Referencing the work</h3>
-
-<p>If you use BatMass for your research or work, please cite the following paper:<br />
-<strong><a href="https://dx.doi.org/10.1021/acs.jproteome.6b00021">Avtonomov D.M. et al:
-J. Proteome Res. June 16, 2016.
-DOI: 10.1021/acs.jproteome.6b00021.</a></strong></p>
-
-<h2 id="features">Features</h2>
-
-<ul>
-<li><p>Support for the open standard <em>mzML</em> and <em>mzXML</em> mass spectrometry data types. We are hoping to bring native vendor format support as well.</p></li>
-
-<li><p>Viewer synchronization. Link any number of viewers and zooming/panning will be synchronized across them. If you&rsquo;re viewing MS<sup>1</sup> data in one view and MS<sup>2</sup> data in the other the retention time is synchronized, while m/z is not. Open a detected LC/MS feature table or a peptide identification table, a double click on the row will open the corresponding spectrum, or bring you to the corresponding location in a 2D Map viewer.</p></li>
-
-<li><p>Data access layer. For the Java developers out there, the highly optimized mzML/mzXML parsers can be used in any standalone Java program as a simple <em>jar</em> dependency. Parsing has been manually tuned to produce few garbage objects, thus minimizing time spent in GC (Garbage Collection), the speed is comparable to or better than in C/C++ implementations. The API for LC/MS data files gives access to most of the features supported by mzML/mzXML standards.</p></li>
-</ul>
-
-<p>See the <a href="http://www.batmass.org/getting-started/">getting started guide</a> for instructions how to get
-it up and running.</p>
-
-<!-- BatMass development is kindly supported by
-<span style='margin-right:5px'>
-  <a href='https://www.yourkit.com/java/profiler/index.jsp'>YourKit Java Profiler</a>
-</span>
-<img src='http://www.batmass.org/images/yklogo-114x27.png' style='vertical-align:text-bottom'/>
-and is built with
-<span style='margin-right:5px'>
-  <a href=''>Intellij IDEA</a>
-</span>
-<img src='http://www.batmass.org/images/intellij-idea-40x40.png' style='vertical-align:text-bottom'/>
-<span style='margin-right:5px'>
-  ,
-  <a href='https://netbeans.org/features/platform/all-docs.html'>NetBeans Platform</a>
-</span>
-<img src='http://www.batmass.org/images/netbeans-logo-40x40.png'/>
-
-<table >
-  <tr>
-    <td style='vertical-align:middle'><img src='http://www.batmass.org/images/yklogo-114x27.png'/></td>
-    <td style='vertical-align:middle'><a href='https://www.yourkit.com/java/profiler/index.jsp'>YourKit Java Profiler</a></td>
-  </tr>
-  <tr>
-    <td style='vertical-align:middle'><img src='http://www.batmass.org/images/intellij-idea-40x40.png'/></td>
-    <td style='vertical-align:middle'><a href='https://www.jetbrains.com/idea/'>Intellij IDEA</a> IDE</td>
-  </tr>
-  <tr>
-    <td style='vertical-align:middle align:right'><img src='http://www.batmass.org/images/netbeans-logo-40x40.png'/></td>
-    <td style='vertical-align:middle'><a href='https://netbeans.org/features/platform/all-docs.html'>NetBeans Platform</a> community</td>
-  </tr>
-</table> -->
-
-<!-- <img src='http://www.batmass.org/images/yklogo-114x27.png' style='vertical-align:middle'/><span style='vertical-align:middle'>&nbsp;<a href='https://www.yourkit.com/java/profiler/index.jsp'>YourKit Java Profiler</a></span>   -->
-
-<!-- ![YourKit logo](/images/yklogo-114x27.png) [YourKit Java Profiler](https://www.yourkit.com/java/profiler/index.jsp)  
-![IDEA logo](/images/intellij-idea-40x40.png) [Intellij IDEA](https://www.jetbrains.com/idea/) IDE from [JetBrains](https://www.jetbrains.com/)  
-![NetBeans logo](/images/netbeans-logo-40x40.png) [NetBeans Platform](https://netbeans.org/features/platform/all-docs.html) community   -->
-
-<h2 id="demo-video">Demo Video</h2>
-
-<p>Here&rsquo;s a short demo video of BatMass in action.</p>
-
-
-<div style="position: relative; padding-bottom: 56.25%; padding-top: 30px; height: 0; overflow: hidden;">
-  <iframe src="//www.youtube.com/embed/EY9wvd6ckb0" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;" allowfullscreen frameborder="0"></iframe>
- </div>
-
-
-<h2 id="some-examples">Some Examples</h2>
-
-<p>The layout of windows is free and customizable by dragging.
-<img src="http://www.batmass.org/images/about-batmass/free-layout.png" alt="Free window layoyt" /></p>
-
-<p>Compare multiple experiments at once. The bottom-middle run in this figure is a blank (no sample was injected), while the other 5 were runs with some sample. Amazing how much stuff comes from the background.
-<img src="http://www.batmass.org/images/about-batmass/comparison-6-runs-1-blank.png" alt="Multi experiment comparison in Map2D" /></p>
-
-<p>And here are the same runs but zoomed in to a small region of m/z and retentino time. Look at the color-marked regions. Let&rsquo;s just accept that zero-values are a thing, there is no need to try extracting noise to do gap-filling in data.
-<img src="http://www.batmass.org/images/about-batmass/comparison-6-runs-1-blank-02-zoom-marked.png" alt="Multi experiment comparison in Map2D zoomed" /></p>
-
-<h2 id="contacts">Contacts</h2>
-
-<p><strong>The author and maintainer of the project</strong><br />
-Dmitry Avtonomov, Ph.D.<br />
-University of Michigan, Ann Arbor<br />
-Email: dmitriya@umich.edu</p>
-
-<p><strong>General inquiries</strong><br />
-Alexey Nesvizhskii, Ph.D.<br />
-University of Michigan, Ann Arbor<br />
-Email: nesvi@umich.edu<br />
-<a href="http://www.nesvilab.org">http://www.nesvilab.org</a></p>
-
-<p>Please use the <a href="https://github.com/chhh/batmass/issues">bug tracker</a> to ask questions, submit feature requests and bug reports.</p>
 
 			
+
+			<h1>Overlay peptide IDs on 2D map </h1>
+
+			
+
+<p>For this tutorial you will need a <em>.pep.xml</em> file and a corresponding <em>mzML/mzXML</em> file. The
+<em>.pep.xml</em> file <strong>MUST</strong> contain retention time information (<code>retention_time_sec</code> attribute in
+<code>spectrum_query</code> tags). You will likely have that if you used <em>mzML/mzXML</em> or native file formats
+to perform the search (instead of something like an <em>mgf</em> file).</p>
+
+<h2 id="importing-pep-xml-file">Importing <em>.pep.xml</em> file</h2>
+
+<p>In a <em>Proteomics</em> project right-click <em>Identifications</em> node and select <code>Import</code>.</p>
+
+<h2 id="overlaying-and-viewing-peptides-as-a-table">Overlaying and viewing peptides as a table</h2>
+
+<p>To display the tabular view right-click the imported file, select <code>View -&gt; Table</code>. The table can be sorted by one or multiple columns. To sort by multiple columns hold <kbd>Shift</kbd> when clicking
+on column headers.</p>
+
+<p>To overlay data on 2D map, select both files simultaneously (the <em>.pep.xml</em> file and the LC/MS file)
+to overlay onto, right-click any of them, there should be an option to <code>Overlay on 2D Map</code> in the context menu.</p>
+
+<p>You can now link the Map2D with Table viewer by dragging the link icon
+<img src="http://www.batmass.org/images/getting-started/icon_link.png" alt="Link icon" /> from the toolbar of Map2D to the link icon
+<img src="http://www.batmass.org/images/getting-started/icon_link.png" alt="Link icon" /> in the Table view toolbar. Now double-clicking
+on a row in the table will automatically zoom the Map2D to the corresponding region.</p>
+
+<p>If you also click the sonar-like button in the toolbar (see screenshot below) of 2D Map, you&rsquo;ll get all the MS2 events marked in magenta. For these boxes the width means the actual isolation window, if that information was available in mzML, otherwise it defaults to 1.5 Da. This way you&rsquo;ll readily see which MS2 even led to identifications &ndash; magenta box will be crossing the green box, see screenshots.</p>
+
+<h2 id="example">Example</h2>
+
+<p><img src="http://www.batmass.org/images/peptide-overlay/overlay-peptides-on-map2d-instruciton.png" alt="Overlay peptides instruction" />
+<img src="http://www.batmass.org/images/peptide-overlay/overlay-peptides-overview.png" alt="Overlay peptides overview" /></p>
+
 
 			<aside class="copyright" role="note">
 				
@@ -539,23 +460,37 @@ Email: nesvi@umich.edu<br />
 			<footer class="footer">
 				
 
-
-
 <nav class="pagination" aria-label="Footer">
   <div class="previous">
+  
+      <a href="http://www.batmass.org/tutorial/custom-drawing/" title="Display custom data on 2D map">
+        <span class="direction">
+          Previous
+        </span>
+        <div class="page">
+          <div class="button button-previous" role="button" aria-label="Previous">
+            <i class="icon icon-back"></i>
+          </div>
+          <div class="stretch">
+            <div class="title">
+              Display custom data on 2D map
+            </div>
+          </div>
+        </div>
+      </a>
+  
   </div>
 
-  
-  
   <div class="next">
-      <a href="http://www.batmass.org/getting-started/" title="Getting started">
+  
+      <a href="http://www.batmass.org/license/" title="License">
         <span class="direction">
           Next
         </span>
         <div class="page">
           <div class="stretch">
             <div class="title">
-              Getting started
+              License
             </div>
           </div>
           <div class="button button-next" role="button" aria-label="Next">
@@ -563,8 +498,11 @@ Email: nesvi@umich.edu<br />
           </div>
         </div>
       </a>
+  
   </div>
 </nav>
+
+
 
 
 			</footer>
