@@ -229,8 +229,6 @@ public class Map2DComponent extends BMComponentJPanel {
      */
     public final void load(LCMSDataSubset subset, LCMSData data) throws FileParsingException {
         subsets.add(subset);
-        // TODO: ADDED THIS, REMOVE AFTER TESTING
-        data.getSource().setTasksPerCpuPerBatch(1);
         data.load(subset, this);
         IScanCollection scans = data.getScans();
         TreeMap<Integer, ScanIndex> mapMsLevel2index = scans.getMapMsLevel2index();

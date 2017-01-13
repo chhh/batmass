@@ -89,7 +89,7 @@ public class UmpireSeFeature extends AbstractLCMSFeature2D<AbstractLCMSTrace>{
             }
         }
 
-        return new Rectangle2D.Double(mzLo, rtHi, mzHi - mzLo, rtHi - rtLo);
+        return new Rectangle2D.Double(mzLo, rtLo, mzHi - mzLo, rtHi - rtLo);
     }
 
     @Override
