@@ -17,6 +17,7 @@ package umich.ms.batmass.filesupport.files.types.pepxml.data;
 
 import java.awt.Color;
 import umich.ms.batmass.data.core.lcms.features.AbstractLCMSFeature2D;
+import umich.ms.fileio.filetypes.pepxml.jaxb.standard.SearchHit;
 import umich.ms.fileio.filetypes.pepxml.jaxb.standard.SpectrumQuery;
 
 /**
@@ -48,7 +49,17 @@ public class PepxmlFeature extends AbstractLCMSFeature2D<PepxmlTrace> {
 
     @Override
     public Color getColor() {
-        return Color.GREEN;
+        SearchHit sh = getFirstHit(query);
+        float dm = Math.abs(sh.getMassdiff());
+        if (dm < 0.1)
+            return Color.GREEN;
+        else if (dm < 5.0)
+            return Color.ORANGE; 
+        return Color.RED;
+    }
+    
+    private SearchHit getFirstHit(SpectrumQuery q) {
+        return q.getSearchResult().get(0).getSearchHit().get(0);
     }
 
     @Override

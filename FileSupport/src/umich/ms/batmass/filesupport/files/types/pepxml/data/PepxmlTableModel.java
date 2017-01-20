@@ -17,8 +17,6 @@ package umich.ms.batmass.filesupport.files.types.pepxml.data;
 
 import java.util.ArrayList;
 import java.util.List;
-import umich.ms.batmass.filesupport.files.types.xcms.peaks.data.XCMSFeature;
-import umich.ms.batmass.filesupport.files.types.xcms.peaks.model.XCMSPeak;
 import umich.ms.batmass.gui.core.api.data.MzRtRegion;
 import umich.ms.batmass.gui.core.components.featuretable.AbstractFeatureTableModel;
 import umich.ms.fileio.filetypes.pepxml.jaxb.standard.AnalysisResult;
@@ -95,6 +93,13 @@ public class PepxmlTableModel extends AbstractFeatureTableModel {
         colF.add(new ValueFetcher() {
             @Override public Object fetch(SpectrumQuery q) {
                 return getFirstHit(q).getCalcNeutralPepMass();
+        }});
+        
+        colN.add("dM");
+        colT.add(Double.class);
+        colF.add(new ValueFetcher() {
+            @Override public Object fetch(SpectrumQuery q) {
+                return getFirstHit(q).getMassdiff();
         }});
         
         colN.add("RT(min)");
