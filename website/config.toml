@@ -22,7 +22,7 @@ googleAnalytics = "UA-5572974-10"
 	provider = "GitHub"
 	repo_url = "https://github.com/chhh/batmass"
 
-	version = "0.1.0"
+	version = "0.2.0"
 	logo = "images/bm-icon-512.png"
 	favicon = ""
 

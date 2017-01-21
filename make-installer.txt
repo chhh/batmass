@@ -1,0 +1,4 @@
+# Making the installer
+Update the version of the product in the harness as described here:  
+https://3rdaftergod.blogspot.com/2017/01/how-to-set-version-of-product-in.html
+
