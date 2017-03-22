@@ -19,6 +19,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
+import javax.swing.text.Document;
 import javax.swing.text.DocumentFilter;
 import javax.swing.text.PlainDocument;
 
@@ -99,24 +100,23 @@ public abstract class DocumentFilters {
             @Override
             public void insertString(DocumentFilter.FilterBypass fb, int off, String str, AttributeSet attr)
                     throws BadLocationException {
-                fb.insertString(off, str.replaceAll("[^0-9\\.,]", ""), attr);  // remove non-digits and dots
+                fb.insertString(off, str.replaceAll("[^0-9\\.,]", ""), attr);  // remove non-digits and dots/commas
             }
 
             @Override
             public void replace(DocumentFilter.FilterBypass fb, int off, int len, String str, AttributeSet attr)
                     throws BadLocationException {
-                String text = fb.getDocument().getText(0, fb.getDocument().getLength());
-                Pattern dot = Pattern.compile("\\.");
-                Matcher m = dot.matcher(text);
-                StringBuffer sb = new StringBuffer();
-                int cnt = 0;
-                while(m.find()) {
-                    cnt++;
-                    if (cnt > 1)
-                        m.appendReplacement(sb, "");
-                }
-                m.appendTail(sb);
-                fb.replace(off, len, str.replaceAll("[^0-9\\.,]", ""), attr);  // remove non-digits and dots
+//                String text = fb.getDocument().getText(0, fb.getDocument().getLength());
+//                Matcher m = Pattern.compile("[\\.,]").matcher(text);
+//                StringBuffer sb = new StringBuffer();
+//                int cnt = 0;
+//                while(m.find()) {
+//                    cnt++;
+//                    if (cnt > 1)
+//                        m.appendReplacement(sb, "");
+//                }
+//                m.appendTail(sb);
+                fb.replace(off, len, str.replaceAll("[^0-9\\.,]", ""), attr);  // remove non-digits and dots/commas
             }
         });
         return doc;

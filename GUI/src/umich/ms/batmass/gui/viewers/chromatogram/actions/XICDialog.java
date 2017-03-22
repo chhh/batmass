@@ -15,6 +15,7 @@
  */
 package umich.ms.batmass.gui.viewers.chromatogram.actions;
 
+import java.util.Locale;
 import javax.swing.JTextField;
 import umich.ms.batmass.gui.core.components.util.textinput.DocumentFilters;
 import umich.ms.batmass.gui.viewers.chromatogram.components.ChromatogramComponent;
@@ -90,7 +91,8 @@ public class XICDialog extends javax.swing.JPanel {
 
     private Double getValidatedDouble(JTextField field) {
         String text = field.getText();
-        return org.apache.commons.validator.routines.DoubleValidator.getInstance().validate(text);
+        text = text.replaceAll("[,\\.]+", ".");
+        return org.apache.commons.validator.routines.DoubleValidator.getInstance().validate(text, Locale.ROOT);
     }
 
     public void initFields(ChromatogramComponent.Viewport view) {

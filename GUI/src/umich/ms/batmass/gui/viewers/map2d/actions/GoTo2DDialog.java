@@ -15,6 +15,7 @@
  */
 package umich.ms.batmass.gui.viewers.map2d.actions;
 
+import java.util.Locale;
 import javax.swing.JTextField;
 import umich.ms.batmass.gui.core.components.util.textinput.DocumentFilters;
 
@@ -88,23 +89,25 @@ public class GoTo2DDialog extends javax.swing.JPanel {
     }
     
     public Double getMzStart() {
-        String text = getFieldMzStart().getText();
-        return org.apache.commons.validator.routines.DoubleValidator.getInstance().validate(text);
+        return getValidatedDouble(getFieldMzStart());
     }
     
     public Double getMzEnd() {
-        String text = getFieldMzEnd().getText();
-        return org.apache.commons.validator.routines.DoubleValidator.getInstance().validate(text);
+        return getValidatedDouble(getFieldMzEnd());
     }
     
     public Double getRtStart() {
-        String text = getFieldRtStart().getText();
-        return org.apache.commons.validator.routines.DoubleValidator.getInstance().validate(text);
+        return getValidatedDouble(getFieldRtStart());
     }
     
     public Double getRtEnd() {
-        String text = getFieldRtEnd().getText();
-        return org.apache.commons.validator.routines.DoubleValidator.getInstance().validate(text);
+        return getValidatedDouble(getFieldRtEnd());
+    }
+    
+    private Double getValidatedDouble(JTextField field) {
+        String text = field.getText();
+        text = text.replaceAll("[,\\.]+", ".");
+        return org.apache.commons.validator.routines.DoubleValidator.getInstance().validate(text, Locale.ROOT);
     }
 
     /**

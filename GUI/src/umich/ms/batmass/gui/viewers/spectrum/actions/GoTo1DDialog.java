@@ -15,6 +15,7 @@
  */
 package umich.ms.batmass.gui.viewers.spectrum.actions;
 
+import java.util.Locale;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JTextField;
@@ -68,10 +69,11 @@ public class GoTo1DDialog extends javax.swing.JPanel {
     
     public Double getRtInMinutes() {
         String text = getFieldRt().getText();
+        text = text.replaceAll("[,\\.]+", ".");
         if ( ((String)comboBoxTimeUnits.getModel().getSelectedItem()).equals("min") ) {
-            return org.apache.commons.validator.routines.DoubleValidator.getInstance().validate(text);
+            return org.apache.commons.validator.routines.DoubleValidator.getInstance().validate(text, Locale.ROOT);
         } else {
-            Double validate = org.apache.commons.validator.routines.DoubleValidator.getInstance().validate(text);
+            Double validate = org.apache.commons.validator.routines.DoubleValidator.getInstance().validate(text, Locale.ROOT);
             if (validate == null)
                 return null;
             return validate/60d;
@@ -80,17 +82,21 @@ public class GoTo1DDialog extends javax.swing.JPanel {
     
     public Integer getScanNum() {
         String text = getFieldScanNum().getText();
-        return org.apache.commons.validator.routines.IntegerValidator.getInstance().validate(text);
+        return org.apache.commons.validator.routines.IntegerValidator.getInstance().validate(text, Locale.ROOT);
     }
     
     public Double getMzStart() {
-        String text = getFieldMzStart().getText();
-        return org.apache.commons.validator.routines.DoubleValidator.getInstance().validate(text);
+        return getValidatedDouble(getFieldMzStart());
     }
     
     public Double getMzEnd() {
-        String text = getFieldMzEnd().getText();
-        return org.apache.commons.validator.routines.DoubleValidator.getInstance().validate(text);
+        return getValidatedDouble(getFieldMzEnd());
+    }
+    
+    private Double getValidatedDouble(JTextField field) {
+        String text = field.getText();
+        text = text.replaceAll("[,\\.]+", ".");
+        return org.apache.commons.validator.routines.DoubleValidator.getInstance().validate(text, Locale.ROOT);
     }
 
     public JTextField getFieldMzEnd() {
