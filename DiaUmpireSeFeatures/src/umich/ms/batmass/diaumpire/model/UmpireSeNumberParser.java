@@ -31,7 +31,7 @@ public class UmpireSeNumberParser extends DelimitedFiles.NumberParsingDelegate {
     }
     
     @Override
-    public void parse(int idx, int number, int length, int decimalPos) {
+    public void parse(int idx, long number, int length, int decimalPos) {
         int mapping = colMapping[idx];
         switch (mapping) {
             case 0:

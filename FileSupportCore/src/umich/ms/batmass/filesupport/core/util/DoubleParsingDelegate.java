@@ -31,7 +31,7 @@ public class DoubleParsingDelegate extends DelimitedFiles.NumberParsingDelegate 
     }
 
     @Override
-    public void parse(int idx, int number, int length, int decimalPos) {
+    public void parse(int idx, long number, int length, int decimalPos) {
         values[idx] = number / Math.pow(10d, (length - decimalPos));
     }
 }

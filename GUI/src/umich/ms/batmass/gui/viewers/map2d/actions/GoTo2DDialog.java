@@ -132,7 +132,7 @@ public class GoTo2DDialog extends javax.swing.JPanel {
         org.openide.awt.Mnemonics.setLocalizedText(labelRt, org.openide.util.NbBundle.getMessage(GoTo2DDialog.class, "GoTo2DDialog.labelRt.text")); // NOI18N
 
         fieldRtStart.setColumns(10);
-        fieldRtStart.setDocument(DocumentFilters.getDigitsAndDotFilter());
+        fieldRtStart.setDocument(DocumentFilters.getDigitsAndDotCommaFilter());
         fieldRtStart.setText(org.openide.util.NbBundle.getMessage(GoTo2DDialog.class, "GoTo2DDialog.fieldRtStart.text")); // NOI18N
         fieldRtStart.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
@@ -141,7 +141,7 @@ public class GoTo2DDialog extends javax.swing.JPanel {
         });
 
         fieldMzStart.setColumns(10);
-        fieldMzStart.setDocument(DocumentFilters.getDigitsAndDotFilter());
+        fieldMzStart.setDocument(DocumentFilters.getDigitsAndDotCommaFilter());
         fieldMzStart.setText(org.openide.util.NbBundle.getMessage(GoTo2DDialog.class, "GoTo2DDialog.fieldMzStart.text")); // NOI18N
         fieldMzStart.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
@@ -152,7 +152,7 @@ public class GoTo2DDialog extends javax.swing.JPanel {
         org.openide.awt.Mnemonics.setLocalizedText(labelMzDash, org.openide.util.NbBundle.getMessage(GoTo2DDialog.class, "GoTo2DDialog.labelMzDash.text")); // NOI18N
 
         fieldMzEnd.setColumns(10);
-        fieldMzEnd.setDocument(DocumentFilters.getDigitsAndDotFilter());
+        fieldMzEnd.setDocument(DocumentFilters.getDigitsAndDotCommaFilter());
         fieldMzEnd.setText(org.openide.util.NbBundle.getMessage(GoTo2DDialog.class, "GoTo2DDialog.fieldMzEnd.text")); // NOI18N
         fieldMzEnd.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
@@ -163,7 +163,7 @@ public class GoTo2DDialog extends javax.swing.JPanel {
         org.openide.awt.Mnemonics.setLocalizedText(labelRtDash, org.openide.util.NbBundle.getMessage(GoTo2DDialog.class, "GoTo2DDialog.labelRtDash.text")); // NOI18N
 
         fieldRtEnd.setColumns(10);
-        fieldRtEnd.setDocument(DocumentFilters.getDigitsAndDotFilter());
+        fieldRtEnd.setDocument(DocumentFilters.getDigitsAndDotCommaFilter());
         fieldRtEnd.setText(org.openide.util.NbBundle.getMessage(GoTo2DDialog.class, "GoTo2DDialog.fieldRtEnd.text")); // NOI18N
         fieldRtEnd.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
@@ -197,7 +197,7 @@ public class GoTo2DDialog extends javax.swing.JPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(fieldRtEnd, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(fieldRtAvailableSpan, javax.swing.GroupLayout.DEFAULT_SIZE, 172, Short.MAX_VALUE))
+                        .addComponent(fieldRtAvailableSpan))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(fieldMzStart, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)

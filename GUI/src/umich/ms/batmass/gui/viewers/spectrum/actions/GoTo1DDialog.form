@@ -102,7 +102,7 @@
     <Component class="javax.swing.JTextField" name="fieldRt">
       <Properties>
         <Property name="document" type="javax.swing.text.Document" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-          <Connection code="DocumentFilters.getDigitsAndDotFilter()" type="code"/>
+          <Connection code="DocumentFilters.getDigitsAndDotCommaFilter()" type="code"/>
         </Property>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
           <ResourceString bundle="umich/gui/viewers/scan/actions/Bundle.properties" key="GoTo1DDialog.fieldRt.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
@@ -122,7 +122,7 @@
     <Component class="javax.swing.JTextField" name="fieldMzStart">
       <Properties>
         <Property name="document" type="javax.swing.text.Document" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-          <Connection code="DocumentFilters.getDigitsAndDotFilter()" type="code"/>
+          <Connection code="DocumentFilters.getDigitsAndDotCommaFilter()" type="code"/>
         </Property>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
           <ResourceString bundle="umich/gui/viewers/scan/actions/Bundle.properties" key="GoTo1DDialog.fieldMzStart.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
@@ -142,7 +142,7 @@
     <Component class="javax.swing.JTextField" name="fieldMzEnd">
       <Properties>
         <Property name="document" type="javax.swing.text.Document" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-          <Connection code="DocumentFilters.getDigitsAndDotFilter()" type="code"/>
+          <Connection code="DocumentFilters.getDigitsAndDotCommaFilter()" type="code"/>
         </Property>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
           <ResourceString bundle="umich/gui/viewers/scan/actions/Bundle.properties" key="GoTo1DDialog.fieldMzEnd.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>

@@ -115,7 +115,7 @@ public class MzrtFile {
             }
         }
         
-        String recordSeparator;
+        String recordSeparator = null;
         if (idxMax.size() > 1) {
             if (idxMax.contains(0)) {
                 recordSeparator = separators[0];
@@ -127,6 +127,8 @@ public class MzrtFile {
         } else {
             recordSeparator = separators[idxMax.get(0)];
         }
+        if (recordSeparator == null)
+            throw new DataLoadingException("Could not detect line separator");
         
         // detecting delimiter
         char delimiter;

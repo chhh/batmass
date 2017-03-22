@@ -149,7 +149,7 @@ public class GoTo1DDialog extends javax.swing.JPanel {
         lblMz = new javax.swing.JLabel();
         fieldMzRange = new javax.swing.JTextField();
         fieldScanNumRange = new javax.swing.JTextField();
-        comboBoxTimeUnits = new javax.swing.JComboBox<String>();
+        comboBoxTimeUnits = new javax.swing.JComboBox<>();
         fieldRtRange = new javax.swing.JTextField();
 
         org.openide.awt.Mnemonics.setLocalizedText(lblScan, org.openide.util.NbBundle.getMessage(GoTo1DDialog.class, "GoTo1DDialog.lblScan.text")); // NOI18N
@@ -162,7 +162,7 @@ public class GoTo1DDialog extends javax.swing.JPanel {
             }
         });
 
-        fieldRt.setDocument(DocumentFilters.getDigitsAndDotFilter());
+        fieldRt.setDocument(DocumentFilters.getDigitsAndDotCommaFilter());
         fieldRt.setText(org.openide.util.NbBundle.getMessage(GoTo1DDialog.class, "GoTo1DDialog.fieldRt.text")); // NOI18N
         fieldRt.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
@@ -172,7 +172,7 @@ public class GoTo1DDialog extends javax.swing.JPanel {
 
         org.openide.awt.Mnemonics.setLocalizedText(lblRt, org.openide.util.NbBundle.getMessage(GoTo1DDialog.class, "GoTo1DDialog.lblRt.text")); // NOI18N
 
-        fieldMzStart.setDocument(DocumentFilters.getDigitsAndDotFilter());
+        fieldMzStart.setDocument(DocumentFilters.getDigitsAndDotCommaFilter());
         fieldMzStart.setText(org.openide.util.NbBundle.getMessage(GoTo1DDialog.class, "GoTo1DDialog.fieldMzStart.text")); // NOI18N
         fieldMzStart.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
@@ -182,7 +182,7 @@ public class GoTo1DDialog extends javax.swing.JPanel {
 
         org.openide.awt.Mnemonics.setLocalizedText(lblMzSeparator, org.openide.util.NbBundle.getMessage(GoTo1DDialog.class, "GoTo1DDialog.lblMzSeparator.text")); // NOI18N
 
-        fieldMzEnd.setDocument(DocumentFilters.getDigitsAndDotFilter());
+        fieldMzEnd.setDocument(DocumentFilters.getDigitsAndDotCommaFilter());
         fieldMzEnd.setText(org.openide.util.NbBundle.getMessage(GoTo1DDialog.class, "GoTo1DDialog.fieldMzEnd.text")); // NOI18N
         fieldMzEnd.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
@@ -244,7 +244,7 @@ public class GoTo1DDialog extends javax.swing.JPanel {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(comboBoxTimeUnits, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(fieldRtRange, javax.swing.GroupLayout.DEFAULT_SIZE, 127, Short.MAX_VALUE)))
+                        .addComponent(fieldRtRange, javax.swing.GroupLayout.PREFERRED_SIZE, 1, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(

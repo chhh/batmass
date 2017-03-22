@@ -58,8 +58,6 @@ public class BMTopComponent extends TopComponent {
         childLkpProxy = new ChildLookupProxy();
         Lookup proxy = Lookups.proxy(childLkpProxy);
         lkp = new ProxyLookup(lookupNew, proxy);
-
-        associateLookup(lkp);
     }
 
     /**

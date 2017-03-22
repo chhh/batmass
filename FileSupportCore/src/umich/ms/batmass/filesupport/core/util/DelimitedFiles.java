@@ -40,19 +40,17 @@ public class DelimitedFiles {
      * @param parser the delegate that will be given all the parsed info about each number
      */
     public static void readLineOfNumbers(final String line, final char delimiter, final char decimalSep, final NumberParsingDelegate parser) {
-        final char lineEndN = '\n';
-        final char lineEndR = '\r';
         final int radix = 10;
 
         int lastDotPos = -1, lastNumberStartPos = 0, lastNumberLen = 0;
         int digit;
 
 
-        int result = 0;
         boolean negative = false;
         int i = 0, len = line.length();
-        int limit = -Integer.MAX_VALUE;
-        int multmin;
+        long result = 0;
+        long limit = -Long.MAX_VALUE;
+        long multmin;
         char firstChar, curChar;
         int curNumberIdx = 0;
 
@@ -64,7 +62,7 @@ public class DelimitedFiles {
                 if (firstChar < '0') { // Possible leading "+" or "-"
                     if (firstChar == '-') {
                         negative = true;
-                        limit = Integer.MIN_VALUE;
+                        limit = Long.MIN_VALUE;
                     } else if (firstChar != '+')
                         throw new IllegalStateException();
 
@@ -77,14 +75,16 @@ public class DelimitedFiles {
                     // Accumulating negatively avoids surprises near MAX_VALUE
                     curChar = line.charAt(i);
                     if (curChar == delimiter) {
-                        parser.parse(curNumberIdx, -result, lastNumberLen, lastDotPos);
+                        if (!negative)
+                            result = -result;
+                        parser.parse(curNumberIdx, result, lastNumberLen, lastDotPos);
                         curNumberIdx++;
                         i++;
                         lastDotPos = -1;
                         result = 0;
-                        limit = -Integer.MAX_VALUE;
+                        limit = -Long.MAX_VALUE;
                         break;
-                    } else if (curChar == '.') {
+                    } else if (curChar == decimalSep) {
                         lastDotPos = lastNumberLen;
                         i++;
                     } else {
@@ -105,8 +105,9 @@ public class DelimitedFiles {
                     }
                 }
             }
-            // Invoke the parser on the last number in the line
-            parser.parse(curNumberIdx, -result, lastNumberLen, lastDotPos);
+            if (!negative)
+                result = -result;
+            parser.parse(curNumberIdx, result, lastNumberLen, lastDotPos);
         }
     }
     
@@ -123,21 +124,23 @@ public class DelimitedFiles {
     }
 
     public abstract static class NumberParsingDelegate {
-        public abstract void parse(final int idx, int number, int length, int decimalPos);
+        public abstract void parse(final int idx, long number, int length, int decimalPos);
     }
 
-    public static double parseDouble(int number, int length, int decimalPos) {
+    public static double parseDouble(long number, int length, int decimalPos) {
         return number / Math.pow(10d, (length - decimalPos));
     }
 
-    public static float parseFloat(int number, int length, int decimalPos) {
+    public static float parseFloat(long number, int length, int decimalPos) {
         return (float)parseDouble(number, length, decimalPos);
     }
 
-    public static int parseInt(int number, int length, int decimalPos) {
-        return number;
+    public static int parseInt(long number, int length, int decimalPos) {
+        if (number > Integer.MAX_VALUE || number < Integer.MIN_VALUE)
+            throw new ArithmeticException("Tried to parse an int from long when long was larger than possible int values.");
+        return (int)number;
     }
-    
+
     /**
      * Reads the first line from the provided stream and splits it by delimiter.
      * @param is The stream to read from

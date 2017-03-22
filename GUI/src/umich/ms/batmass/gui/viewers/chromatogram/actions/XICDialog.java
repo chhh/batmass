@@ -140,7 +140,7 @@ public class XICDialog extends javax.swing.JPanel {
 
         org.openide.awt.Mnemonics.setLocalizedText(jLabel1, org.openide.util.NbBundle.getMessage(XICDialog.class, "XICDialog.jLabel1.text")); // NOI18N
 
-        txtMzLo.setDocument(DocumentFilters.getDigitsAndDotFilter());
+        txtMzLo.setDocument(DocumentFilters.getDigitsAndDotCommaFilter());
         txtMzLo.setText(org.openide.util.NbBundle.getMessage(XICDialog.class, "XICDialog.txtMzLo.text")); // NOI18N
         txtMzLo.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
@@ -150,7 +150,7 @@ public class XICDialog extends javax.swing.JPanel {
 
         org.openide.awt.Mnemonics.setLocalizedText(jLabel2, org.openide.util.NbBundle.getMessage(XICDialog.class, "XICDialog.jLabel2.text")); // NOI18N
 
-        txtMzHi.setDocument(DocumentFilters.getDigitsAndDotFilter());
+        txtMzHi.setDocument(DocumentFilters.getDigitsAndDotCommaFilter());
         txtMzHi.setText(org.openide.util.NbBundle.getMessage(XICDialog.class, "XICDialog.txtMzHi.text")); // NOI18N
         txtMzHi.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
@@ -160,7 +160,7 @@ public class XICDialog extends javax.swing.JPanel {
 
         org.openide.awt.Mnemonics.setLocalizedText(jLabel3, org.openide.util.NbBundle.getMessage(XICDialog.class, "XICDialog.jLabel3.text")); // NOI18N
 
-        txtMz.setDocument(DocumentFilters.getDigitsAndDotFilter());
+        txtMz.setDocument(DocumentFilters.getDigitsAndDotCommaFilter());
         txtMz.setText(org.openide.util.NbBundle.getMessage(XICDialog.class, "XICDialog.txtMz.text")); // NOI18N
         txtMz.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
@@ -170,7 +170,7 @@ public class XICDialog extends javax.swing.JPanel {
 
         org.openide.awt.Mnemonics.setLocalizedText(jLabel4, org.openide.util.NbBundle.getMessage(XICDialog.class, "XICDialog.jLabel4.text")); // NOI18N
 
-        txtPpm.setDocument(DocumentFilters.getDigitsAndDotFilter());
+        txtPpm.setDocument(DocumentFilters.getDigitsAndDotCommaFilter());
         txtPpm.setText(org.openide.util.NbBundle.getMessage(XICDialog.class, "XICDialog.txtPpm.text")); // NOI18N
         txtPpm.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
@@ -180,7 +180,7 @@ public class XICDialog extends javax.swing.JPanel {
 
         org.openide.awt.Mnemonics.setLocalizedText(jLabel5, org.openide.util.NbBundle.getMessage(XICDialog.class, "XICDialog.jLabel5.text")); // NOI18N
 
-        txtDeltaMz.setDocument(DocumentFilters.getDigitsAndDotFilter());
+        txtDeltaMz.setDocument(DocumentFilters.getDigitsAndDotCommaFilter());
         txtDeltaMz.setText(org.openide.util.NbBundle.getMessage(XICDialog.class, "XICDialog.txtDeltaMz.text")); // NOI18N
         txtDeltaMz.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
@@ -190,12 +190,12 @@ public class XICDialog extends javax.swing.JPanel {
 
         org.openide.awt.Mnemonics.setLocalizedText(jLabel6, org.openide.util.NbBundle.getMessage(XICDialog.class, "XICDialog.jLabel6.text")); // NOI18N
 
-        txtRtLo.setDocument(DocumentFilters.getDigitsAndDotFilter());
+        txtRtLo.setDocument(DocumentFilters.getDigitsAndDotCommaFilter());
         txtRtLo.setText(org.openide.util.NbBundle.getMessage(XICDialog.class, "XICDialog.txtRtLo.text")); // NOI18N
 
         org.openide.awt.Mnemonics.setLocalizedText(jLabel7, org.openide.util.NbBundle.getMessage(XICDialog.class, "XICDialog.jLabel7.text")); // NOI18N
 
-        txtRtHi.setDocument(DocumentFilters.getDigitsAndDotFilter());
+        txtRtHi.setDocument(DocumentFilters.getDigitsAndDotCommaFilter());
         txtRtHi.setText(org.openide.util.NbBundle.getMessage(XICDialog.class, "XICDialog.txtRtHi.text")); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
