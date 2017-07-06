@@ -243,11 +243,11 @@
                     </run-dependency>
                 </dependency>
                 <dependency>
-                    <code-name-base>umich.ms.batmass.libs.guava180</code-name-base>
+                    <code-name-base>umich.ms.batmass.libs.guava</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>
                     <run-dependency>
-                        <specification-version>18.0</specification-version>
+                        <specification-version>22.0</specification-version>
                     </run-dependency>
                 </dependency>
                 <dependency>
@@ -287,15 +287,13 @@
                     <build-prerequisite/>
                     <compile-dependency/>
                     <run-dependency>
-                        <specification-version>0.7.9991</specification-version>
+                        <specification-version>0.8.0.1</specification-version>
                     </run-dependency>
                 </dependency>
                 <dependency>
                     <code-name-base>umich.ms.batmass.libs.rxjava</code-name-base>
-                    <build-prerequisite/>
-                    <compile-dependency/>
                     <run-dependency>
-                        <specification-version>1.1.7</specification-version>
+                        <specification-version>1.2.10</specification-version>
                     </run-dependency>
                 </dependency>
                 <dependency>
@@ -303,7 +301,7 @@
                     <build-prerequisite/>
                     <compile-dependency/>
                     <run-dependency>
-                        <specification-version>0.7.9.10</specification-version>
+                        <specification-version>0.8.0.7</specification-version>
                     </run-dependency>
                 </dependency>
                 <dependency>

@@ -120,11 +120,11 @@
                     </run-dependency>
                 </dependency>
                 <dependency>
-                    <code-name-base>umich.ms.batmass.libs.guava180</code-name-base>
+                    <code-name-base>umich.ms.batmass.libs.guava</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>
                     <run-dependency>
-                        <specification-version>18.0</specification-version>
+                        <specification-version>22.0</specification-version>
                     </run-dependency>
                 </dependency>
             </module-dependencies>
