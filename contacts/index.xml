@@ -6,37 +6,24 @@
     <description>Recent content in Contacts on BatMass</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 14 Apr 2016 00:20:00 -0400</lastBuildDate>
-    <atom:link href="http://www.batmass.org/contacts/index.xml" rel="self" type="application/rss+xml" />
+    <copyright>Dmitry Avtonomov. Released under the Apache 2.0 license.</copyright>
+    
+	<atom:link href="http://www.batmass.org/contacts/index.xml" rel="self" type="application/rss+xml" />
+    
     
     <item>
       <title>Contact information</title>
       <link>http://www.batmass.org/contacts/</link>
-      <pubDate>Thu, 14 Apr 2016 00:20:00 -0400</pubDate>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>http://www.batmass.org/contacts/</guid>
-      <description>
-
-&lt;p&gt;Please use the &lt;a href=&#34;https://github.com/chhh/batmass/issues&#34;&gt;bug tracker&lt;/a&gt; to request additional functionality or report bugs.&lt;/p&gt;
-
-&lt;h2 id=&#34;referencing-the-work&#34;&gt;Referencing the work&lt;/h2&gt;
-
-&lt;p&gt;If you use BatMass for your research or work, please cite the following paper:&lt;br /&gt;
-&lt;strong&gt;&lt;a href=&#34;https://dx.doi.org/10.1021/acs.jproteome.6b00021&#34;&gt;Avtonomov D.M. et al:
-J. Proteome Res. June 16, 2016.
-DOI: 10.1021/acs.jproteome.6b00021.&lt;/a&gt;&lt;/strong&gt;&lt;/p&gt;
-
-&lt;h2 id=&#34;the-author-and-maintainer-of-the-project&#34;&gt;The author and maintainer of the project&lt;/h2&gt;
-
-&lt;p&gt;Dmitry Avtonomov, Ph.D. (University of Michigan, Ann Arbor)&lt;br /&gt;
-Email: dmitriya@umich.edu&lt;/p&gt;
-
-&lt;h2 id=&#34;general-inquiries&#34;&gt;General inquiries&lt;/h2&gt;
-
-&lt;p&gt;Alexey Nesvizhskii, Ph.D. (University of Michigan, Ann Arbor)&lt;br /&gt;
-Email: nesvi@umich.edu&lt;br /&gt;
-&lt;a href=&#34;http://www.nesvilab.org&#34;&gt;http://www.nesvilab.org&lt;/a&gt;&lt;/p&gt;
-</description>
+      <description>Please use the bug tracker to request additional functionality or report bugs.
+Referencing the work If you use BatMass for your research or work, please cite the following paper:
+Avtonomov D.M. et al: J. Proteome Res. June 16, 2016. DOI: 10.1021/acs.jproteome.6b00021.
+The author and maintainer of the project Dmitry Avtonomov, Ph.D. (University of Michigan, Ann Arbor)
+Email: dmitriya@umich.edu
+General inquiries Alexey Nesvizhskii, Ph.D. (University of Michigan, Ann Arbor)
+Email: nesvi@umich.</description>
     </item>
     
   </channel>

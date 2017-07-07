@@ -1,59 +1,85 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
     <loc>http://www.batmass.org/</loc>
-    <lastmod>2016-04-14T00:59:00-04:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://www.batmass.org/license/</loc>
-    <lastmod>2016-04-14T00:59:00-04:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://www.batmass.org/tutorial/overlay-peptide-ids-on-map2d/</loc>
-    <lastmod>2016-04-14T00:35:00-04:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://www.batmass.org/tutorial/custom-drawing/</loc>
-    <lastmod>2016-04-14T00:34:00-04:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://www.batmass.org/tutorial/developing-first-plugin/</loc>
-    <lastmod>2016-04-14T00:33:00-04:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://www.batmass.org/tutorial/data-access-layer/</loc>
-    <lastmod>2016-04-14T00:32:00-04:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://www.batmass.org/tutorial/setting-up-development-environment/</loc>
-    <lastmod>2016-04-14T00:31:00-04:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://www.batmass.org/contacts/</loc>
-    <lastmod>2016-04-14T00:20:00-04:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://www.batmass.org/data-access-lib/</loc>
-    <lastmod>2016-04-14T00:15:01-04:00</lastmod>
   </url>
   
   <url>
     <loc>http://www.batmass.org/getting-started/</loc>
-    <lastmod>2016-04-14T00:10:00-04:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://www.batmass.org/data-access-lib/</loc>
+  </url>
+  
+  <url>
+    <loc>http://www.batmass.org/contacts/</loc>
+  </url>
+  
+  <url>
+    <loc>http://www.batmass.org/tutorial/setting-up-development-environment/</loc>
+  </url>
+  
+  <url>
+    <loc>http://www.batmass.org/tutorial/developing-first-plugin/</loc>
+  </url>
+  
+  <url>
+    <loc>http://www.batmass.org/tutorial/data-access-layer/</loc>
+  </url>
+  
+  <url>
+    <loc>http://www.batmass.org/tutorial/overlay-peptide-ids-on-map2d/</loc>
+  </url>
+  
+  <url>
+    <loc>http://www.batmass.org/tutorial/custom-drawing/</loc>
+  </url>
+  
+  <url>
+    <loc>http://www.batmass.org/license/</loc>
   </url>
   
   <url>
     <loc>http://www.batmass.org/</loc>
-    <lastmod>2016-04-14T00:00:01-04:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://www.batmass.org/categories/</loc>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://www.batmass.org/contacts/</loc>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://www.batmass.org/data-access-lib/</loc>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://www.batmass.org/getting-started/</loc>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://www.batmass.org/license/</loc>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://www.batmass.org/tags/</loc>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://www.batmass.org/tutorial/</loc>
+    <priority>0</priority>
   </url>
   
 </urlset>

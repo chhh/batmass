@@ -6,104 +6,23 @@
     <description>Recent content in Getting-starteds on BatMass</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 14 Apr 2016 00:10:00 -0400</lastBuildDate>
-    <atom:link href="http://www.batmass.org/getting-started/index.xml" rel="self" type="application/rss+xml" />
+    <copyright>Dmitry Avtonomov. Released under the Apache 2.0 license.</copyright>
+    
+	<atom:link href="http://www.batmass.org/getting-started/index.xml" rel="self" type="application/rss+xml" />
+    
     
     <item>
       <title>Getting started</title>
       <link>http://www.batmass.org/getting-started/</link>
-      <pubDate>Thu, 14 Apr 2016 00:10:00 -0400</pubDate>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>http://www.batmass.org/getting-started/</guid>
-      <description>
-
-&lt;p&gt;This guide will quickly step you through the installation, creation of a project and viewing mzML/mzXML files.&lt;/p&gt;
-
-&lt;h2 id=&#34;installation&#34;&gt;Installation&lt;/h2&gt;
-
-&lt;p&gt;Download the latest release for your platform from &lt;a href=&#34;https://github.com/chhh/batmass/releases/latest&#34;&gt;GitHub&lt;/a&gt;.&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;p&gt;&lt;a href=&#34;https://github.com/chhh/batmass/releases/download/v.0.04/batmass-windows.exe&#34;&gt;Windows installer&lt;/a&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;It is preferable to install BatMass to non-system locations (e.g. not into &lt;em&gt;Program Files&lt;/em&gt; or similar locations) as you might need Administrator privileges to modify the configuration file.&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;&lt;a href=&#34;https://github.com/chhh/batmass/releases/download/v.0.04/batmass-linux.sh&#34;&gt;Linux installer&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;&lt;a href=&#34;https://github.com/chhh/batmass/releases/download/v.0.04/batmass-macosx.tgz&#34;&gt;MacOS installer&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;&lt;a href=&#34;https://github.com/chhh/batmass/releases/download/v.0.04/batmass.zip&#34;&gt;Platform independent zip&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&#34;admonition note&#34;&gt;
-&lt;p class=&#34;admonition-title&#34;&gt;Note&lt;/p&gt;
-&lt;p&gt;If you select the platform independent version, you&amp;rsquo;ll have to launch &lt;em&gt;BatMass&lt;/em&gt; by manually running the correct executable for your platform from &lt;em&gt;&amp;lt;extracted-archive-path&amp;gt;/bin/&lt;/em&gt;.&lt;/p&gt;
-&lt;/div&gt;
-
-&lt;h2 id=&#34;configuration&#34;&gt;Configuration&lt;/h2&gt;
-
-&lt;p&gt;&lt;em&gt;You can skip this section if you can launch the application and view the files without problems.&lt;/em&gt;&lt;/p&gt;
-
-&lt;p&gt;The only two things you might want to configure are the maximum amount of memory, that &lt;em&gt;BatMass&lt;/em&gt; will be allowed to use and the path to JRE (Java Runtime Environment). The default amount of RAM is set to 4GB, if your machine doesn&amp;rsquo;t have that much, the JVM won&amp;rsquo;t start.&lt;br /&gt;
-The startup configuration is stored in &lt;code&gt;&amp;lt;batmass-install-path&amp;gt;/etc/batmass.conf&lt;/code&gt;.&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;Max memory is set up in &lt;code&gt;default_options&lt;/code&gt; option, the flag is &lt;code&gt;-J-Xmx&lt;/code&gt;. By default after installation you&amp;rsquo;ll find that it is set to &lt;code&gt;-J-Xmx4G&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;You can set any standard JVM startup options using this &lt;code&gt;default_options&lt;/code&gt; line, just prepend the arguments with &lt;code&gt;-J-&lt;/code&gt;. E.g. &lt;code&gt;-J-DisableExplicitGC&lt;/code&gt;, however you likely won&amp;rsquo;t need that.&lt;/li&gt;
-&lt;li&gt;If you get a message that the JRE can&amp;rsquo;t be found, try explicitly specifying the full path using the &lt;code&gt;jdkhome&lt;/code&gt; option of &lt;code&gt;batmass.conf&lt;/code&gt;. Even though the name says &lt;code&gt;jdk&lt;/code&gt;, it&amp;rsquo;s actually the path to the JRE. The line with that option is commented out by default, so remove the &lt;code&gt;#&lt;/code&gt; symbol at the beginning of the line and set the path, e.g. &lt;code&gt;jdkhome=&amp;quot;C:\Program Files\Java\jre1.8.0_77&amp;quot;&lt;/code&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&#34;admonition note&#34;&gt;
-&lt;p class=&#34;admonition-title&#34;&gt;Note to Windows users&lt;/p&gt;
-&lt;p&gt;If you&amp;rsquo;ve isntalled BatMass into some system folder (most commonly &lt;em&gt;C:\Program Files\batmass&lt;/em&gt;), you might need to run text editor as Administrator in order to edit the config file, otherwise you likely won&amp;rsquo;t be able to save changes to &lt;em&gt;batmass.conf&lt;/em&gt;.&lt;/p&gt;
-&lt;/div&gt;
-
-&lt;h2 id=&#34;creating-a-project&#34;&gt;Creating a project&lt;/h2&gt;
-
-&lt;p&gt;Go to &lt;code&gt;Main menu -&amp;gt; New project&lt;/code&gt;, select any project type when presented with a choice, it won&amp;rsquo;t matter now. Choose an existing directory or create a new empty one for the project, all the project-related files will be created inside this directory and &lt;strong&gt;&lt;em&gt;not&lt;/em&gt;&lt;/strong&gt; &lt;em&gt;a new directory with the project name under the selected directory&lt;/em&gt;.&lt;/p&gt;
-
-&lt;p&gt;The project should now appear in the &lt;em&gt;Project Explorer&lt;/em&gt; tab on the left. Expand the project&amp;rsquo;s node and right click &lt;code&gt;LC/MS Files&lt;/code&gt; node, choose &lt;code&gt;Import LC/MS Files&lt;/code&gt;. You can select multiple files at once by holding &lt;kbd&gt;Shift&lt;/kbd&gt; or &lt;kbd&gt;Ctrl&lt;/kbd&gt;, you can also restrict the files that are being shown to a particular format using the drop-down menu on the bottom of the file-chooser.&lt;/p&gt;
-
-&lt;div class=&#34;admonition note&#34;&gt;
-&lt;p class=&#34;admonition-title&#34;&gt;Memory usage&lt;/p&gt;
-&lt;p&gt;For opening large LC/MS runs in Map 2D viewer BatMass requires enough memory to load the whole MS level in memory (MS&lt;sup&gt;1&lt;/sup&gt; or MS&lt;sup&gt;2&lt;/sup&gt; or a single &amp;lsquo;swath&amp;rsquo;/&amp;lsquo;window&amp;rsquo; of MS&lt;sup&gt;2&lt;/sup&gt; in case of DIA), the default configuration file is set to use 4GB of RAM maximum. This has two implications:&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;If your machine does not have enough available RAM you might not be able to run the program at all. E.g. MS&lt;sup&gt;1&lt;/sup&gt; only run of 10GB on a machine with 4GB RAM (You should still be able to view spectra though).&lt;/li&gt;
-&lt;li&gt;To open larger experiments (multi-gigabyte mzML/mzXML files) you might want to set larger memory limit in the configuration file discussed above.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/p&gt;
-&lt;/div&gt;
-
-&lt;h2 id=&#34;viewer-controls&#34;&gt;Viewer controls&lt;/h2&gt;
-
-&lt;p&gt;Open one of the files in the 2D viewer by right clicking and &lt;code&gt;View -&amp;gt; 2D Map&lt;/code&gt; as shown below.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;http://www.batmass.org/images/getting-started/view-file.png&#34; alt=&#34;Open a file as a 2D Map&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;File parsing might take some time, when it&amp;rsquo;s done you should see something akin to the following.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;http://www.batmass.org/images/getting-started/standard-lcms-run-map2d.png&#34; alt=&#34;Map 2D viewer&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;The image can be zoomed and panned using the mouse and keyboard.&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;Drag to zoom&lt;/strong&gt;. Press the left mouse button (&lt;code&gt;LMB&lt;/code&gt;) and drag.&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;Zoom in/out with mouse wheel&lt;/strong&gt;. Using the mouse wheel with &lt;kbd&gt;Shift&lt;/kbd&gt; or &lt;kbd&gt;Alt&lt;/kbd&gt; modifiers will restrict zooming to only m/z or RT direction (the mnemonic rule is that the &lt;kbd&gt;Shift&lt;/kbd&gt; key is streched out horizontally, so it corresponds to m/z direction, which is horizontal in charts).&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;Go To Dialog&lt;/strong&gt;. If you are interested in a particular location, you can use this dialog to type in the coordinates. While a chart has focus, press &lt;kbd&gt;Ctrl&lt;/kbd&gt;+&lt;kbd&gt;G&lt;/kbd&gt; or click the magnifying glass icon &lt;img src=&#34;http://www.batmass.org/images/getting-started/icon_zoom.png&#34; alt=&#34;Link icon&#34; /&gt;.&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;Panning&lt;/strong&gt;. Hold &lt;kbd&gt;Ctrl&lt;/kbd&gt; while dragging the mouse to pan the view.&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;Restricted panning&lt;/strong&gt;. Using the same modifier keys (&lt;kbd&gt;Shift&lt;/kbd&gt; or &lt;kbd&gt;Alt&lt;/kbd&gt;) panning can be restricted to only one direction.&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;Zoom out to original full overview&lt;/strong&gt;. &lt;kbd&gt;Ctrl+Alt+Shift&lt;/kbd&gt;+&lt;code&gt;LMB click&lt;/code&gt; will un-zoom the image completely, bringing you to the view of the whole experiment.&lt;/li&gt;
-&lt;li&gt;If you accidentally zoom to wrong location use the &lt;code&gt;Undo&lt;/code&gt; button in the main toolbar.&lt;/li&gt;
-&lt;li&gt;If you are viewing DIA (Data Independent Acquisition) data, the toolbar of the 2D viewer should have drop-down menus for MS level and precursor windows in case of MS&lt;sup&gt;2&lt;/sup&gt;. After you change the MS level or precursor window in the drop-down, you&amp;rsquo;ll need to click the Refresh icon &lt;img src=&#34;http://www.batmass.org/images/getting-started/icon_update.png&#34; alt=&#34;Refresh icon&#34; /&gt;.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&#34;linking-viewers&#34;&gt;Linking viewers&lt;/h2&gt;
-
-&lt;p&gt;Multiple viewers can be linked together by dragging and dropping the link icon &lt;img src=&#34;http://www.batmass.org/images/getting-started/icon_link.png&#34; alt=&#34;Link icon&#34; /&gt; from the viewer toolbar to another viewer&amp;rsquo;s link icon. You can do this for multiple viewers of different types to assemble thme into groups. Clicking on the link icon will highlight the other viewer windows which are currently in in the same linked group, i.e. all synchronized, their borders will be highlighted by the same color. By clicking the unlink button in the viewer&amp;rsquo;s toolbar &lt;img src=&#34;http://www.batmass.org/images/getting-started/icon_unlink.png&#34; alt=&#34;Link icon&#34; /&gt;, you can remove viewers from the group.&lt;/p&gt;
-</description>
+      <description>This guide will quickly step you through the installation, creation of a project and viewing mzML/mzXML files.
+Installation Download the latest release for your platform from GitHub.
+ Windows installer
+ It is preferable to install BatMass to non-system locations (e.g. not into Program Files or similar locations) as you might need Administrator privileges to modify the configuration file.  Linux installer
+ MacOS installer
+ Platform independent zip</description>
     </item>
     
   </channel>

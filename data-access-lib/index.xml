@@ -6,60 +6,19 @@
     <description>Recent content in Data-access-libs on BatMass</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 14 Apr 2016 00:15:01 -0400</lastBuildDate>
-    <atom:link href="http://www.batmass.org/data-access-lib/index.xml" rel="self" type="application/rss+xml" />
+    <copyright>Dmitry Avtonomov. Released under the Apache 2.0 license.</copyright>
+    
+	<atom:link href="http://www.batmass.org/data-access-lib/index.xml" rel="self" type="application/rss+xml" />
+    
     
     <item>
       <title>MSFTBX: Mass-Spec File Toolbox, the data access library</title>
       <link>http://www.batmass.org/data-access-lib/</link>
-      <pubDate>Thu, 14 Apr 2016 00:15:01 -0400</pubDate>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>http://www.batmass.org/data-access-lib/</guid>
-      <description>
-
-&lt;p&gt;The data access library is at the core of &lt;em&gt;BatMass&lt;/em&gt;, but is a separate standalone project. It can be used in regular Java programs (read as a &lt;em&gt;jar&lt;/em&gt; library) and NetBeans platform applications via the included NetBeans Module wrapper.&lt;/p&gt;
-
-&lt;h2 id=&#34;features&#34;&gt;Features&lt;/h2&gt;
-
-&lt;ul&gt;
-&lt;li&gt;Single API to &lt;strong&gt;mzML&lt;/strong&gt; and &lt;strong&gt;mzXML&lt;/strong&gt; files&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;mzML&lt;/strong&gt; and &lt;strong&gt;mzXML&lt;/strong&gt; parsing
-
-&lt;ul&gt;
-&lt;li&gt;Very fast multi-threaded parser&lt;/li&gt;
-&lt;li&gt;Can separately parse LC/MS run information, the index and data&lt;/li&gt;
-&lt;li&gt;Separation of parsing of scan meta-information and spectral data&lt;/li&gt;
-&lt;li&gt;Automatic indexing of the data
-
-&lt;ul&gt;
-&lt;li&gt;maps from scan numbers to scans&lt;/li&gt;
-&lt;li&gt;maps from retention time to scans&lt;/li&gt;
-&lt;li&gt;same maps separately at each MS level&lt;/li&gt;
-&lt;li&gt;automatic DIA (data Independent Acquisition) detection and automated grouping of DIA MS2 scans according to the corresponding isolation windows&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;li&gt;Memory management
-
-&lt;ul&gt;
-&lt;li&gt;can parse the whole structure of the run (all scans with all meta-info) and dynamically parse spectral data from the disk only when it&amp;rsquo;s accessed&lt;/li&gt;
-&lt;li&gt;an object can be used as the &amp;lsquo;owner&amp;rsquo; of loaded data, if the &amp;lsquo;owner&amp;rsquo; is garbage collected, and no other &amp;lsquo;owners&amp;rsquo; claimed the scans, the corresponding resources can be automatically released&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;li&gt;Tolerance to broken index
-
-&lt;ul&gt;
-&lt;li&gt;automatically detects errors in the index, such as all scan offsets are the same (which happens with some versions of ProteoWizard&amp;rsquo;s &lt;em&gt;msconvert&lt;/em&gt; when converting large files)&lt;/li&gt;
-&lt;li&gt;if the index is not present, will reindex the file&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;li&gt;Tolerance to MS2 scan tags being enclosed in the corresponding MS1 scan tag (old data converted with ReAdW)&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;PepXML&lt;/strong&gt; parsing/writing&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;ProtXML&lt;/strong&gt; parsing/writing&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;MzIdentML&lt;/strong&gt; parsing/writing&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&#34;usage&#34;&gt;Usage&lt;/h2&gt;
-
-&lt;p&gt;Take a look at &lt;a href=&#34;http://www.batmass.org/tutorial/data-access-layer/&#34;&gt;this tutorial&lt;/a&gt; for a short introduction and check the &lt;a href=&#34;https://github.com/chhh/msftbx&#34;&gt;sources at github&lt;/a&gt;.&lt;/p&gt;
-</description>
+      <description>The data access library is at the core of BatMass, but is a separate standalone project. It can be used in regular Java programs (read as a jar library) and NetBeans platform applications via the included NetBeans Module wrapper.
+Features  Single API to mzML and mzXML files mzML and mzXML parsing  Very fast multi-threaded parser Can separately parse LC/MS run information, the index and data Separation of parsing of scan meta-information and spectral data Automatic indexing of the data  maps from scan numbers to scans maps from retention time to scans same maps separately at each MS level automatic DIA (data Independent Acquisition) detection and automated grouping of DIA MS2 scans according to the corresponding isolation windows  Memory management  can parse the whole structure of the run (all scans with all meta-info) and dynamically parse spectral data from the disk only when it&amp;rsquo;s accessed an object can be used as the &amp;lsquo;owner&amp;rsquo; of loaded data, if the &amp;lsquo;owner&amp;rsquo; is garbage collected, and no other &amp;lsquo;owners&amp;rsquo; claimed the scans, the corresponding resources can be automatically released  Tolerance to broken index  automatically detects errors in the index, such as all scan offsets are the same (which happens with some versions of ProteoWizard&amp;rsquo;s msconvert when converting large files) if the index is not present, will reindex the file  Tolerance to MS2 scan tags being enclosed in the corresponding MS1 scan tag (old data converted with ReAdW)  PepXML parsing/writing ProtXML parsing/writing MzIdentML parsing/writing  Usage Take a look at this tutorial for a short introduction and check the sources at github.</description>
     </item>
     
   </channel>
