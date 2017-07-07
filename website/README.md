@@ -1,6 +1,8 @@
 # BatMass website HowTo
-The site is built with [Hugo](https://gohugo.io/) (currently Hugo v.0.15) using [Material Docs](https://github.com/digitalcraftsman/hugo-material-docs) theme.
+The site is built with [Hugo](https://gohugo.io/) using [Material Docs](https://github.com/digitalcraftsman/hugo-material-docs) theme.
 
+# Requirements
+The last version of the site was assembled with Hugo v0.24.1 running on Go 1.8.3 windows/amd64.
 
 # How to assemble the site
 In a command line change to the website directory.  
