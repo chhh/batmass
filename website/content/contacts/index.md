@@ -1,6 +1,5 @@
 ---
-weight: -20
-date: 2016-04-14T00:20:00-04:00
+weight: 40
 title: Contact information
 ---
 

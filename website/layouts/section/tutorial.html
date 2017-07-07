@@ -31,7 +31,7 @@
 
 				  <!-- Change the ordering here if you want the list of Tutorials
 					to be shown in a different oreder -->
-            {{ range .Data.Pages.Reverse }}
+            {{ range .Data.Pages }}
                 {{ .Render "li"}}
             {{ end }}
         </ul>

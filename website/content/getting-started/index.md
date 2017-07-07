@@ -1,6 +1,5 @@
 ---
-weight: -10
-date: 2016-04-14T00:10:00-04:00
+weight: 20
 title: Getting started
 ---
 

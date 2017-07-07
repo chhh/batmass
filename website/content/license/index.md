@@ -1,6 +1,5 @@
 ---
-weight: -59
-date: 2016-04-14T00:59:00-04:00
+weight: 1000
 title: License
 ---
 

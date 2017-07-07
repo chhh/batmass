@@ -1,13 +1,11 @@
 ---
-weight: -30
-date: 2016-04-14T00:33:00-04:00
 title: Developing the first plugin
 summary: "We will step through developing one complete plugin, which will add support for a new type of files holding LC/MS feature information, which will be viewable as a table and can be overlaid on top of Map 2D view."
 menu:
   main:
     parent: Tutorials
     identifier: "Developing the first plugin"
-    weight: 30
+    weight: 52
 ---
 
 In this guide we will develop a new module for BatMass that will add support for a new file format for detected LC/MS features.  

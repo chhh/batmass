@@ -1,13 +1,11 @@
 ---
-weight: -30
-date: 2016-04-14T00:31:00-04:00
 title: Setting up development environment
 summary: "This guide will quickly step you through setting up the environment for developing new functionality for BatMass. All the downloads, setting up the IDE and up to building BatMass from scratch."
 menu:
   main:
     parent: Tutorials
     identifier: "Setting up development environment"
-    weight: 10
+    weight: 51
 ---
 
 This guide will quickly step you through setting up the environment for developing new functionality for BatMass. All the downloads, setting up the IDE and up to building BatMass from scratch.

@@ -1,13 +1,11 @@
 ---
-weight: -30
-date: 2016-04-14T00:34:00-04:00
 title: Display custom data on 2D map
 summary: "How to display your custom data on Map2D without any coding. You'll need to provide a simple file format."
 menu:
   main:
     parent: Tutorials
     identifier: "Display custom data on 2D map"
-    weight: 40
+    weight: 55
 ---
 
 In this guide I will show how to overlay custom rectangles on Map2D. It supports colors and opacity as well.

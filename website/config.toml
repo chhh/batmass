@@ -64,32 +64,32 @@ googleAnalytics = "UA-5572974-10"
 [[menu.main]]
 	name   = "BatMass"
 	url    = "/"
-	weight = 1
+	weight = 10
 
 [[menu.main]]
 	name   = "Getting started"
 	url    = "getting-started/"
-	weight = 10
+	weight = 20
 
 [[menu.main]]
 	name   = "Data Access Library"
 	url    = "data-access-lib/"
-	weight = 15
+	weight = 30
 
 [[menu.main]]
 	name   = "Contact info"
 	url    = "contacts/"
-	weight = 20
+	weight = 40
 
 [[menu.main]]
 	name   = "Tutorials"
 	url    = "tutorial/"
-	weight = 30
+	weight = 50
 
 [[menu.main]]
 	name   = "License"
 	url    = "license/"
-	weight = 90
+	weight = 1000
 
 
 [blackfriday]

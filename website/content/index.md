@@ -1,6 +1,5 @@
 ---
-weight: -1
-date: 2016-04-14T00:00:01-04:00
+weight: 10
 title: "BatMass: mass spectrometry data visualization"
 type: index
 imageSrc: images/batmass-logo-300.png
