@@ -36,7 +36,7 @@ googleAnalytics = "UA-5572974-10"
 	custom_js  = []
 
 	# Syntax highlighting theme
-	highlight_provider = "http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.3.0/styles/"
+	highlight_provider = "http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/"
 	# highlight_css  = "monokai-sublime.min.css" # batmass.css color: #f8f8f2
 	highlight_css  = "agate.min.css" # batmass.css color: #f8f8f2
 	# highlight_css  = "dracula.min.css"
