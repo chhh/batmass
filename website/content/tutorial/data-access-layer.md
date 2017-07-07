@@ -1,11 +1,11 @@
 ---
+weight: 53
 title: Using data access library
 summary: "The data access library provides a relatively rich API to mzML/mzXML files (MS level, polarity, precursor isolation window, instrument data, etc.) and a few other file formats common to the proteomics field, such as PepXML, ProtXML and MzIdentML. In this tutorial will step through parsing some data, using the library as a jar in a simple console window application."
 menu:
   main:
     parent: Tutorials
     identifier: "Using data access library"
-    weight: 53
 ---
 
 In this guide we will quickly go through using the standalone java library for accessing some common mass spectrometry data formats. This is the same library that powers _BatMass_.

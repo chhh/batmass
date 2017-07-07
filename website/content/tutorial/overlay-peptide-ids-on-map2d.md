@@ -1,12 +1,11 @@
 ---
-date: 2016-04-14T00:35:00-04:00
+weight: 54
 title: Overlay peptide IDs on 2D map
 summary: "Overlaying contents of pepxml files on a 2D map."
 menu:
   main:
     parent: Tutorials
     identifier: "Overlay peptide IDs on 2D map"
-    weight: 54
 ---
 
 For this tutorial you will need a _.pep.xml_ file and a corresponding _mzML/mzXML_ file. The

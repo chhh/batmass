@@ -1,5 +1,5 @@
 ---
-weight: 10
+weight: 11
 title: "BatMass: mass spectrometry data visualization"
 type: index
 imageSrc: images/batmass-logo-300.png
