@@ -6,7 +6,7 @@ baseurl = "http://localhost:1313/"
 
 languageCode = "en-us"
 title = "BatMass"
-theme = "hugo-material-docs"
+theme = "hugo-material-docs-fix-kbd-and-code"
 metadataformat = "yaml"
 canonifyurls = true
 # Enable Google Analytics by entering your tracking id
@@ -64,7 +64,7 @@ googleAnalytics = "UA-5572974-10"
 [[menu.main]]
 	name   = "BatMass"
 	url    = "/"
-	weight = 0
+	weight = 1
 
 [[menu.main]]
 	name   = "Getting started"
