@@ -14,7 +14,7 @@
 
     {{ range $.Site.Pages }}
       {{ if eq (printf "%s%s" $.Site.BaseURL $currentURL) ( printf "%s" .Permalink) }}
-      <span class="section">{{ .Section | title }}</span>
+      <!-- <span class="section">{{ .Section | title }}</span> -->
       {{ end }}
     {{ end }}
 
