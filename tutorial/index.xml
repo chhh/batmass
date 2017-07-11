@@ -12,28 +12,7 @@
     
     
     <item>
-      <title>Setting up development environment</title>
-      <link>http://www.batmass.org/tutorial/setting-up-development-environment/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>http://www.batmass.org/tutorial/setting-up-development-environment/</guid>
-      <description>This guide will quickly step you through setting up the environment for developing new functionality for BatMass. All the downloads, setting up the IDE and up to building BatMass from scratch.
-Setting up development environement for BatMass You will only need this information if you want to develop your own plugins for BatMass or change its functionality in some way, if you&amp;rsquo;re just a regular user you can skip this tutorial.</description>
-    </item>
-    
-    <item>
-      <title>Developing the first plugin</title>
-      <link>http://www.batmass.org/tutorial/developing-first-plugin/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>http://www.batmass.org/tutorial/developing-first-plugin/</guid>
-      <description>In this guide we will develop a new module for BatMass that will add support for a new file format for detected LC/MS features.
-We will need to:
- Create a new NetBeans module Create a parser for the file Add support for the new file type Add support for importing the file into a project Add basic support for viewing the data in tabular viewer and overlay of data over Map2D  The prerequisite for this tutorial is that you have the development environment set up.</description>
-    </item>
-    
-    <item>
-      <title>Using data access library</title>
+      <title>Data access library (LC/MS files and simple Peptide ID examples)</title>
       <link>http://www.batmass.org/tutorial/data-access-layer/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
@@ -41,6 +20,16 @@ We will need to:
       <description>In this guide we will quickly go through using the standalone java library for accessing some common mass spectrometry data formats. This is the same library that powers BatMass.
 All the classes responsible for parsing files live in umich.ms.fileio.filetypes package, each in its own subpackage, e.g. umich.ms.fileio.filetypes.pepxml for PepXML files. Most of those sub-packages contain a separate package example with working examples.
 The source code for the library lives in MSFTBX repository on GitHub.</description>
+    </item>
+    
+    <item>
+      <title>Parsing pep.xml files</title>
+      <link>http://www.batmass.org/tutorial/parsing-pep-ids/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://www.batmass.org/tutorial/parsing-pep-ids/</guid>
+      <description>All the classes responsible for parsing files live in umich.ms.fileio.filetypes package, each in its own subpackage, e.g. umich.ms.fileio.filetypes.pepxml for PepXML files. Most of those sub-packages contain a separate package example with working examples.
+Parsing identification files (PepXML, ProtXML, MzIdentML) The library gives low level access file formats storing peptide identifications. There is no unifying API here, as the formats are very different. These parsers are not hand optimized for efficiency, so they might consume quite a bit more memory than they should, but they also are error resilient.</description>
     </item>
     
     <item>
@@ -63,6 +52,27 @@ Overlaying and viewing peptides as a table To display the tabular view right-cli
       <description>In this guide I will show how to overlay custom rectangles on Map2D. It supports colors and opacity as well. We will need to:
  Write an .mzrt.csv file Import the file to features section Display in a table or overlay on 2D map  There are no prerequisites for this tutorial except for Getting started Tutorial.
 Writing .mzrt.csv file All you need is a delimited file of a very simple format.</description>
+    </item>
+    
+    <item>
+      <title>Setting up development environment</title>
+      <link>http://www.batmass.org/tutorial/setting-up-development-environment/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://www.batmass.org/tutorial/setting-up-development-environment/</guid>
+      <description>This guide will quickly step you through setting up the environment for developing new functionality for BatMass. All the downloads, setting up the IDE and up to building BatMass from scratch.
+Setting up development environement for BatMass You will only need this information if you want to develop your own plugins for BatMass or change its functionality in some way, if you&amp;rsquo;re just a regular user you can skip this tutorial.</description>
+    </item>
+    
+    <item>
+      <title>Developing the first plugin</title>
+      <link>http://www.batmass.org/tutorial/developing-first-plugin/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://www.batmass.org/tutorial/developing-first-plugin/</guid>
+      <description>In this guide we will develop a new module for BatMass that will add support for a new file format for detected LC/MS features.
+We will need to:
+ Create a new NetBeans module Create a parser for the file Add support for the new file type Add support for importing the file into a project Add basic support for viewing the data in tabular viewer and overlay of data over Map2D  The prerequisite for this tutorial is that you have the development environment set up.</description>
     </item>
     
   </channel>

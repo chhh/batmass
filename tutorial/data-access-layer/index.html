@@ -8,7 +8,7 @@
   <head lang="en-us">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1">
-    <title>Using data access library - BatMass</title>
+    <title>Data access library (LC/MS files and simple Peptide ID examples) - BatMass</title>
     <meta name="generator" content="Hugo 0.24.1" />
 
     
@@ -107,7 +107,7 @@
     </div>
     <div class="stretch">
       <div class="title">
-        Using data access library
+        Data access library (LC/MS files and simple Peptide ID examples)
       </div>
     </div>
 
@@ -315,6 +315,8 @@
       
     
       
+    
+      
       
       
     
@@ -327,40 +329,27 @@
 
 
 
-<a  title="Setting up development environment" href="http://www.batmass.org/tutorial/setting-up-development-environment/">
+<a class="current" title="Data access library (LC/MS files and simple Peptide ID examples)" href="http://www.batmass.org/tutorial/data-access-layer/">
 	
-	Setting up development environment
-</a>
-
-
-
-      
-        
-        
-
-
-
-<a  title="Developing the first plugin" href="http://www.batmass.org/tutorial/developing-first-plugin/">
-	
-	Developing the first plugin
-</a>
-
-
-
-      
-        
-        
-
-
-
-<a class="current" title="Using data access library" href="http://www.batmass.org/tutorial/data-access-layer/">
-	
-	Using data access library
+	Data access library (LC/MS files and simple Peptide ID examples)
 </a>
 
 
 <ul id="scrollspy">
 </ul>
+
+
+      
+        
+        
+
+
+
+<a  title="Parsing pep.xml files" href="http://www.batmass.org/tutorial/parsing-pep-ids/">
+	
+	Parsing pep.xml files
+</a>
+
 
 
       
@@ -385,6 +374,32 @@
 <a  title="Display custom data on 2D map" href="http://www.batmass.org/tutorial/custom-drawing/">
 	
 	Display custom data on 2D map
+</a>
+
+
+
+      
+        
+        
+
+
+
+<a  title="Setting up development environment" href="http://www.batmass.org/tutorial/setting-up-development-environment/">
+	
+	Setting up development environment
+</a>
+
+
+
+      
+        
+        
+
+
+
+<a  title="Developing the first plugin" href="http://www.batmass.org/tutorial/developing-first-plugin/">
+	
+	Developing the first plugin
 </a>
 
 
@@ -445,7 +460,7 @@
 
 			
 
-			<h1>Using data access library </h1>
+			<h1>Data access library (LC/MS files and simple Peptide ID examples) </h1>
 
 			
 
@@ -676,64 +691,6 @@ for (MsmsRunSummary msmsRunSummary : msmsRunSummaries) {
 }
 </code></pre>
 
-<h2 id="parsing-huge-identification-files-more-efficiently">Parsing huge identification files more efficiently</h2>
-
-<p>Sometimes you might have PepXML files that are many gigabytes in size, this happens when you combine search results from multiple experiments and store them in a single output file. In that case, using <code>XMLStreamReader</code> class it is possible to first rewind the input stream to some large structural element of the underlying file, such as <code>&lt;msms_run_summary&gt;</code> in PepXML files.<br />
-You will need to have an idea of how the files are organized for this to work in general though, explore the corresponding XML schemas. The schemas can also be found in the sources of the library in file-specific sub-packages of <code>umich.ms.fileio.filetypes</code> in <code>resources</code> directories.</p>
-
-<pre><code class="language-java">try {
-  // we'll manually iterate over msmsRunSummaries - won't need so much memory
-  // at once for processing large files.
-  JAXBContext ctx = JAXBContext.newInstance(MsmsRunSummary.class);
-  Unmarshaller unmarshaller = ctx.createUnmarshaller();
-
-  XMLInputFactory xif = XMLInputFactory.newFactory();
-  StreamSource ss = new StreamSource(is);
-  XMLStreamReader xsr = xif.createXMLStreamReader(ss);
-
-
-  while (advanceReaderToNextRunSummary(xsr)) {
-    // we've advanced to the next MsmsRunSummary in the file
-    long timeLo = System.nanoTime();
-    JAXBElement&lt;MsmsRunSummary&gt; unmarshalled = unmarshaller
-                                          .unmarshal(xsr, MsmsRunSummary.class);
-    long timeHi = System.nanoTime();
-    System.out.printf(&quot;Unmarshalling took %.4fms (%.2fs)\n&quot;,
-                      (timeHi-timeLo)/1e6, (timeHi-timeLo)/1e9);
-    MsmsRunSummary runSummary = unmarshalled.getValue();
-    if (runSummary.getSpectrumQuery().isEmpty()) {
-      String msg = String.format(&quot;Parsed msms_run_summary was empty for file &quot; +
-          &quot;'%s', summary base_name '%'&quot;, uri.toString(), runSummary.getBaseName());
-      System.out.println(msg);
-    }
-  }
-} catch (JAXBException | XMLStreamException e) {
-  // do something with the exception
-}
-
-</code></pre>
-
-<p>and here is the meat of it, the code to rewind the <code>XMLStreamReader</code> - <code>advanceReaderToNextRunSummary(XMLStreamReader)</code>.
-In this case the example assumes we try to parse multiple msms_run_summary tags one by one from the file.</p>
-
-<pre><code class="language-java">
-private static final String TAG_RUN_SUMMARY = &quot;msms_run_summary&quot;;
-
-private static boolean advanceReaderToNextRunSummary(XMLStreamReader xsr)
-    throws XMLStreamException {
-  long timeLo = System.nanoTime();
-  do {
-      if (xsr.next() == XMLStreamConstants.END_DOCUMENT)
-          return false;
-  } while (!(xsr.isStartElement() &amp;&amp; xsr.getLocalName().equals(TAG_RUN_SUMMARY)));
-
-  long timeHi = System.nanoTime();
-  System.out.printf(&quot;Advancing reader took: %.4fms\n&quot;, (timeHi-timeLo)/1e6d);
-
-  return true;
-}
-</code></pre>
-
 
 			<aside class="copyright" role="note">
 				
@@ -747,7 +704,7 @@ private static boolean advanceReaderToNextRunSummary(XMLStreamReader xsr)
 <nav class="pagination" aria-label="Footer">
   <div class="previous">
   
-      <a href="http://www.batmass.org/tutorial/developing-first-plugin/" title="Developing the first plugin">
+      <a href="http://www.batmass.org/contacts/" title="Contact information">
         <span class="direction">
           Previous
         </span>
@@ -757,7 +714,7 @@ private static boolean advanceReaderToNextRunSummary(XMLStreamReader xsr)
           </div>
           <div class="stretch">
             <div class="title">
-              Developing the first plugin
+              Contact information
             </div>
           </div>
         </div>
@@ -767,14 +724,14 @@ private static boolean advanceReaderToNextRunSummary(XMLStreamReader xsr)
 
   <div class="next">
   
-      <a href="http://www.batmass.org/tutorial/overlay-peptide-ids-on-map2d/" title="Overlay peptide IDs on 2D map">
+      <a href="http://www.batmass.org/tutorial/parsing-pep-ids/" title="Parsing pep.xml files">
         <span class="direction">
           Next
         </span>
         <div class="page">
           <div class="stretch">
             <div class="title">
-              Overlay peptide IDs on 2D map
+              Parsing pep.xml files
             </div>
           </div>
           <div class="button button-next" role="button" aria-label="Next">

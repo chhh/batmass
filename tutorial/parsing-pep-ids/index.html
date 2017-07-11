@@ -8,18 +8,18 @@
   <head lang="en-us">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1">
-    <title>Overlay peptide IDs on 2D map - BatMass</title>
+    <title>Parsing pep.xml files - BatMass</title>
     <meta name="generator" content="Hugo 0.24.1" />
 
     
     <meta name="description" content="Mass spectrometry data visualization">
     
-    <link rel="canonical" href="http://www.batmass.org/tutorial/overlay-peptide-ids-on-map2d/">
+    <link rel="canonical" href="http://www.batmass.org/tutorial/parsing-pep-ids/">
     
     <meta name="author" content="Dmitry Avtonomov">
     
 
-    <meta property="og:url" content="http://www.batmass.org/tutorial/overlay-peptide-ids-on-map2d/">
+    <meta property="og:url" content="http://www.batmass.org/tutorial/parsing-pep-ids/">
     <meta property="og:title" content="BatMass">
     <meta property="og:image" content="http://www.batmass.org/images/bm-icon-512.png">
     <meta name="apple-mobile-web-app-title" content="BatMass">
@@ -107,7 +107,7 @@
     </div>
     <div class="stretch">
       <div class="title">
-        Overlay peptide IDs on 2D map
+        Parsing pep.xml files
       </div>
     </div>
 
@@ -342,11 +342,14 @@
 
 
 
-<a  title="Parsing pep.xml files" href="http://www.batmass.org/tutorial/parsing-pep-ids/">
+<a class="current" title="Parsing pep.xml files" href="http://www.batmass.org/tutorial/parsing-pep-ids/">
 	
 	Parsing pep.xml files
 </a>
 
+
+<ul id="scrollspy">
+</ul>
 
 
       
@@ -355,14 +358,11 @@
 
 
 
-<a class="current" title="Overlay peptide IDs on 2D map" href="http://www.batmass.org/tutorial/overlay-peptide-ids-on-map2d/">
+<a  title="Overlay peptide IDs on 2D map" href="http://www.batmass.org/tutorial/overlay-peptide-ids-on-map2d/">
 	
 	Overlay peptide IDs on 2D map
 </a>
 
-
-<ul id="scrollspy">
-</ul>
 
 
       
@@ -460,38 +460,115 @@
 
 			
 
-			<h1>Overlay peptide IDs on 2D map </h1>
+			<h1>Parsing pep.xml files </h1>
 
 			
 
-<p>For this tutorial you will need a <em>.pep.xml</em> file and a corresponding <em>mzML/mzXML</em> file. The
-<em>.pep.xml</em> file <strong>MUST</strong> contain retention time information (<code>retention_time_sec</code> attribute in
-<code>spectrum_query</code> tags). You will likely have that if you used <em>mzML/mzXML</em> or native file formats
-to perform the search (instead of something like an <em>mgf</em> file).</p>
+<p>All the classes responsible for parsing files live in <code>umich.ms.fileio.filetypes</code> package, each in its own subpackage, e.g. <code>umich.ms.fileio.filetypes.pepxml</code> for PepXML files. Most of those sub-packages contain a separate package <code>example</code> with working examples.</p>
 
-<h2 id="importing-pep-xml-file">Importing <em>.pep.xml</em> file</h2>
+<h2 id="parsing-identification-files-pepxml-protxml-mzidentml">Parsing identification files (PepXML, ProtXML, MzIdentML)</h2>
 
-<p>In a <em>Proteomics</em> project right-click <em>Identifications</em> node and select <code>Import</code>.</p>
+<p>The library gives low level access file formats storing peptide identifications.
+There is no unifying API here, as the formats are very different. These parsers are not hand optimized for efficiency, so they might consume quite a bit more memory than they should, but they also are error resilient.</p>
 
-<h2 id="overlaying-and-viewing-peptides-as-a-table">Overlaying and viewing peptides as a table</h2>
+<p>Working with these files is as simple as making a single call to <code>parse(Path)</code> method
+of a corresponding parser. You get a single data-structure that follows the respective
+XML schemas for the format. Here&rsquo;s a quick PepXML example:</p>
 
-<p>To display the tabular view right-click the imported file, select <code>View -&gt; Table</code>. The table can be sorted by one or multiple columns. To sort by multiple columns hold <kbd>Shift</kbd> when clicking
-on column headers.</p>
+<pre><code class="language-java">Path path = Paths.get(&quot;some-path-to.pep.xml&quot;);
+// a single call to parse the whole file
+MsmsPipelineAnalysis analysis = PepXmlParser.parse(path);
+</code></pre>
 
-<p>To overlay data on 2D map, select both files simultaneously (the <em>.pep.xml</em> file and the LC/MS file)
-to overlay onto, right-click any of them, there should be an option to <code>Overlay on 2D Map</code> in the context menu.</p>
+<p>And that&rsquo;s it. The whole file is parsed and stored in memory. Let&rsquo;s explore
+the contents of the file:</p>
 
-<p>You can now link the Map2D with Table viewer by dragging the link icon
-<img src="http://www.batmass.org/images/getting-started/icon_link.png" alt="Link icon" /> from the toolbar of Map2D to the link icon
-<img src="http://www.batmass.org/images/getting-started/icon_link.png" alt="Link icon" /> in the Table view toolbar. Now double-clicking
-on a row in the table will automatically zoom the Map2D to the corresponding region.</p>
+<pre><code class="language-java">// iterate over the parsed search results
+List&lt;MsmsRunSummary&gt; runSummaries = analysis.getMsmsRunSummary();
+for (MsmsRunSummary runSummary : runSummaries) {
+    List&lt;SpectrumQuery&gt; spectrumQueries = runSummary.getSpectrumQuery();
+    System.out.printf(&quot;Spectrum queries from MS/MS run summary: %s\n&quot;,
+                      runSummary.getBaseName());
+    for (SpectrumQuery sq : spectrumQueries) {
+        System.out.printf(&quot;Spec ID: [%s], RT: [%.2f], precursor neutral mass: [%.3f]\n&quot;,
+                          sq.getSpectrum(), sq.getRetentionTimeSec(), sq.getPrecursorNeutralMass());
+    }
+    System.out.printf(&quot;Done with MS/MS run summary: %s\n&quot;, runSummary.getBaseName());
+}
+</code></pre>
 
-<p>If you also click the sonar-like button in the toolbar (see screenshot below) of 2D Map, you&rsquo;ll get all the MS2 events marked in magenta. For these boxes the width means the actual isolation window, if that information was available in mzML, otherwise it defaults to 1.5 Da. This way you&rsquo;ll readily see which MS2 even led to identifications &ndash; magenta box will be crossing the green box, see screenshots.</p>
+<h2 id="parsing-huge-identification-files-more-efficiently">Parsing huge identification files more efficiently</h2>
 
-<h2 id="example">Example</h2>
+<p>Sometimes you might have PepXML files that are many gigabytes in size. This happens when you combine search results from multiple experiments and store them in a single output file. In that case, using <code>XMLStreamReader</code> class it is possible to first rewind the input stream to some large structural element of the underlying file, such as <code>&lt;msms_run_summary&gt;</code> in PepXML files.<br />
+You will need to have an idea of how the files are organized for this to work in general though, explore the corresponding XML schemas for insights. The schemas can also be found in the sources of the library in file-specific sub-packages of <code>umich.ms.fileio.filetypes</code> in <code>resources</code> directories.</p>
 
-<p><img src="http://www.batmass.org/images/peptide-overlay/overlay-peptides-on-map2d-instruciton.png" alt="Overlay peptides instruction" />
-<img src="http://www.batmass.org/images/peptide-overlay/overlay-peptides-overview.png" alt="Overlay peptides overview" /></p>
+<pre><code class="language-java">String file = &quot;/path/to/some.pep.xml&quot;;
+Path path = Paths.get(file);
+
+try (FileInputStream fis = new FileInputStream(file)) {
+    // we'll manually iterate over msmsRunSummaries - won't need so much memory
+    // at once for processing large files.
+    JAXBContext ctx = JAXBContext.newInstance(MsmsRunSummary.class);
+    Unmarshaller unmarshaller = ctx.createUnmarshaller();
+
+    XMLInputFactory xif = XMLInputFactory.newFactory();
+
+    StreamSource ss = new StreamSource(fis);
+    XMLStreamReader xsr = xif.createXMLStreamReader(ss);
+
+
+    while (advanceReaderToNextRunSummary(xsr)) {
+        // we've advanced to the next MsmsRunSummary in the file
+        long timeLo = System.nanoTime();
+        JAXBElement&lt;MsmsRunSummary&gt; unmarshalled = unmarshaller
+                .unmarshal(xsr, MsmsRunSummary.class);
+        long timeHi = System.nanoTime();
+        System.out.printf(&quot;Unmarshalling took %.4fms (%.2fs)\n&quot;,
+                          (timeHi-timeLo)/1e6, (timeHi-timeLo)/1e9);
+        MsmsRunSummary runSummary = unmarshalled.getValue();
+        if (runSummary.getSpectrumQuery().isEmpty()) {
+            String msg = String.format(&quot;Parsed msms_run_summary was empty for &quot; +
+                        &quot;'%s', summary base_name '%s'&quot;,
+                        path.toUri().toString(), runSummary.getBaseName());
+            System.out.println(msg);
+        }
+    }
+}
+</code></pre>
+
+<p>The secret ingredient here is the code to rewind the <code>XMLStreamReader</code>, the <code>advanceReaderToNextRunSummary(XMLStreamReader)</code> method.
+In this case the example assumes we try to parse multiple msms_run_summary tags one by one from the file.</p>
+
+<pre><code class="language-java">private static boolean advanceReaderToNextRunSummary(XMLStreamReader xsr)
+    throws XMLStreamException {
+  do {
+      if (xsr.next() == XMLStreamConstants.END_DOCUMENT)
+          return false;
+  } while (!(xsr.isStartElement() &amp;&amp; xsr.getLocalName().equals(&quot;msms_run_summary&quot;)));
+
+  return true;
+}
+</code></pre>
+
+<p>And here are all the import statements for the last example:</p>
+
+<pre><code class="language-java">import umich.ms.fileio.filetypes.pepxml.PepXmlParser;
+import umich.ms.fileio.filetypes.pepxml.jaxb.standard.MsmsPipelineAnalysis;
+import umich.ms.fileio.filetypes.pepxml.jaxb.standard.MsmsRunSummary;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamConstants;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+import javax.xml.transform.stream.StreamSource;
+import java.io.FileInputStream;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+</code></pre>
 
 
 			<aside class="copyright" role="note">
@@ -506,7 +583,7 @@ on a row in the table will automatically zoom the Map2D to the corresponding reg
 <nav class="pagination" aria-label="Footer">
   <div class="previous">
   
-      <a href="http://www.batmass.org/tutorial/parsing-pep-ids/" title="Parsing pep.xml files">
+      <a href="http://www.batmass.org/tutorial/data-access-layer/" title="Data access library (LC/MS files and simple Peptide ID examples)">
         <span class="direction">
           Previous
         </span>
@@ -516,7 +593,7 @@ on a row in the table will automatically zoom the Map2D to the corresponding reg
           </div>
           <div class="stretch">
             <div class="title">
-              Parsing pep.xml files
+              Data access library (LC/MS files and simple Peptide ID examples)
             </div>
           </div>
         </div>
@@ -526,14 +603,14 @@ on a row in the table will automatically zoom the Map2D to the corresponding reg
 
   <div class="next">
   
-      <a href="http://www.batmass.org/tutorial/custom-drawing/" title="Display custom data on 2D map">
+      <a href="http://www.batmass.org/tutorial/overlay-peptide-ids-on-map2d/" title="Overlay peptide IDs on 2D map">
         <span class="direction">
           Next
         </span>
         <div class="page">
           <div class="stretch">
             <div class="title">
-              Display custom data on 2D map
+              Overlay peptide IDs on 2D map
             </div>
           </div>
           <div class="button button-next" role="button" aria-label="Next">
