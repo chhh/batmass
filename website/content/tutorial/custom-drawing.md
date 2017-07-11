@@ -1,5 +1,5 @@
 ---
-weight: 55
+weight: 54
 title: Display custom data on 2D map
 summary: "How to display your custom data on Map2D without any coding. You'll need to provide a simple file format."
 menu:

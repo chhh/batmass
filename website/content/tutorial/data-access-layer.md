@@ -1,6 +1,6 @@
 ---
-weight: 53
-title: Using data access library
+weight: 51
+title: Data access library (LC/MS files and simple Peptide ID examples)
 summary: "The data access library provides a relatively rich API to mzML/mzXML files (MS level, polarity, precursor isolation window, instrument data, etc.) and a few other file formats common to the proteomics field, such as PepXML, ProtXML and MzIdentML. In this tutorial will step through parsing some data, using the library as a jar in a simple console window application."
 menu:
   main:
@@ -230,62 +230,5 @@ for (MsmsRunSummary msmsRunSummary : msmsRunSummaries) {
                           sq.getSpectrum(), sq.getRetentionTimeSec(), sq.getPrecursorNeutralMass());
     }
     System.out.printf("Done with MS/MS run summary: %s\n", msmsRunSummary.getBaseName());
-}
-```
-
-## Parsing huge identification files more efficiently
-Sometimes you might have PepXML files that are many gigabytes in size, this happens when you combine search results from multiple experiments and store them in a single output file. In that case, using `XMLStreamReader` class it is possible to first rewind the input stream to some large structural element of the underlying file, such as `<msms_run_summary>` in PepXML files.  
-You will need to have an idea of how the files are organized for this to work in general though, explore the corresponding XML schemas. The schemas can also be found in the sources of the library in file-specific sub-packages of `umich.ms.fileio.filetypes` in `resources` directories.
-
-```java
-try {
-  // we'll manually iterate over msmsRunSummaries - won't need so much memory
-  // at once for processing large files.
-  JAXBContext ctx = JAXBContext.newInstance(MsmsRunSummary.class);
-  Unmarshaller unmarshaller = ctx.createUnmarshaller();
-
-  XMLInputFactory xif = XMLInputFactory.newFactory();
-  StreamSource ss = new StreamSource(is);
-  XMLStreamReader xsr = xif.createXMLStreamReader(ss);
-
-
-  while (advanceReaderToNextRunSummary(xsr)) {
-    // we've advanced to the next MsmsRunSummary in the file
-    long timeLo = System.nanoTime();
-    JAXBElement<MsmsRunSummary> unmarshalled = unmarshaller
-                                          .unmarshal(xsr, MsmsRunSummary.class);
-    long timeHi = System.nanoTime();
-    System.out.printf("Unmarshalling took %.4fms (%.2fs)\n",
-                      (timeHi-timeLo)/1e6, (timeHi-timeLo)/1e9);
-    MsmsRunSummary runSummary = unmarshalled.getValue();
-    if (runSummary.getSpectrumQuery().isEmpty()) {
-      String msg = String.format("Parsed msms_run_summary was empty for file " +
-          "'%s', summary base_name '%'", uri.toString(), runSummary.getBaseName());
-      System.out.println(msg);
-    }
-  }
-} catch (JAXBException | XMLStreamException e) {
-  // do something with the exception
-}
-
-```
-and here is the meat of it, the code to rewind the `XMLStreamReader` - `advanceReaderToNextRunSummary(XMLStreamReader)`.
-In this case the example assumes we try to parse multiple msms_run_summary tags one by one from the file.
-```java
-
-private static final String TAG_RUN_SUMMARY = "msms_run_summary";
-
-private static boolean advanceReaderToNextRunSummary(XMLStreamReader xsr)
-    throws XMLStreamException {
-  long timeLo = System.nanoTime();
-  do {
-      if (xsr.next() == XMLStreamConstants.END_DOCUMENT)
-          return false;
-  } while (!(xsr.isStartElement() && xsr.getLocalName().equals(TAG_RUN_SUMMARY)));
-
-  long timeHi = System.nanoTime();
-  System.out.printf("Advancing reader took: %.4fms\n", (timeHi-timeLo)/1e6d);
-
-  return true;
 }
 ```

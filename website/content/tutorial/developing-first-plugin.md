@@ -1,5 +1,5 @@
 ---
-weight: 52
+weight: 56
 title: Developing the first plugin
 summary: "We will step through developing one complete plugin, which will add support for a new type of files holding LC/MS feature information, which will be viewable as a table and can be overlaid on top of Map 2D view."
 menu:

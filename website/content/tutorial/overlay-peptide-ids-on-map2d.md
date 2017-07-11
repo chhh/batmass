@@ -1,5 +1,5 @@
 ---
-weight: 54
+weight: 53
 title: Overlay peptide IDs on 2D map
 summary: "Overlaying contents of pepxml files on a 2D map."
 menu:
