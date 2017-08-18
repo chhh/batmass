@@ -1,10 +1,13 @@
 # BatMass
 
-Please visit http://batmass.org for more information.  
+**Please visit http://batmass.org for more information.**  
 
 Watch the small introductory video on youtube:  
 [![BatMass introductory video on YouTube](http://img.youtube.com/vi/EY9wvd6ckb0/1.jpg)](http://www.youtube.com/watch?v=EY9wvd6ckb0 "BatMass intro")
 
+## Citing
+Please cite the following paper if you used [BatMass](https://github.com/chhh/batmass) or [MSFTBX](https://github.com/chhh/msftbx) (data access library) in your work:  
+[Avtonomov D.M. et al: J. Proteome Res. June 16, 2016. DOI: 10.1021/acs.jproteome.6b00021](https://dx.doi.org/10.1021/acs.jproteome.6b00021)
 
 ## Important before you begin
 The only 2 parameters that you mgiht want to change after installing/unzipping is the amount of memory allowed to be used by BatMass and the path to JRE (Java Runtime Environment) to be used. The minimum supported version is Java 7, which is also the recommended one.<br/>
