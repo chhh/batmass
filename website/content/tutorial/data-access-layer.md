@@ -22,7 +22,7 @@ Unfortunately, it's near impossible to easily access raw mass spec data from the
 The API is separated into two parts. First you create a data source from your file. The data source can be used by itself, if you just want to iterate over spectra by yourself. It can also be attached to a special data structure, which handles data loading, management, indexing and garbage collection.
 
 mzML and mzXML share the same common base interface `umich.ms.fileio.filetypes.LCMSDataSource`, you can use that if you want to write code that can work seamlessly with both file formats.
-We will start by creating a data source and just reading spectra one by one, which is very ineffective.
+We will start by creating a data source and just reading spectra one by one, which is __very ineffective__.
 ```java
 public static void main(String[] args) throws FileParsingException {
 
@@ -54,8 +54,7 @@ public static void main(String[] args) throws FileParsingException {
       System.out.println(scan.toString());
   }
 }
-```
-Notice how much faster the parsing has been and that only MS1 scans reported the number of points in the spectrum.
+```  
 
 It is a lot more effective to load data in chunks, rather than manually keeping track of what's been loadad and what needs unloading, we will instead use the `ScanCollectionDefault` data structure to that for us.
 ```java
@@ -73,13 +72,13 @@ public static void main(String[] args) throws FileParsingException {
   // Set it to automatically re-parse spectra from the file if spectra were not
   // yet parsed or were reclaimed to make auto-loading work you'll need to use
   // IScan#fetchSpectrum() method instead of IScan#getSpectrum()
-  scans.isAutoloadSpectra(true);
+  scans.isAutoloadSpectra(true); // this is actually the default
 
   // Set our mzXML file as the data source for this scan collection
   scans.setDataSource(source);
   // Set number of threads for multi-threaded parsing.
   // null means use as many cores as reported by Runtime.getRuntime().availableProcessors()
-  source.setNumThreadsForParsing(null);
+  source.setNumThreadsForParsing(null); // this is actually the default
   // load the meta-data about the whole run, with forced parsing of MS1 spectra
   // as we have enabled auto-loading, then if we ever invoke IScan#fetchSpectrum()
   // on an MS2 spectrum, for which the spectrum has not been parsed, it will be
@@ -101,6 +100,7 @@ public static void main(String[] args) throws FileParsingException {
 
 }
 ```
+Notice how much faster the parsing has been and that only MS1 scans reported the number of points in the spectrum.
 
 Here's a more complex example, loading spectra for custom ranges (scan number range and MS level combination) and adding better memory management for long-running applications.
 ```java
