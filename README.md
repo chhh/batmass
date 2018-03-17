@@ -38,3 +38,5 @@ If you choose to use the platform independent _zip_ file (batmass.zip), you'll n
 If you have an earlier version of BatMass installed, you have to manually uninstall it.  
 
 **For more detailed instructions see the [getting started guide](http://www.batmass.org/getting-started/).**
+
+[![Analytics](https://ga-beacon.appspot.com/UA-5572974-15/github/chhh/batmass/landing-page?pixel&useReferer)](https://github.com/igrigorik/ga-beacon)
