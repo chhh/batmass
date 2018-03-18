@@ -39,4 +39,5 @@ If you have an earlier version of BatMass installed, you have to manually uninst
 
 **For more detailed instructions see the [getting started guide](http://www.batmass.org/getting-started/).**
 
-[![Analytics](https://ga-beacon.appspot.com/UA-5572974-15/github/chhh/batmass/landing-page?pixel&useReferer)](https://github.com/igrigorik/ga-beacon)
+[![Analytics](https://ga-beacon-nocache.appspot.com/UA-5572974-15/github/chhh/batmass/landing-page?flat&useReferer)](https://github.com/igrigorik/ga-beacon)
+
