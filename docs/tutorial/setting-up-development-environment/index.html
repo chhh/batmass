@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+  
+  
+  
+  
+   <html class="no-js"> 
+
+  <head lang="en-us">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1">
+    <title>Setting up development environment - BatMass</title>
+    <meta name="generator" content="Hugo 0.40.3" />
+
+    
+    <meta name="description" content="Mass spectrometry data visualization">
+    
+    <link rel="canonical" href="http://batmass.org/tutorial/setting-up-development-environment/">
+    
+    <meta name="author" content="Dmitry Avtonomov">
+    
+
+    <meta property="og:url" content="http://batmass.org/tutorial/setting-up-development-environment/">
+    <meta property="og:title" content="BatMass">
+    <meta property="og:image" content="http://batmass.org/images/bm-icon-512.png">
+    <meta name="apple-mobile-web-app-title" content="BatMass">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <link rel="shortcut icon" type="image/x-icon" href="http://batmass.org/images/favicon.ico">
+    <link rel="icon" type="image/x-icon" href="http://batmass.org/images/favicon.ico">
+
+    <style>
+      @font-face {
+        font-family: 'Icon';
+        src: url('http://batmass.org/fonts/icon.eot?52m981');
+        src: url('http://batmass.org/fonts/icon.eot?#iefix52m981')
+               format('embedded-opentype'),
+             url('http://batmass.org/fonts/icon.woff?52m981')
+               format('woff'),
+             url('http://batmass.org/fonts/icon.ttf?52m981')
+               format('truetype'),
+             url('http://batmass.org/fonts/icon.svg?52m981#icon')
+               format('svg');
+        font-weight: normal;
+        font-style: normal;
+      }
+    </style>
+
+
+
+    <link rel="stylesheet" href="http://batmass.org/stylesheets/application.css">
+    <link rel="stylesheet" href="http://batmass.org/stylesheets/palettes.css">
+
+
+    
+    
+    
+      <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/agate.min.css">
+    
+
+    
+    
+    
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Ubuntu:400,700|Ubuntu%2bMono">
+    <style>
+      body, input {
+        font-family: 'Ubuntu', Helvetica, Arial, sans-serif;
+      }
+      pre, code {
+        font-family: 'Ubuntu Mono', 'Courier New', 'Courier', monospace;
+      }
+    </style>
+
+    
+    <link rel="stylesheet" href="http://batmass.org//css/batmass.css">
+    
+    <link rel="stylesheet" href="http://batmass.org//css/more-colors.css">
+    
+    <script src="http://batmass.org/javascripts/modernizr.js"></script>
+
+    
+
+  </head>
+  <body class="palette-primary-teal palette-accent-indigo">
+
+
+
+	
+	
+
+
+<div class="backdrop">
+	<div class="backdrop-paper"></div>
+</div>
+
+<input class="toggle" type="checkbox" id="toggle-drawer">
+<input class="toggle" type="checkbox" id="toggle-search">
+<label class="toggle-button overlay" for="toggle-drawer"></label>
+
+<header class="header">
+	<nav aria-label="Header">
+  <div class="bar default">
+    <div class="button button-menu" role="button" aria-label="Menu">
+      <label class="toggle-button icon icon-menu" for="toggle-drawer">
+        <span></span>
+      </label>
+    </div>
+    <div class="stretch">
+      <div class="title">
+        Setting up development environment
+      </div>
+    </div>
+
+    
+
+    
+    <div class="button button-github" role="button" aria-label="GitHub">
+      <a href="https://github.com/chhh" title="@chhh on GitHub" target="_blank" class="toggle-button icon icon-github"></a>
+    </div>
+    
+    
+        
+  </div>
+  <div class="bar search">
+    <div class="button button-close" role="button" aria-label="Close">
+      <label class="toggle-button icon icon-back" for="toggle-search"></label>
+    </div>
+    <div class="stretch">
+      <div class="field">
+        <input class="query" type="text" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck>
+      </div>
+    </div>
+    <div class="button button-reset" role="button" aria-label="Search">
+      <button class="toggle-button icon icon-close" id="reset-search"></button>
+    </div>
+  </div>
+</nav>
+</header>
+
+<main class="main">
+	<div class="drawer">
+		<nav aria-label="Navigation">
+  <a href="https://github.com/chhh/batmass" class="project">
+    <div class="banner">
+      
+        <div class="logo">
+          <img src="http://batmass.org/images/bm-icon-512.png">
+        </div>
+      
+      <div class="name">
+        <strong>BatMass <span class="version">0.3.0</span></strong>
+        
+          <br>
+          chhh/batmass
+        
+      </div>
+    </div>
+  </a>
+
+  <div class="scrollable">
+    <div class="wrapper">
+      
+        <ul class="repo">
+          <li class="repo-download">
+            <a href="https://github.com/chhh/batmass/releases/latest" target="_blank" title="Download" data-action="download">
+              <i class="icon icon-download"></i> Download
+            </a>
+          </li>
+          <li class="repo-stars">
+            <a href="https://github.com/chhh/batmass/stargazers" target="_blank" title="Stargazers" data-action="star">
+              <i class="icon icon-star"></i> Stars
+              <span class="count">&ndash;</span>
+            </a>
+          </li>
+        </ul>
+        <hr>
+      
+
+      <div class="toc">
+        
+        <ul>
+          
+
+
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="BatMass" href="http://batmass.org/">
+	
+	BatMass
+</a>
+
+
+
+  
+</li>
+
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="Getting started" href="http://batmass.org/getting-started/">
+	
+	Getting started
+</a>
+
+
+
+  
+</li>
+
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="MSFTBX: Data Access Library" href="http://batmass.org/data-access-lib/">
+	
+	MSFTBX: Data Access Library
+</a>
+
+
+
+  
+</li>
+
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="Contact info" href="http://batmass.org/contacts/">
+	
+	Contact info
+</a>
+
+
+
+  
+</li>
+
+
+
+
+<li>
+  
+
+  
+
+
+
+<a  title="Tutorials" href="http://batmass.org/tutorial/">
+	
+	Tutorials
+</a>
+
+
+
+
+  <li>
+    
+
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+
+
+    <ul>
+      
+        
+        
+
+
+
+<a  title="Data access library (LC/MS files and simple Peptide ID examples)" href="http://batmass.org/tutorial/data-access-layer/">
+	
+	Data access library (LC/MS files and simple Peptide ID examples)
+</a>
+
+
+
+      
+        
+        
+
+
+
+<a  title="Parsing pep.xml files" href="http://batmass.org/tutorial/parsing-pep-ids/">
+	
+	Parsing pep.xml files
+</a>
+
+
+
+      
+        
+        
+
+
+
+<a  title="Overlay peptide IDs on 2D map" href="http://batmass.org/tutorial/overlay-peptide-ids-on-map2d/">
+	
+	Overlay peptide IDs on 2D map
+</a>
+
+
+
+      
+        
+        
+
+
+
+<a  title="Display custom data on 2D map" href="http://batmass.org/tutorial/custom-drawing/">
+	
+	Display custom data on 2D map
+</a>
+
+
+
+      
+        
+        
+
+
+
+<a class="current" title="Setting up development environment" href="http://batmass.org/tutorial/setting-up-development-environment/">
+	
+	Setting up development environment
+</a>
+
+
+<ul id="scrollspy">
+</ul>
+
+
+      
+        
+        
+
+
+
+<a  title="Developing the first plugin" href="http://batmass.org/tutorial/developing-first-plugin/">
+	
+	Developing the first plugin
+</a>
+
+
+
+      
+    </ul>
+  
+</li>
+
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="License" href="http://batmass.org/license/">
+	
+	License
+</a>
+
+
+
+  
+</li>
+
+
+        </ul>
+        
+
+        
+        <hr>
+        <span class="section">Dmitry Avtonomov</span>
+
+        <ul>
+          
+
+          
+          <li>
+            <a href="https://github.com/chhh" target="_blank" title="@chhh on GitHub">
+              @chhh on GitHub
+            </a>
+          </li>
+          
+        </ul>
+        
+      </div>
+    </div>
+  </div>
+</nav>
+
+	</div>
+
+	<article class="article">
+		<div class="wrapper">
+
+			
+
+			<h1>Setting up development environment </h1>
+
+			
+
+<p>This guide will quickly step you through setting up the environment for developing new functionality for BatMass. All the downloads, setting up the IDE and up to building BatMass from scratch.</p>
+
+<h2 id="setting-up-development-environement-for-batmass">Setting up development environement for BatMass</h2>
+
+<p>You will only need this information if you want to develop your own plugins
+for BatMass or change its functionality in some way, if you&rsquo;re just a regular
+user you can skip this tutorial.</p>
+
+<p>Don&rsquo;t be scared by the size of this tutorial, it just assumes that you know
+nothing about NetBeans and the NetBeans Platform. All the steps are simple.</p>
+
+<h2 id="get-the-jdk-java-development-kit">Get the JDK (Java Development Kit)</h2>
+
+<p>BatMass is written in Java, so we&rsquo;ll need Java. Download and isntall JDK 7:
+<a href="http://www.oracle.com/technetwork/java/javase/downloads/jdk7-downloads-1880260.html">e.g. from Oracle</a>.
+It should work with <em>OpenJDK</em> as well.</p>
+
+<h2 id="the-netbeans-platform">The NetBeans platform</h2>
+
+<p>BatMass is built on top of the NetBeans platform (we will call it just <strong>the
+platform</strong> or <strong>NBP</strong> for simplicity). It&rsquo;s the same infrastructure  that the NetBeans IDE
+is built on top of itself. This is an essential part of the setup, it is the
+platform that provides the Window system, the Loader, Automatic Updates and much more.
+All platform applications are developed against some version of the platform,
+which itself is just a collection of libraries (called <em>Modules</em>). Though it is
+possible to use the platform that comes with the NetBeans IDE, you&rsquo;ll likely
+encounter multiple errors due to incorrect dependency versions, so <strong>you&rsquo;ll need
+to get the platform version that we are providing</strong>.</p>
+
+<p>Developing platform applications is much simpler with the NetBeans IDE as it
+provides a lot of wizards and other core functionality. It is possible to use
+<em>ItelliJ</em> as well, but we will not be covering this option, so <a href="https://netbeans.org/downloads/">go ahead and get
+the latest version of NetBeans</a> (which is 8.1
+as of this writing). You can select the <em>Java SE</em> version among all downloads.</p>
+
+<ul>
+<li>Download the platform files: <a href="https://github.com/chhh/batmass/releases/download/v.0.1.0/nb81-batmass.zip">from BatMass github repository</a>.</li>
+<li>Unpack the downloaded archive, it contains four zip files</li>
+<li>Unpack the following 3 files to the same location, e.g. <code>/&lt;path&gt;/nbp</code>:
+
+<ul>
+<li><code>netbeans-...-harness.zip</code></li>
+<li><code>netbeans-...-ide.zip</code></li>
+<li><code>netbeans-...-platform.zip</code></li>
+</ul></li>
+<li>Do not unpack <code>netbeans-8.1-...-platform-src.zip</code></li>
+<li>You should now have <code>/&lt;path&gt;/nbp/harness</code>, <code>/&lt;path&gt;/nbp/ide</code>,
+<code>/&lt;path&gt;/nbp/platform</code></li>
+<li>Start the NetBeans IDE.</li>
+<li>In the main menu: <em>Tools -&gt; NetBeans Platforms</em>.</li>
+<li>Click <em>Add Platform</em> and select <code>/&lt;path&gt;/nbp</code>, the <em>Platform Name</em> text box
+on the right will show something like <em>nb81</em>, which means that the directory
+has been recognized as containing <em>platform</em> files.</li>
+<li>Click <em>Next</em>, change the platform name to <code>nb-batmass</code> (<strong>This is very
+important!</strong>) as it is and click <em>Finish</em>.</li>
+<li>You should now see the newly created <em>platform</em> in the list, like this:<br />
+<img src="http://batmass.org/images/setting-up-development-environment/nb-platform-created.png" alt="NetBeans platform added" /></li>
+<li>Change the tab to <em>Harness</em> and make sure to switch the radio button to
+<em>Harness supplied with Platform</em>.</li>
+<li>Change the tab to <em>Sources</em> and add the path to <em>.zip</em> file
+<code>netbeans-*-platform-src.zip</code> that came with your platform download.</li>
+</ul>
+
+<p>You should now have the environment set-up to bebing development.</p>
+
+<h2 id="batmass-modules">BatMass modules</h2>
+
+<p>BatMass itself is composed of multiple modules which are split into several
+module suits. A module suite in the platform terms is just a collection of
+modules groupped together all of which have access to some common set of
+dependencies. Each suite lives in its own github repository, clone them all to
+the to the same location:</p>
+
+<ul>
+<li><p><a href="https://github.com/chhh/batmass">BatMass</a> - the main suite, most of
+development happens here</p></li>
+
+<li><p><a href="https://github.com/chhh/batmass-libs">BatMassLibs</a> - all the library
+dependencies reside in this suite. In</p></li>
+
+<li><p><a href="https://github.com/chhh/batmass-ext">BatMassExternalSuite</a> - contains
+separate functional pieces borrowed from the web or elsewhere. E.g. the color-
+picker used in the options lives here.</p></li>
+
+<li><p><a href="https://github.com/chhh/MSFTBX">MSFTBX</a> - this is the data access library.
+It provides pure-java implementations of <em>mzXML</em>, <em>mzML</em>, <em>pep.xml</em>, <em>prot.xml</em>
+files among some others as well. The API (interfaces) is bundled with it.<br />
+Although this repository contains a NetBeans platform module project, you&rsquo;ll
+also notice that it contains a regular IntelliJ IDEA project as well, which
+has artifacts configured to build a regular <em>jar</em> out of it.</p></li>
+</ul>
+
+<pre><code class="language-bash">mkdir /&lt;some-path&gt;/batmass-projects
+cd /&lt;some-path&gt;/batmass-projects
+git clone https://github.com/chhh/batmass.git
+git clone https://github.com/chhh/batmass-libs.git
+git clone https://github.com/chhh/batmass-ext.git
+git clone https://github.com/chhh/MSFTBX.git
+</code></pre>
+
+<p>You now have all the source code and libraries necessary to build BatMass.</p>
+
+<h2 id="building-the-projects">Building the projects</h2>
+
+<ul>
+<li>Start NetBeans IDE</li>
+<li><code>Main Menu -&gt; File -&gt; Open Project</code></li>
+<li>Holding down <kbd>Ctrl</kbd> select the 4 cloned projects, and open them (see
+image below)
+<img src="http://batmass.org/images/setting-up-development-environment/netbeans-opening-projects.png" alt="Open Cloned Projects" /><br /></li>
+<li>Check the bottom right corner of the IDE for a progress bar, it might take a
+while to index the projects.</li>
+<li>Right click <code>BatMass</code> project, select <code>Properties</code> in the context menu.</li>
+<li>Select <code>Libraries</code> in the <em>Categories</em> list on the left.</li>
+
+<li><p>Make sure that drop-down <em>NetBeans Platform</em> is set to <code>nb-batmass</code> as in
+the image below, if this shows some other platform, switch to <code>nb-batmass</code><br />
+<img src="http://batmass.org/images/setting-up-development-environment/netbeans-project-batmass-check-library-settings.png" alt="Make sure opened projects are set to use the provided platform" /></p>
+
+<ul>
+<li>If you see some errors in the <em>Project Properties</em> window (e.g. saying that
+some module lacks some dependencies, and the <em>Resolve</em> button is inactive),
+please contact us.</li>
+</ul></li>
+
+<li><p>Check the selected platform for the other 3 projects as well.</p></li>
+</ul>
+
+<h2 id="we-are-ready-to-build-the-final-product">We are ready to build the final product!</h2>
+
+<p>The build order is of importance. Automatic rebuilding of dependent module suits
+was not set up to improve build performance.<br />
+Only the <code>BatMass</code> project depends on others, so whenever you make changes to
+<code>BatMassLibs</code>, <code>BatMassExternalSuite</code> or <code>MSFTBX</code> you will need to manually
+trigger a <code>clean build</code> on them, and rebuild the <code>BatMass</code> project  after that.</p>
+
+<ul>
+<li>Right click <code>MSFTBX</code> project node in the <em>Project Explorer</em> and choose <code>clean
+build</code></li>
+<li>Now do <code>clean build</code> for <code>BatMassLibs</code> and <code>BatMassExternalSuite</code></li>
+<li>You can now <code>clean build</code> the main <code>BatMass</code> project</li>
+<li>When the build is done, go to <code>Main menu -&gt; Run -&gt; Set main project</code> and
+select <code>BatMass</code> there. This will force the green <code>Run</code> button (<kbd>F6</kbd>
+shortcurt) to always launch this project and not the currently selected one.</li>
+<li>Run the project: <code>Main menu -&gt; Run -&gt; Run main project</code></li>
+</ul>
+
+<p>If all is well and you can start the project, you should also be able to
+create the installers for it. Right click <code>BatMass</code> project, <code>Package as -&gt;
+Installers</code>. This is a time-consuming process, when done, you&rsquo;ll find the
+installers for different platforms in <code>batmass-projects/batmass/dist</code>.</p>
+
+
+			<aside class="copyright" role="note">
+				
+				&copy; 2018 Dmitry Avtonomov. Released under the Apache 2.0 license. &ndash;
+				
+			</aside>
+
+			<footer class="footer">
+				
+
+<nav class="pagination" aria-label="Footer">
+  <div class="previous">
+  
+      <a href="http://batmass.org/tutorial/custom-drawing/" title="Display custom data on 2D map">
+        <span class="direction">
+          Previous
+        </span>
+        <div class="page">
+          <div class="button button-previous" role="button" aria-label="Previous">
+            <i class="icon icon-back"></i>
+          </div>
+          <div class="stretch">
+            <div class="title">
+              Display custom data on 2D map
+            </div>
+          </div>
+        </div>
+      </a>
+  
+  </div>
+
+  <div class="next">
+  
+      <a href="http://batmass.org/tutorial/developing-first-plugin/" title="Developing the first plugin">
+        <span class="direction">
+          Next
+        </span>
+        <div class="page">
+          <div class="stretch">
+            <div class="title">
+              Developing the first plugin
+            </div>
+          </div>
+          <div class="button button-next" role="button" aria-label="Next">
+            <i class="icon icon-forward"></i>
+          </div>
+        </div>
+      </a>
+  
+  </div>
+</nav>
+
+
+
+
+
+			</footer>
+		</div>
+	</article>
+
+	<div class="results" role="status" aria-live="polite">
+		<div class="scrollable">
+			<div class="wrapper">
+				<div class="meta"></div>
+				<div class="list"></div>
+			</div>
+		</div>
+	</div>
+</main>
+
+    <script>
+    
+      var base_url = 'http:\/\/batmass.org\/';
+      var repo_id  = 'chhh\/batmass';
+    
+    </script>
+
+    <script src="http://batmass.org/javascripts/application.js"></script>
+    
+
+    <script>
+      /* Add headers to scrollspy */
+      var headers   = document.getElementsByTagName("h2");
+      var scrollspy = document.getElementById('scrollspy');
+
+      if(headers.length > 0) {
+        for(var i = 0; i < headers.length; i++) {
+          var li = document.createElement("li");
+          li.setAttribute("class", "anchor");
+
+          var a  = document.createElement("a");
+          a.setAttribute("href", "#" + headers[i].id);
+          a.setAttribute("title", headers[i].innerHTML);
+          a.innerHTML = headers[i].innerHTML;
+
+          li.appendChild(a)
+          scrollspy.appendChild(li);
+        }
+      } else {
+        scrollspy.parentElement.removeChild(scrollspy)
+      }
+
+
+      /* Add permanent link next to the headers */
+      var headers = document.querySelectorAll("h1, h2, h3, h4, h5, h6");
+
+      for(var i = 0; i < headers.length; i++) {
+          var a = document.createElement("a");
+          a.setAttribute("class", "headerlink");
+          a.setAttribute("href", "#" + headers[i].id);
+          a.setAttribute("title", "Permanent link")
+          a.innerHTML = "#";
+          headers[i].appendChild(a);
+      }
+    </script>
+
+    
+      <script>
+        (function(i,s,o,g,r,a,m){
+          i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){(i[r].q=i[r].q||
+          []).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;
+          m.parentNode.insertBefore(a,m)
+        })(window, document,
+          'script', '//www.google-analytics.com/analytics.js', 'ga');
+         
+        ga('create', 'UA-5572974-10', 'auto');
+        
+        ga('send', 'pageview');
+
+
+        
+        
+        
+        
+        
+        
+        
+
+         
+        var buttons = document.querySelectorAll('a');
+        Array.prototype.map.call(buttons, function(item) {
+          if (item.host != document.location.host) {
+            item.addEventListener('click', function() {
+              var action = item.getAttribute('data-action') || 'follow';
+              ga('send', 'event', 'outbound', action, item.href);
+            });
+          }
+        });
+         
+        var query = document.querySelector('.query');
+        query.addEventListener('blur', function() {
+          if (this.value) {
+            var path = document.location.pathname;
+            ga('send', 'pageview', path + '?q=' + this.value);
+          }
+        });
+      </script>
+    
+
+    
+    
+    
+    
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+  </body>
+</html>
+

@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>BatMass: mass spectrometry data visualization on BatMass</title>
+    <link>http://batmass.org/</link>
+    <description>Recent content in BatMass: mass spectrometry data visualization on BatMass</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    
+	<atom:link href="http://batmass.org/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Getting started</title>
+      <link>http://batmass.org/getting-started/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://batmass.org/getting-started/</guid>
+      <description>This guide will quickly step you through the installation, creation of a project and viewing mzML/mzXML files.
+Installation Download the latest release for your platform from GitHub.
+ Windows installer
+ It is preferable to install BatMass to non-system locations (e.g. not into Program Files or similar locations) as you might need Administrator privileges to modify the configuration file.  Linux installer
+ MacOS installer
+ Platform independent zip</description>
+    </item>
+    
+    <item>
+      <title>MSFTBX: Mass-Spec File Toolbox, the data access library</title>
+      <link>http://batmass.org/data-access-lib/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://batmass.org/data-access-lib/</guid>
+      <description>The data access library is at the core of BatMass, but is a separate standalone project. It can be used in regular Java programs (read as a jar library) and NetBeans platform applications via the included NetBeans Module wrapper.
+Features  Single API to mzML and mzXML files mzML and mzXML parsing  Very fast multi-threaded parser Can separately parse LC/MS run information, the index and data Separation of parsing of scan meta-information and spectral data Automatic indexing of the data  maps from scan numbers to scans maps from retention time to scans same maps separately at each MS level automatic DIA (data Independent Acquisition) detection and automated grouping of DIA MS2 scans according to the corresponding isolation windows  Memory management  can parse the whole structure of the run (all scans with all meta-info) and dynamically parse spectral data from the disk only when it&amp;rsquo;s accessed an object can be used as the &amp;lsquo;owner&amp;rsquo; of loaded data, if the &amp;lsquo;owner&amp;rsquo; is garbage collected, and no other &amp;lsquo;owners&amp;rsquo; claimed the scans, the corresponding resources can be automatically released  Tolerance to broken index  automatically detects errors in the index, such as all scan offsets are the same (which happens with some versions of ProteoWizard&amp;rsquo;s msconvert when converting large files) if the index is not present, will reindex the file  Tolerance to MS2 scan tags being enclosed in the corresponding MS1 scan tag (old data converted with ReAdW)  PepXML parsing/writing ProtXML parsing/writing MzIdentML parsing/writing  Usage Take a look at this tutorial for a short introduction and check the sources at github.</description>
+    </item>
+    
+    <item>
+      <title>Contact information</title>
+      <link>http://batmass.org/contacts/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://batmass.org/contacts/</guid>
+      <description>Please use the bug tracker to request additional functionality or report bugs.
+Referencing the work If you use BatMass for your research or work, please cite the following paper:
+Avtonomov D.M. et al: J. Proteome Res. June 16, 2016. DOI: 10.1021/acs.jproteome.6b00021.
+The author and maintainer of the project Dmitry Avtonomov, Ph.D. (University of Michigan, Ann Arbor)
+Email: dmitriya@umich.edu
+General inquiries Alexey Nesvizhskii, Ph.D. (University of Michigan, Ann Arbor)
+Email: nesvi@umich.</description>
+    </item>
+    
+    <item>
+      <title>Data access library (LC/MS files and simple Peptide ID examples)</title>
+      <link>http://batmass.org/tutorial/data-access-layer/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://batmass.org/tutorial/data-access-layer/</guid>
+      <description>In this guide we will quickly go through using the standalone java library for accessing some common mass spectrometry data formats. This is the same library that powers BatMass.
+All the classes responsible for parsing files live in umich.ms.fileio.filetypes package, each in its own subpackage, e.g. umich.ms.fileio.filetypes.pepxml for PepXML files. Most of those sub-packages contain a separate package example with working examples.
+The source code for the library lives in MSFTBX repository on GitHub.</description>
+    </item>
+    
+    <item>
+      <title>Parsing pep.xml files</title>
+      <link>http://batmass.org/tutorial/parsing-pep-ids/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://batmass.org/tutorial/parsing-pep-ids/</guid>
+      <description>All the classes responsible for parsing files live in umich.ms.fileio.filetypes package, each in its own subpackage, e.g. umich.ms.fileio.filetypes.pepxml for PepXML files. Most of those sub-packages contain a separate package example with working examples.
+Parsing identification files (PepXML, ProtXML, MzIdentML) The library gives low level access file formats storing peptide identifications. There is no unifying API here, as the formats are very different. These parsers are not hand optimized for efficiency, so they might consume quite a bit more memory than they should, but they also are error resilient.</description>
+    </item>
+    
+    <item>
+      <title>Overlay peptide IDs on 2D map</title>
+      <link>http://batmass.org/tutorial/overlay-peptide-ids-on-map2d/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://batmass.org/tutorial/overlay-peptide-ids-on-map2d/</guid>
+      <description>For this tutorial you will need a .pep.xml file and a corresponding mzML/mzXML file. The .pep.xml file MUST contain retention time information (retention_time_sec attribute in spectrum_query tags). You will likely have that if you used mzML/mzXML or native file formats to perform the search (instead of something like an mgf file).
+Importing .pep.xml file In a Proteomics project right-click Identifications node and select Import.
+Overlaying and viewing peptides as a table To display the tabular view right-click the imported file, select View -&amp;gt; Table.</description>
+    </item>
+    
+    <item>
+      <title>Display custom data on 2D map</title>
+      <link>http://batmass.org/tutorial/custom-drawing/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://batmass.org/tutorial/custom-drawing/</guid>
+      <description>In this guide I will show how to overlay custom rectangles on Map2D. It supports colors and opacity as well. We will need to:
+ Write an .mzrt.csv file Import the file to features section Display in a table or overlay on 2D map  There are no prerequisites for this tutorial except for Getting started Tutorial.
+Writing .mzrt.csv file All you need is a delimited file of a very simple format.</description>
+    </item>
+    
+    <item>
+      <title>Setting up development environment</title>
+      <link>http://batmass.org/tutorial/setting-up-development-environment/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://batmass.org/tutorial/setting-up-development-environment/</guid>
+      <description>This guide will quickly step you through setting up the environment for developing new functionality for BatMass. All the downloads, setting up the IDE and up to building BatMass from scratch.
+Setting up development environement for BatMass You will only need this information if you want to develop your own plugins for BatMass or change its functionality in some way, if you&amp;rsquo;re just a regular user you can skip this tutorial.</description>
+    </item>
+    
+    <item>
+      <title>Developing the first plugin</title>
+      <link>http://batmass.org/tutorial/developing-first-plugin/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://batmass.org/tutorial/developing-first-plugin/</guid>
+      <description>In this guide we will develop a new module for BatMass that will add support for a new file format for detected LC/MS features.
+We will need to:
+ Create a new NetBeans module Create a parser for the file Add support for the new file type Add support for importing the file into a project Add basic support for viewing the data in tabular viewer and overlay of data over Map2D  The prerequisite for this tutorial is that you have the development environment set up.</description>
+    </item>
+    
+    <item>
+      <title>License</title>
+      <link>http://batmass.org/license/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://batmass.org/license/</guid>
+      <description>Copyright 2016 Dmitry Avtonomov
+Licensed under the Apache License, Version 2.0 (the &amp;ldquo;License&amp;rdquo;); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+http://www.apache.org/licenses/LICENSE-2.0  Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an &amp;ldquo;AS IS&amp;rdquo; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.</description>
+    </item>
+    
+  </channel>
+</rss>

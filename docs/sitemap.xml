@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  
+  <url>
+    <loc>http://batmass.org/</loc>
+  </url>
+  
+  <url>
+    <loc>http://batmass.org/getting-started/</loc>
+  </url>
+  
+  <url>
+    <loc>http://batmass.org/data-access-lib/</loc>
+  </url>
+  
+  <url>
+    <loc>http://batmass.org/contacts/</loc>
+  </url>
+  
+  <url>
+    <loc>http://batmass.org/tutorial/data-access-layer/</loc>
+  </url>
+  
+  <url>
+    <loc>http://batmass.org/tutorial/parsing-pep-ids/</loc>
+  </url>
+  
+  <url>
+    <loc>http://batmass.org/tutorial/overlay-peptide-ids-on-map2d/</loc>
+  </url>
+  
+  <url>
+    <loc>http://batmass.org/tutorial/custom-drawing/</loc>
+  </url>
+  
+  <url>
+    <loc>http://batmass.org/tutorial/setting-up-development-environment/</loc>
+  </url>
+  
+  <url>
+    <loc>http://batmass.org/tutorial/developing-first-plugin/</loc>
+  </url>
+  
+  <url>
+    <loc>http://batmass.org/license/</loc>
+  </url>
+  
+  <url>
+    <loc>http://batmass.org/categories/</loc>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://batmass.org/tags/</loc>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://batmass.org/tutorial/</loc>
+    <priority>0</priority>
+  </url>
+  
+</urlset>

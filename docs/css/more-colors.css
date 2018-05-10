@@ -1,0 +1,12 @@
+.admonition {
+    background: #29b6f6;
+    color: #121212;
+}
+
+.admonition.warning {
+    background: #FFD28E;
+}
+
+.admonition.note{
+    background: #D6EDDD;
+}

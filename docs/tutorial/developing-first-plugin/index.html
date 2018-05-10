@@ -1,0 +1,1230 @@
+<!DOCTYPE html>
+  
+  
+  
+  
+   <html class="no-js"> 
+
+  <head lang="en-us">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1">
+    <title>Developing the first plugin - BatMass</title>
+    <meta name="generator" content="Hugo 0.40.3" />
+
+    
+    <meta name="description" content="Mass spectrometry data visualization">
+    
+    <link rel="canonical" href="http://batmass.org/tutorial/developing-first-plugin/">
+    
+    <meta name="author" content="Dmitry Avtonomov">
+    
+
+    <meta property="og:url" content="http://batmass.org/tutorial/developing-first-plugin/">
+    <meta property="og:title" content="BatMass">
+    <meta property="og:image" content="http://batmass.org/images/bm-icon-512.png">
+    <meta name="apple-mobile-web-app-title" content="BatMass">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <link rel="shortcut icon" type="image/x-icon" href="http://batmass.org/images/favicon.ico">
+    <link rel="icon" type="image/x-icon" href="http://batmass.org/images/favicon.ico">
+
+    <style>
+      @font-face {
+        font-family: 'Icon';
+        src: url('http://batmass.org/fonts/icon.eot?52m981');
+        src: url('http://batmass.org/fonts/icon.eot?#iefix52m981')
+               format('embedded-opentype'),
+             url('http://batmass.org/fonts/icon.woff?52m981')
+               format('woff'),
+             url('http://batmass.org/fonts/icon.ttf?52m981')
+               format('truetype'),
+             url('http://batmass.org/fonts/icon.svg?52m981#icon')
+               format('svg');
+        font-weight: normal;
+        font-style: normal;
+      }
+    </style>
+
+
+
+    <link rel="stylesheet" href="http://batmass.org/stylesheets/application.css">
+    <link rel="stylesheet" href="http://batmass.org/stylesheets/palettes.css">
+
+
+    
+    
+    
+      <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/agate.min.css">
+    
+
+    
+    
+    
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Ubuntu:400,700|Ubuntu%2bMono">
+    <style>
+      body, input {
+        font-family: 'Ubuntu', Helvetica, Arial, sans-serif;
+      }
+      pre, code {
+        font-family: 'Ubuntu Mono', 'Courier New', 'Courier', monospace;
+      }
+    </style>
+
+    
+    <link rel="stylesheet" href="http://batmass.org//css/batmass.css">
+    
+    <link rel="stylesheet" href="http://batmass.org//css/more-colors.css">
+    
+    <script src="http://batmass.org/javascripts/modernizr.js"></script>
+
+    
+
+  </head>
+  <body class="palette-primary-teal palette-accent-indigo">
+
+
+
+	
+	
+
+
+<div class="backdrop">
+	<div class="backdrop-paper"></div>
+</div>
+
+<input class="toggle" type="checkbox" id="toggle-drawer">
+<input class="toggle" type="checkbox" id="toggle-search">
+<label class="toggle-button overlay" for="toggle-drawer"></label>
+
+<header class="header">
+	<nav aria-label="Header">
+  <div class="bar default">
+    <div class="button button-menu" role="button" aria-label="Menu">
+      <label class="toggle-button icon icon-menu" for="toggle-drawer">
+        <span></span>
+      </label>
+    </div>
+    <div class="stretch">
+      <div class="title">
+        Developing the first plugin
+      </div>
+    </div>
+
+    
+
+    
+    <div class="button button-github" role="button" aria-label="GitHub">
+      <a href="https://github.com/chhh" title="@chhh on GitHub" target="_blank" class="toggle-button icon icon-github"></a>
+    </div>
+    
+    
+        
+  </div>
+  <div class="bar search">
+    <div class="button button-close" role="button" aria-label="Close">
+      <label class="toggle-button icon icon-back" for="toggle-search"></label>
+    </div>
+    <div class="stretch">
+      <div class="field">
+        <input class="query" type="text" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck>
+      </div>
+    </div>
+    <div class="button button-reset" role="button" aria-label="Search">
+      <button class="toggle-button icon icon-close" id="reset-search"></button>
+    </div>
+  </div>
+</nav>
+</header>
+
+<main class="main">
+	<div class="drawer">
+		<nav aria-label="Navigation">
+  <a href="https://github.com/chhh/batmass" class="project">
+    <div class="banner">
+      
+        <div class="logo">
+          <img src="http://batmass.org/images/bm-icon-512.png">
+        </div>
+      
+      <div class="name">
+        <strong>BatMass <span class="version">0.3.0</span></strong>
+        
+          <br>
+          chhh/batmass
+        
+      </div>
+    </div>
+  </a>
+
+  <div class="scrollable">
+    <div class="wrapper">
+      
+        <ul class="repo">
+          <li class="repo-download">
+            <a href="https://github.com/chhh/batmass/releases/latest" target="_blank" title="Download" data-action="download">
+              <i class="icon icon-download"></i> Download
+            </a>
+          </li>
+          <li class="repo-stars">
+            <a href="https://github.com/chhh/batmass/stargazers" target="_blank" title="Stargazers" data-action="star">
+              <i class="icon icon-star"></i> Stars
+              <span class="count">&ndash;</span>
+            </a>
+          </li>
+        </ul>
+        <hr>
+      
+
+      <div class="toc">
+        
+        <ul>
+          
+
+
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="BatMass" href="http://batmass.org/">
+	
+	BatMass
+</a>
+
+
+
+  
+</li>
+
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="Getting started" href="http://batmass.org/getting-started/">
+	
+	Getting started
+</a>
+
+
+
+  
+</li>
+
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="MSFTBX: Data Access Library" href="http://batmass.org/data-access-lib/">
+	
+	MSFTBX: Data Access Library
+</a>
+
+
+
+  
+</li>
+
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="Contact info" href="http://batmass.org/contacts/">
+	
+	Contact info
+</a>
+
+
+
+  
+</li>
+
+
+
+
+<li>
+  
+
+  
+
+
+
+<a  title="Tutorials" href="http://batmass.org/tutorial/">
+	
+	Tutorials
+</a>
+
+
+
+
+  <li>
+    
+
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+
+
+    <ul>
+      
+        
+        
+
+
+
+<a  title="Data access library (LC/MS files and simple Peptide ID examples)" href="http://batmass.org/tutorial/data-access-layer/">
+	
+	Data access library (LC/MS files and simple Peptide ID examples)
+</a>
+
+
+
+      
+        
+        
+
+
+
+<a  title="Parsing pep.xml files" href="http://batmass.org/tutorial/parsing-pep-ids/">
+	
+	Parsing pep.xml files
+</a>
+
+
+
+      
+        
+        
+
+
+
+<a  title="Overlay peptide IDs on 2D map" href="http://batmass.org/tutorial/overlay-peptide-ids-on-map2d/">
+	
+	Overlay peptide IDs on 2D map
+</a>
+
+
+
+      
+        
+        
+
+
+
+<a  title="Display custom data on 2D map" href="http://batmass.org/tutorial/custom-drawing/">
+	
+	Display custom data on 2D map
+</a>
+
+
+
+      
+        
+        
+
+
+
+<a  title="Setting up development environment" href="http://batmass.org/tutorial/setting-up-development-environment/">
+	
+	Setting up development environment
+</a>
+
+
+
+      
+        
+        
+
+
+
+<a class="current" title="Developing the first plugin" href="http://batmass.org/tutorial/developing-first-plugin/">
+	
+	Developing the first plugin
+</a>
+
+
+<ul id="scrollspy">
+</ul>
+
+
+      
+    </ul>
+  
+</li>
+
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="License" href="http://batmass.org/license/">
+	
+	License
+</a>
+
+
+
+  
+</li>
+
+
+        </ul>
+        
+
+        
+        <hr>
+        <span class="section">Dmitry Avtonomov</span>
+
+        <ul>
+          
+
+          
+          <li>
+            <a href="https://github.com/chhh" target="_blank" title="@chhh on GitHub">
+              @chhh on GitHub
+            </a>
+          </li>
+          
+        </ul>
+        
+      </div>
+    </div>
+  </div>
+</nav>
+
+	</div>
+
+	<article class="article">
+		<div class="wrapper">
+
+			
+
+			<h1>Developing the first plugin </h1>
+
+			
+
+<p>In this guide we will develop a new module for BatMass that will add support for a new file format for detected LC/MS features.<br />
+We will need to:</p>
+
+<ul>
+<li><a href="#create-a-new-netbeans-module">Create a new NetBeans module</a></li>
+<li><a href="#create-a-parser-for-the-file">Create a parser for the file</a></li>
+<li><a href="#adding-support-for-the-new-file-type">Add support for the new file type</a></li>
+<li><a href="#adding-capabilities-to-the-node">Add support for importing the file into a project</a></li>
+<li><a href="#making-our-data-recognizable-by-table-and-map2d-viewers">Add basic support for viewing the data in tabular viewer and overlay of data over Map2D</a></li>
+</ul>
+
+<p>The prerequisite for this tutorial is that you have the development environment set up. If you don&rsquo;t have that yet, make sure to go through <a href="http://batmass.org/tutorial/setting-up-development-environment/">the setting up dev environment tutorial</a>.</p>
+
+<p>This tutorial might be a little too much if you had no exposure to the NetBeans platform development, so I also strongly recommend that you visit <a href="https://netbeans.org/features/platform/all-docs.html">the NetBeans platform documentation website</a> and at least walk through <a href="https://platform.netbeans.org/tutorials/nbm-quick-start.html">NetBeans Platform Quick Start tutorial</a> it provides plus read <a href="http://wiki.netbeans.org/NbmIdioms#NetBeans_APIs_in_a_Nutshell">this document</a>. The documentation website has a lot of tutorials covering many aspects of the platform in great detail.</p>
+
+<p>Also recommended are: <a href="https://platform.netbeans.org/tutorials/nbm-runtime-container.html">NetBeans Platform Runtime Container Tutorial</a> - so you&rsquo;ll know the anatomy of a platform application better and the set of 10 videos links to which can be found <a href="https://platform.netbeans.org/tutorials/nbm-10-top-apis.html">here</a>.</p>
+
+<h2 id="create-a-new-netbeans-module">Create a new NetBeans module</h2>
+
+<p>Open <code>BatMass</code> module suite in NetBeans, expand its node in Project Explorer, right click the <code>Modules</code> node, click <code>Add New</code>. Follow the instructions in the wizard to create a new module. Give it a descriptive, unique name and <em>Code Name Base</em>, the code name base will be used as the base package of all the source files. All <em>BatMass</em> modules use <code>umich.ms.batmass</code> as the base-name and add suffixes for different modules, e.g. <code>umich.ms.batmass.filesupport</code> for the <em>File Support</em> module. This is needed to avoid class-name clashes.</p>
+
+<p><img src="http://batmass.org/images/developing-first-plugin/add-new-module-01.png" alt="Add new module" />
+<img src="http://batmass.org/images/developing-first-plugin/add-new-module-02.png" alt="Give the module a name" />
+<img src="http://batmass.org/images/developing-first-plugin/add-new-module-03.png" alt="Provide code name base" /></p>
+
+<p>Add 3 packages <code>data</code>, <code>model</code> and <code>providers</code>.</p>
+
+<ul>
+<li>The <code>model</code> package will contain our java model for the data in the file.</li>
+<li>The <code>data</code> package will contain the wrappers which will adapt the raw data model to the format suitable for viewers.</li>
+<li>The <code>providers</code> package will hold the necessary infrastructure to hook into the project system - it will give a way to import existing files into the project, provide an icon for the node, etc.</li>
+</ul>
+
+<h2 id="create-a-parser-for-the-file">Create a parser for the file</h2>
+
+<p>We will use DIA-Umpire Signal Extraction text output file as an example. It&rsquo;s a simple delimited text format with the first line being column headers, the rest being data stored as text. Even though these are simple text delimited files, we will not be using a library for parsing, instead we&rsquo;ll provide a fast home-grown reader. We&rsquo;ll be using existing helper classes from other <em>BatMass</em> modules for that.</p>
+
+<p>To use functionality provided by some NetBeans module from another module two requirements must be met:</p>
+
+<ul>
+<li>The module providing the functionality should declare the package it wants to expose to the outside world as public API</li>
+<li>The module that needs to use that functionality must declare a dependency on the providing module. For code completion to work as expected, first compile the provider module.</li>
+</ul>
+
+<h3 id="providing-public-api-from-modules">Providing public API from modules</h3>
+
+<p>Expand <code>BatMass -&gt; Modules</code> node in the project explorer, open <code>FileSupport Core (BatMass)</code> module by double clicking on it. In <em>Source Packages</em> node navigate to <code>umich.ms.batmass.filesupport.core.util</code> package. We will be using the <code>DelimitedFiles</code> class. This package is already declared public, but for the learning purposes let&rsquo;s go ahead and check that. Right click <code>FileSupport Core (BatMass)</code> module in the Project Explorer and go to <code>Properties -&gt; API Versioning</code>. You should see that checkboxes of all packages but one are already selected, these packages will be available to other modules if they set dependency on the <code>FileSupport Core (BatMass)</code> module. If you change selection here, recompile the module by right clicking the module node, and running <em>Build</em> (<em>Clean Build</em> is not necessary).</p>
+
+<p><img src="http://batmass.org/images/developing-first-plugin/expose-public-api-from-module.png" alt="Expose public API from module" /></p>
+
+<h3 id="setting-another-module-as-a-dependency">Setting another module as a dependency</h3>
+
+<p>Now right click the newly created <code>DIA Umpire SE Features</code> module, go to <code>Properties -&gt; Libraries</code>. In the <code>Module Dependencies</code> tab click <code>Add Dependency</code>. In the search bar at the top start typing &ldquo;FileSupport&rdquo;, it should find 2 modules: &ldquo;FileSupport (BatMass)&rdquo; and &ldquo;FileSupport Core (BatMass)&rdquo;. We&rsquo;re interested in the second one, so select it and click OK, you should now see it in the dependencies list.</p>
+
+<p><img src="http://batmass.org/images/developing-first-plugin/search-for-module-dependency.png" alt="Search for module dependency" />
+<img src="http://batmass.org/images/developing-first-plugin/module-dependency-added.png" alt="Module dependency added" /></p>
+
+<p>We should now be able to use <code>umich.ms.batmass.filesupport.core.util.DelimitedFiles</code> in our module.</p>
+
+<p>It might seem like a lot of work at first, but as you get used to it, it&rsquo;s not harder than adding dependencies in maven, for example. It is also possible to create maven-based NetBeans modules, but we will not be covering that in this tutorial and this is not used in BatMass.</p>
+
+<h3 id="model-the-data">Model the data</h3>
+
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>You can skip that part of this section if you like. It just describes the usual Java stuff of reading a file and parsing it into some POJO (Plain Old Java Object). This does not have to be done the way described here.</p>
+</div>
+
+<p>You can find a sample Umpire Signal Extraction text output file in the folder <em>DiaUmpireSeSeFeatures/resources</em> inside <em>BatMass</em> project. We will not be using all the columns from the file, only a few. Here&rsquo;s our model class:</p>
+
+<pre><code class="language-java">public class UmpireSeIsoCluster {
+    protected double rtLo;
+    protected double rtHi;
+    protected int scanNumLo;
+    protected int scanNumHi;
+    protected int charge;
+    protected double[] mz = new double[4];
+    protected double peakHeight;
+    protected double peakArea;
+
+    /**
+     * Bare minimum info required to plot something.
+     * @param rtLo
+     * @param rtHi
+     * @param mz
+     */
+    public UmpireSeIsoCluster(double rtLo, double rtHi, double mz) {
+        this.rtLo = rtLo;
+        this.rtHi = rtHi;
+        this.mz[0] = mz;
+    }
+
+    // ... getters and setters
+}
+</code></pre>
+
+<p>We will have a factory class, that knows how to parse the file, I will omit the implementation of <code>create(Path)</code> method.</p>
+
+<pre><code class="language-java">/**
+ * A simple array-list storage for parsed LCMS features from Umpire PeakCluster csv files.
+ * @author Dmitry Avtonomov
+ */
+public class UmpireSeIsoClusters {
+    public static String COL_NAME_RT_LO = &quot;StartRT&quot;;
+    public static String COL_NAME_RT_HI = &quot;EndRT&quot;;
+    public static String COL_NAME_SCAN_NUM_LO = &quot;StartScan&quot;;
+    public static String COL_NAME_SCAN_NUM_HI = &quot;EndScan&quot;;
+    public static String COL_NAME_CHARGE = &quot;Charge&quot;;
+    public static String COL_NAME_MZ1 = &quot;mz1&quot;;
+    public static String COL_NAME_MZ2 = &quot;mz2&quot;;
+    public static String COL_NAME_MZ3 = &quot;mz3&quot;;
+    public static String COL_NAME_MZ4 = &quot;mz4&quot;;
+    public static String COL_NAME_PEAK_HEIGHT = &quot;PeakHeight1&quot;;
+    public static String COL_NAME_PEAK_AREA = &quot;PeakArea1&quot;;
+
+    protected List&lt;UmpireSeIsoCluster&gt; clusters;
+
+    public UmpireSeIsoClusters() {
+        clusters = new ArrayList&lt;&gt;();
+    }
+
+    public List&lt;UmpireSeIsoCluster&gt; getClusters() {
+        return clusters;
+    }
+
+    /**
+     * Factory method to create UmpireSeIsoClusters object from a file.
+     * @param path the file to parse data from
+     * @return
+     */
+    public static UmpireSeIsoClusters create(Path path) throws IOException {
+        ...
+    }
+}
+</code></pre>
+
+<h2 id="adding-support-for-the-new-file-type">Adding support for the new file-type</h2>
+
+<p>We&rsquo;ll be working in the <code>providers</code> package.<br />
+You can find a working example of what we&rsquo;re about to create in package <code>umich.ms.batmass.filesupport.files.types.agilent.cef.providers</code> of <code>FileSupport (BatMass)</code> module.</p>
+
+<p>The first thing to do is to make the system recognize the new files.</p>
+
+<h3 id="registering-a-typeresolver">Registering a TypeResolver</h3>
+
+<p>To make the system recognize new files we need to register an implementation of <code>umich.ms.batmass.filesupport.core.spi.filetypes.FileTypeResolver</code> interface using <code>@FileTypeResolverRegistration</code> annotation. To simplify things there&rsquo;s an abstract class <code>AbstractFileTypeResolver</code>, so we&rsquo;ll use that.</p>
+
+<p>Create a class <code>UmpireSeTypeResolver</code> extending <code>AbstractFileTypeResolver</code>. Then copy the contents of <code>AgilentCefTypeResolver</code> for simplicity and modify as needed. After copy-pasting you&rsquo;ll notice that some parts are underlined with a red wavy line (specifically <code>@StaticResource</code>, <code>ImageUtilities</code>). Those two come from other NetBeans modules provided by the NetBeans platform, so we&rsquo;ll need to add dependencies. There is a simpler way, rather than going to the <em>Properties</em> of your module. Place the cursor on the line with an error and press <kbd>Alt+Enter</kbd> and select <code>Search module dependency for ...</code>, in this case there will be a single search hit for both errors: &ldquo;Utilities API&rdquo; and &ldquo;Common Annotations&rdquo;.</p>
+
+<p>The <code>@StaticResource</code> annotation is particularly useful - it checks if a static resource can be found at the provided path. If you copy-pasted everything from <code>AgilentCefTypeResolver</code>, then after adding the correct dependency the line</p>
+
+<pre><code class="language-java">@StaticResource
+public static final String ICON_BASE_PATH = &quot;umich/ms/batmass/filesupport/resources/features_16.png&quot;;
+</code></pre>
+
+<p>should still be underlined with the error saying that it &ldquo;cannot find resource&rdquo;.<br />
+Create a new package <code>resources</code> under <code>umich.ms.batmass.diaumpire</code> and put some 16x16 pixels icon there. You can copy <code>features_16.png</code> from <code>umich.ms.batmass.filesupport.resources</code> (which is in <code>FileSupport (BatMass)</code> module) and change the <code>ICON_BASE_PATH</code> to the correct path to the new icon. Fix other things, like the FileFilter, which will be used in the FileChooser when the user imports the file in.</p>
+
+<p>I ended up with the following class, everything should be clear to you, except maybe <code>BMFileFilter</code> and <code>@FileTypeResolverRegistration</code>. I used <code>FileFilterUtils.suffixFileFilter(EXT, IOCase.INSENSITIVE)</code> instead of an extension filter, because we want to match the files that end in &ldquo;_PeakCluster.csv&rdquo;. You&rsquo;ll also need to add a dependencies on &ldquo;Lib Apache Commons IO&rdquo; to make this work. We&rsquo;ll get to that <code>@FileTypeResolverRegistration</code> thing right after the code listing:</p>
+
+<pre><code class="language-java">@FileTypeResolverRegistration(
+        fileCategory = UmpireSeTypeResolver.CATEGORY,
+        fileType = UmpireSeTypeResolver.TYPE
+)
+public class UmpireSeTypeResolver extends AbstractFileTypeResolver {
+    private static final UmpireSeTypeResolver INSTANCE = new UmpireSeTypeResolver();
+
+    @StaticResource
+    public static final String ICON_BASE_PATH = &quot;umich/ms/batmass/diaumpire/resources/features_16.png&quot;;
+    public static final ImageIcon ICON = ImageUtilities.loadImageIcon(ICON_BASE_PATH, false);
+
+    public static final String CATEGORY = &quot;features&quot;;
+    public static final String TYPE = &quot;umpire-se&quot;;
+    protected static final String EXT = &quot;_PeakCluster.csv&quot;;
+    protected static final BMFileFilter FILE_FILTER = new UmpireSeSeFileFilter();
+    protected static final String DESCRIPTION = &quot;DIA-Umpire Signal Extraction peak clusters&quot;;
+
+    public static UmpireSeTypeResolver getInstance() {
+        return INSTANCE;
+    }
+
+    @Override
+    public String getCategory() {
+        return CATEGORY;
+    }
+
+    @Override
+    public String getType() {
+        return TYPE;
+    }
+
+    @Override
+    public ImageIcon getIcon() {
+        return ICON;
+    }
+
+    @Override
+    public String getIconPath() {
+        return ICON_BASE_PATH;
+    }
+
+    @Override
+    public boolean isFileOnly() {
+        return true;
+    }
+
+    @Override
+    public BMFileFilter getFileFilter() {
+        return FILE_FILTER;
+    }
+
+    public static class UmpireSeSeFileFilter extends BMFileFilter {
+
+        public UmpireSeSeFileFilter() {
+            super(FileFilterUtils.suffixFileFilter(EXT, IOCase.INSENSITIVE));
+        }
+
+        @Override
+        public String getShortDescription() {
+            return EXT;
+        }
+
+        @Override
+        public String getDescription() {
+            return DESCRIPTION;
+        }
+    }
+}
+</code></pre>
+
+<h3 id="filetyperesolverregistration">@FileTypeResolverRegistration</h3>
+
+<p>Now as promised we move on to <code>@FileTypeResolverRegistration</code>. This annotation is defined in <code>FileSupport Core (BatMass)</code> module. What it does is it registers an instance of <code>FileTypeResolver</code> in the &lsquo;layer&rsquo; file. If you&rsquo;ve read/watched basic info about the NetBeans platform linked to in the beginning of this page, you should know that a platform application has a kind of an XML file in it which stores most configuration information. You can edit this file manually, however it is much less error prone to automate the process, and that is done with annotations and annotation processors. After you&rsquo;ve annotate a class and try to build the module, the annotation processors are run first - they scan the source code for annotations that they (the processors) support and perform whatever actions are coded in them. With <code>@FileTypeResolverRegistration</code> annotation the <code>FileTypeResolverRegistrationProcessor</code> will read it and automagically create an entry in the &lsquo;layer&rsquo;. Also, there is not just a single layer file, each module can have its own layer and layers from all the modules comprising an application are merged before application starts.<br />
+The good news is that the NetBeans IDE provides a GUI to check the contents of the layer. In the Project Explorer open <code>FileSupport (BatMass)</code> module, and expand the <em>Important Files</em> node in it, you will see the &lsquo;XML Layer&rsquo; node in there. If you expand it, there are two entries:</p>
+
+<ul>
+<li>&lt;this layer&gt; - this one contains the layer entries that this particular module has in its layer file</li>
+<li>&lt;this layer in context&gt; - this one shows the aggregated layer file for the whole application and the modifications/additions by the current module&rsquo;s layer are shown in <strong>bold</strong> font.</li>
+</ul>
+
+<p><img src="http://batmass.org/images/developing-first-plugin/locate-xml-layer-file.png" alt="Locate XML Layer file" /></p>
+
+<p>If you now take a look at <em>Important Files</em> for the module we&rsquo;re creating, you won&rsquo;t find the &lsquo;XML Layer&rsquo; entry there. Even though the annotation processor did its job, the entry only appears there after you create the &ldquo;manual&rdquo; version of the file, thankfully, adding the file is very easy: right click the module node in the Project Explorer, select <code>New -&gt; Other -&gt; Module Development -&gt; XML Layer</code>.</p>
+
+<p><img src="http://batmass.org/images/developing-first-plugin/create-layer-xml-file.png" alt="Create XML Layer file" /></p>
+
+<p>You should now have the <em>layer.xml</em> file in the root of your source packages and also the &lsquo;XML Layer&rsquo; node should have appeared under &lsquo;Important Files&rsquo;. If you&rsquo;ve built the module, you&rsquo;ll also see the instance of <code>UmpireSeTypeResolver</code> has been registered under <code>BatMass/FileTypeResolvers/features/umpire-se</code>.</p>
+
+<p><img src="http://batmass.org/images/developing-first-plugin/layer-file-created.png" alt="XML Layer file created" /></p>
+
+<h3 id="setting-up-the-node">Setting up the Node</h3>
+
+<p>We&rsquo;re not done yet, this step only provided enough data to the system to be able to import the file in a project, we&rsquo;ll also need to specify how the file should be rendered in the Project Explorer. For that we need to register an implementation of <code>FileNodeInfo</code> interface in the layer. There&rsquo;s an annotation for that as well, see <code>AgilentCefNodeInfo</code> as an example.</p>
+
+<p>This one is much simpler, I&rsquo;ll just copy-paste everything from the <code>AgilentCefNodeInfo</code> class and change names as appropriate:</p>
+
+<pre><code class="language-java">@NodeInfoRegistration(
+        fileCategory = UmpireSeTypeResolver.CATEGORY,
+        fileType = UmpireSeTypeResolver.TYPE
+)
+public class UmpireSeNodeInfo extends AbstractFileNodeInfo{
+
+    @Override
+    public FileTypeResolver getFileTypeResolver() {
+        return UmpireSeTypeResolver.getInstance();
+    }
+}
+</code></pre>
+
+<p>There&rsquo;s not much going on here, we&rsquo;ll be using the <code>AbstractFileNodeInfo</code> class as base, which only leaves the implementation of <code>getFileTypeResolver()</code> to us. We&rsquo;ll simply return the singleton instance from our newly created type resolver, leaving the rest default.</p>
+
+<h3 id="running-the-app-for-the-first-time">Running the app for the first time</h3>
+
+<p>You can now try running the application! Right click <em>BatMass</em> module suite in the Project Explorer and choose <em>Run</em>. It will build the application first and then run it. If you get tons of errors, you have likely not built the dependent projects. If so, locate the other 3 yellow modules (<em>BatMassExt</em>, <em>BatMassLibs</em> and <em>MSFTBX</em>) in the Project Explorer, right click and <em>Build</em> each of them. When <em>BatMass</em> starts, create a new Proteomics Project, right click <em>LC/MS Features</em> node in it, choose <em>Import LC/MS Features</em>. A file chooser should open and the File Types drop-down menu should contain an entry for the newly created data type.<br />
+In this example case I mande a type resolver which recognized the files by their file-name suffix, specifically looking for files which end in &ldquo;_PeakCluster.csv&rdquo;. If you create a file with that name anywhere in your filesystem and select it, it should be added as a child of <em>LC/MS Features</em> node now.</p>
+
+<p>Even though the file has been imported into the project, not much can be done with it yet. We have neither exposed any system for parsing the file into meaningful data structures nor declared how the file can be viewed. However, if you right click the imported file, you&rsquo;ll see that the <em>View</em> sub-menu contains two actions: <em>Table</em> and <em>Outline</em>. How did that happen?</p>
+
+<p>Those two entries are <em>Actions</em> and <em>Actions</em> are registered for nodes in the project based on <strong>fileCategory</strong> and <strong>fileType</strong> which we used for the type resolver. They are registered using annotations as well. If you go back to <code>UmpireSeTypeResolver</code> you&rsquo;ll see that:</p>
+
+<pre><code class="language-java">// Here's the registration annotation
+@FileTypeResolverRegistration(
+        fileCategory = UmpireSeTypeResolver.CATEGORY,
+        fileType = UmpireSeTypeResolver.TYPE
+)
+
+// And here are the corresponding variables
+public static final String CATEGORY = &quot;features&quot;;
+public static final String TYPE = &quot;umpire-se&quot;;
+</code></pre>
+
+<p>So now you see that we have registered our new file-type under category &ldquo;features&rdquo; with type &ldquo;umpire-se&rdquo;. It so happens that some other module in <em>BatMass</em> has already registered an two actions for the &ldquo;features&rdquo; category, that&rsquo;s why we see those two available. If you read the last sentence carefully, you&rsquo;ve probably noticed that I said the actions were registered for the <strong>category</strong>, however with the type-system in <em>BatMass</em> you can register actions for categories, for concrete file-types or even for categories only for certain types of projects. The targets of action registration only depend on the path in the layer where they&rsquo;re registered.</p>
+
+<p>You&rsquo;ll also notice that the <em>View</em> actions are greyed-out, that&rsquo;s because those actions expect the node to expose some resources, like file-parser or table-model-provider for tabular views. So far our node exposes nothing as we haven&rsquo;t implemented any capabilities.</p>
+
+<h2 id="adding-capabilities-to-the-node">Adding capabilities to the node</h2>
+
+<p>So far our new node is pretty useless. We&rsquo;ve seen those 2 actions appear, they are provided by a separate module <code>GUI (BatMass)</code> which contains everything GUI related as its name suggests. Take a look at the <code>umich.ms.batmass.gui.nodes.actions</code> package. Here live the actions that you can invoke from context menus of nodes in the Project Explorer. We&rsquo;re interested in class <code>OpenFeature2DTable</code> from <code>umich.ms.batmass.gui.nodes.actions.features</code> package. It&rsquo;s declared as:</p>
+
+<pre><code class="language-java">public class OpenFeature2DTable extends AbstractContextAwareAction&lt;FeatureTableModelData&gt; {}
+</code></pre>
+
+<p>So this is a <code>ContextAwareAction</code> which operates on <code>FeatureTableModelData</code>. That means that it expects to find an instance of <code>FeatureTableModelData</code> in the global Lookup (if you don&rsquo;t know what a lookup is in the context of platform applications, read <a href="https://dzone.com/articles/netbeans-lookups-explained">this</a>). When we select our node for the imported file so far it doesn&rsquo;t expose this particular feature. <em>BatMass</em> defines a single way to add things to a node&rsquo;s lookup - via registering an implementation of <code>CapabilityProvider</code> interface for a node using <code>@NodeCapabilityRegistration</code> annotation. This interface has a single method <code>addCapabilitiesToLookup(InstanceContent, FileDescriptor)</code> - when the method is invoked you are given the <code>InstanceContent</code> that powers this node&rsquo;s lookup (again, if you don&rsquo;t know what I&rsquo;m talking about, read <a href="https://dzone.com/articles/netbeans-lookups-explained">the link I&rsquo;ve suggested above</a>) and a <code>FileDescriptor</code>, which is the <em>BatMass</em> way of representing a link to a file in the filesystem.</p>
+
+<p>You can find an example to copy-paste from in <code>FileSupport (BatMass)</code> module, package <code>umich.ms.batmass.filesupport.files.types.agilent.cef.providers</code>, class <code>AgilentCefDataProvider</code>.</p>
+
+<p>So go ahead, create your own <code>UmpireSeDataProvider extends AbstractCapabilityProvider</code>. <code>AbstractCapabilityProvider</code> simplifies things for you by providing a default implementation of getting the UID. Press <kbd>Alt+Enter</kbd> twice on the line declaring the class, the first time you&rsquo;ll import the missing class, the second time you&rsquo;ll choose &ldquo;Implement all abstract methods&rdquo;. When the method is created for you, &ldquo;InstanceContent&rdquo; will be underlined, that&rsquo;s because it is defined in the <em>Lookup API</em> module, which we did not include as a dependency yet. Go ahead, press <kbd>Alt+Enter</kbd> once again and choose &ldquo;Search module dependency for InstanceContent&rdquo;.<br />
+Add the <code>@NodeCapabilityRegistration</code> annotation to the class, using &ldquo;fileCategory&rdquo; and &ldquo;fileType&rdquo; from <code>UmpireSeTypeResolver</code>. Code completion works in the annotations as well, so you can type &ldquo;@NodeCapabilityRegistration()&rdquo;, place the caret between the parentheses and press <kbd>Ctrl+Space</kbd> to bring up a list of available properties for the annotation. We&rsquo;ll only use &ldquo;fileCategory&rdquo; and &ldquo;fileType&rdquo; this time, mine so far looks like this:</p>
+
+<pre><code class="language-java">@NodeCapabilityRegistration(
+        fileCategory = UmpireSeTypeResolver.CATEGORY,
+        fileType = UmpireSeTypeResolver.TYPE)
+public class UmpireSeDataProvider extends AbstractCapabilityProvider{
+
+    @Override
+    public void addCapabilitiesToLookup(InstanceContent ic, FileDescriptor desc) {
+
+    }
+}
+</code></pre>
+
+<p>But we have nothing to add to the lookup yet. Things here get a little hairier because we don&rsquo;t want to parse the file immediately as it has been imported, this should only be done when viewing data is requested and then several views might share the data and then it also needs to be unloaded from the memory when a viewer is closed, etc etc etc.</p>
+
+<h2 id="making-our-data-recognizable-by-table-and-map2d-viewers">Making our data recognizable by table and Map2D viewers</h2>
+
+<p>The Map2D still won&rsquo;t know how to draw all those features, even though we&rsquo;ve created a table model because it won&rsquo;t know which columns are what. So we need another wrapper around <code>UmpireSeIsoCluster</code> class that models just one line from the csv file that we&rsquo;re parsing. It does know how to render instances of <code>ILCMSFeature2D&lt;T&gt;</code> though. There&rsquo;s a helper abstract class <code>AbstractLCMSFeature2D&lt;T extends ILCMSTrace&gt;</code> which is a model of an isotopic cluster. It&rsquo;s a simple container, which holds <code>ILCMSTrace</code>s, each trace is just one m/z trace in time. There are no restrictions on implementations, you are free to provide arbitrary paths for traces, however this is a lot of work, so by default <code>AbstractLCMSFeature2D</code> implements all m/z traces as simple bounding boxes (m/z, RT).</p>
+
+<h3 id="wrapping-our-model-pojos">Wrapping our model POJOs</h3>
+
+<p>So we&rsquo;ll go ahead and create the following wrapper class in <code>umich.ms.batmass.diaumpire.data</code>:</p>
+
+<pre><code class="language-java">class UmpireSeFeature extends AbstractLCMSFeature2D&lt;AbstractLCMSTrace&gt; {}
+</code></pre>
+
+<p>As always, just copy-paste the contents from <code>AgilentCefFeature</code> and modify as needed to fix all the errors and changing all instances of <code>AgilentCompound</code> to <code>UmpireSeIsoCluster</code>.</p>
+
+<pre><code class="language-java">public class UmpireSeFeature extends AbstractLCMSFeature2D&lt;AbstractLCMSTrace&gt;{
+    protected UmpireSeIsoCluster cluster;
+
+    public UmpireSeFeature(AbstractLCMSTrace[] traces, int charge) {
+        super(traces, charge);
+    }
+
+    public UmpireSeFeature(AbstractLCMSTrace[] traces) {
+        super(traces);
+    }
+
+    public UmpireSeIsoCluster getCompund() {
+        return cluster;
+    }
+
+    public void setCompund(UmpireSeIsoCluster cluster) {
+        this.cluster = cluster;
+    }
+
+    public static UmpireSeFeature create(UmpireSeIsoCluster c) {
+        int numTraces = c.getNumPeaks();
+
+        AbstractLCMSTrace[] tr = new AbstractLCMSTrace[numTraces];
+        for (int i = 0; i &lt; numTraces; i++) {
+            tr[i] = new AbstractLCMSTrace(c.getMz()[i], c.getRtLo(), c.getRtHi());
+        }
+
+        int z = c.getCharge();
+
+        UmpireSeFeature acf = new UmpireSeFeature(tr, z);
+        acf.setCompund(c);
+        return acf;
+    }
+
+    @Override
+    public Color getColor() {
+        return cluster.getNumPeaks() &gt; 1 ? Color.MAGENTA : Color.RED;
+    }
+
+    /**
+     * Overriding this method, because we don't store shapes/bounds for LCMS Traces
+     * in Umpire Features.
+     * @return
+     */
+    @Override
+    protected Rectangle2D.Double createBoundsFromTraces() {
+        int traceNumLo, traceNumHi;
+        traceNumLo = 0; // 0-th trace is required to be there
+        traceNumHi = traces.length-1;
+
+        double mzLo = traces[traceNumLo].getMz() - traces[traceNumLo].getMzSpread();
+        double mzHi = traces[traceNumHi].getMz() + traces[traceNumHi].getMzSpread();
+        double rtLo = Double.POSITIVE_INFINITY;
+        double rtHi = Double.NEGATIVE_INFINITY;
+        for (int i = 0; i &lt; traces.length; i++) {
+            AbstractLCMSTrace trace = traces[i];
+            if (trace.getRtLo() &lt; rtLo) {
+                rtLo = trace.getRtLo();
+            }
+            if (trace.getRtHi() &gt; rtHi) {
+                rtHi = trace.getRtHi();
+            }
+        }
+
+        return new Rectangle2D.Double(mzLo, rtHi, mzHi - mzLo, rtHi - rtLo);
+    }
+}
+</code></pre>
+
+<h3 id="creating-the-table-model">Creating the table model</h3>
+
+<p>We will now create the table model, as you would for any JTable. We&rsquo;ll use <code>AbstractFeatureTableModel</code> as the base class, as it provides an implementation of mechanisms for mapping the data from the table to a view on 2D map, however, it all depends on what data your viewer needs to display the data correctly. Add a dependency on <code>GUI Core (BatMass)</code> module, you should be comfortable figuring out the way to do this yourself by now.</p>
+
+<pre><code class="language-java">public class UmpireSeTableModel extends AbstractFeatureTableModel {
+    List&lt;UmpireSeIsoCluster&gt; features;
+
+    protected String[] colNames = {
+        /* 0 */ &quot;Mono m/z&quot;,
+        /* 1 */ &quot;Charge&quot;,
+        /* 2 */ &quot;RT lo&quot;,
+        /* 3 */ &quot;RT hi&quot;,
+        /* 4 */ &quot;Scan lo&quot;,
+        /* 5 */ &quot;Scan hi&quot;,
+        /* 6 */ &quot;Total intensity&quot;,
+        /* 7 */ &quot;Max intensity&quot;,
+    };
+    protected Class[] colTypes = {
+        /* 0 */ Double.class,
+        /* 1 */ Integer.class,
+        /* 2 */ Double.class,
+        /* 3 */ Double.class,
+        /* 4 */ Integer.class,
+        /* 5 */ Integer.class,
+        /* 6 */ Double.class,
+        /* 7 */ Double.class,
+    };
+
+    public UmpireSeTableModel(List&lt;UmpireSeIsoCluster&gt; features) {
+        this.features = features;
+    }
+
+    @Override
+    public String getColumnName(int column) {
+        return colNames[column];
+    }
+
+    @Override
+    public int getRowCount() {
+        return features.size();
+    }
+
+    @Override
+    public int getColumnCount() {
+        return colNames.length;
+    }
+
+    @Override
+    public Object getValueAt(int rowIndex, int columnIndex) {
+        UmpireSeFeature f = features.get(rowIndex);
+        UmpireSeIsoCluster c = f.getCluster();
+
+        switch (columnIndex) {
+            case 0:
+                return c.getMz()[0];
+            case 1:
+                return c.getCharge();
+            case 2:
+                return c.getRtLo();
+            case 3:
+                return c.getRtHi();
+            case 4:
+                return c.getScanNumLo();
+            case 5:
+                return c.getScanNumHi();
+            case 6:
+                return c.getPeakArea();
+            case 7:
+                return c.getPeakHeight();
+        }
+        return null;
+    }
+}
+</code></pre>
+
+<p>If we implement that <code>rowToRegion(int)</code> method, then double-clicking the row will automatically bring us to the region that we calculate in that method in 2D map (if one is linked to the table viewer). Here&rsquo;s a sample implementation:</p>
+
+<pre><code class="language-java">@Override
+public MzRtRegion rowToRegion(int row) {
+    if (row &lt; 0 || row &gt;= features.size())
+        throw new IllegalStateException(String.format(&quot;Conversion from illegal row index was requested, no such row index: [%s]&quot;, row));
+    UmpireSeFeature f = features.get(row);
+    UmpireSeIsoCluster c = f.getCluster();
+    if (f == null) {
+        throw new IllegalStateException(String.format(&quot;Should not happen, row index was ok, but the feature at this id was null.&quot;));
+    }
+
+    // find the boundaries
+    double mzLo = Double.POSITIVE_INFINITY;
+    double mzHi = Double.NEGATIVE_INFINITY;
+    double[] masses = c.getMz();
+    for (int i = 0; i &lt; c.getNumPeaks(); i++) {
+        double m = masses[i];
+        if (m &lt; mzLo)
+            mzLo = m;
+        if (m &gt; mzHi)
+            mzHi = m;
+    }
+    double rtLo = c.getRtLo();
+    double rtHi = c.getRtHi();
+
+    // add half a dalton to the sides and 30 seconds each way in RT direction
+    return new MzRtRegion(mzLo-0.5, mzHi+0.5, rtLo-0.5, rtHi+0.5);
+}
+</code></pre>
+
+<h3 id="enabling-automated-memory-handling">Enabling automated memory handling</h3>
+
+<p>Ufff&hellip; Everything will be wrapped into <code>FeatureData2D</code> which is a <code>DataContainer</code>&hellip; This API is really over-engineered and only serves to provide a level of type safety. So just copy-paste everything from <code>AgilentCefTableModelData</code> into a new class <code>UmpireSeFeatureTableModelData</code></p>
+
+<pre><code class="language-java">public class UmpireSeFeatureTableModelData extends FeatureTableModelData&lt;UmpireSeFeature&gt; {
+
+    public UmpireSeFeatureTableModelData(DataSource&lt;Features&lt;UmpireSeFeature&gt;&gt; source) {
+        super(source);
+    }
+
+    @Override
+    public TableModel create() {
+        Features&lt;UmpireSeFeature&gt; data = getData();
+        if (data == null) {
+            throw new IllegalStateException(&quot;You must have loaded the data from the data source before calling create().&quot;
+                    + &quot;Use .load(Object user) on this object first.&quot;);
+        }
+        return new UmpireSeTableModel(data.getMs1().getList());
+    }
+
+}
+</code></pre>
+
+<h3 id="going-back-and-actually-putting-something-into-the-lookup-of-our-node">Going back and actually putting something into the Lookup of our node</h3>
+
+<p>When we created <code>UmpireSeDataProvider</code> we left <code>addCapabilitiesToLookup()</code> method empty. Let&rsquo;s fix this by copy-pasting code from <code>AgilentCefDataProvider</code>:</p>
+
+<pre><code class="language-java">@NodeCapabilityRegistration(
+        fileCategory = UmpireSeTypeResolver.CATEGORY,
+        fileType = UmpireSeTypeResolver.TYPE)
+public class UmpireSeDataProvider extends AbstractCapabilityProvider{
+
+    @Override
+    public void addCapabilitiesToLookup(InstanceContent ic, FileDescriptor desc) {
+        URI uri = Utilities.toURI(desc.getPath().toFile());
+
+        AgilentCefFeaturesDataSource source = new AgilentCefFeaturesDataSource(uri);
+        AgilentCefTableModelData data = new AgilentCefTableModelData(source);
+        ic.add(data);
+    }
+}
+</code></pre>
+
+<p>Ok, the last piece of the puzzle is missing - that <code>AgilentCefFeaturesDataSource</code>, which we don&rsquo;t have for our data yet. This is the last class that we&rsquo;ll create - <code>UmpireSeFeaturesDataSource</code> and as always, copy-paste the contents modifying it.</p>
+
+<pre><code class="language-java">public class UmpireSeFeaturesDataSource extends DefaultDataSource&lt;Features&lt;UmpireSeFeature&gt;&gt; {
+
+    public UmpireSeFeaturesDataSource(URI origin) {
+        super(origin);
+    }
+
+    @Override
+    public Features&lt;UmpireSeFeature&gt; load() throws DataLoadingException {
+        Features&lt;UmpireSeFeature&gt; features = new Features&lt;&gt;();
+        try  {
+            Path path = Paths.get(uri).toAbsolutePath();
+            UmpireSeIsoClusters clusters = UmpireSeIsoClusters.create(path);
+            if (clusters.getClusters().isEmpty())
+                throw new DataLoadingException(&quot;The size of the list of features after parsing Umpire file was zero.&quot;);            
+            for (UmpireSeIsoCluster c : clusters.getClusters()) {
+                UmpireSeFeature feature = UmpireSeFeature.create(c);
+                features.add(feature, 1, null);
+            }
+            return features;
+        } catch (IOException ex) {
+            throw new DataLoadingException(ex);
+        }
+    }
+
+}
+</code></pre>
+
+<p>You&rsquo;ll get an error for that <code>features.add(feature, 1, null);</code> because it uses a class defined in <code>MSFileToolbox Module</code> module, add a dependency on that.</p>
+
+<p>Now we can fix the <code>UmpireSeDataProvider</code>:</p>
+
+<pre><code class="language-java">@NodeCapabilityRegistration(
+        fileCategory = UmpireSeTypeResolver.CATEGORY,
+        fileType = UmpireSeTypeResolver.TYPE)
+public class UmpireSeDataProvider extends AbstractCapabilityProvider{
+
+    @Override
+    public void addCapabilitiesToLookup(InstanceContent ic, FileDescriptor desc) {
+        URI uri = Utilities.toURI(desc.getPath().toFile());
+
+        UmpireSeFeaturesDataSource source = new UmpireSeFeaturesDataSource(uri);
+        UmpireSeFeatureTableModelData data = new UmpireSeFeatureTableModelData(source);
+        ic.add(data);
+    }
+}
+</code></pre>
+
+<p>There should be no errors now, you should be able to right click the <code>DIA Umpire SE Features</code> module that we were developing and click <em>Build</em> then <em>Run</em> the <em>BatMass</em> module to test it out.</p>
+
+<p>Start the application, import some DIA-Umpire Singnal Extraction results into the <code>LC/MS Features</code> node, import the corresponding mzXML file into <code>LC/MS Files</code> node. With a right click on the <code>..._PeakCluster.csv</code> file you should now have the option to open it in a table viewer and if you select <strong>BOTH</strong> the mzXML file and the csv file, then right click any of those, there will be an option for overlay in Map2D.</p>
+
+
+			<aside class="copyright" role="note">
+				
+				&copy; 2018 Dmitry Avtonomov. Released under the Apache 2.0 license. &ndash;
+				
+			</aside>
+
+			<footer class="footer">
+				
+
+<nav class="pagination" aria-label="Footer">
+  <div class="previous">
+  
+      <a href="http://batmass.org/tutorial/setting-up-development-environment/" title="Setting up development environment">
+        <span class="direction">
+          Previous
+        </span>
+        <div class="page">
+          <div class="button button-previous" role="button" aria-label="Previous">
+            <i class="icon icon-back"></i>
+          </div>
+          <div class="stretch">
+            <div class="title">
+              Setting up development environment
+            </div>
+          </div>
+        </div>
+      </a>
+  
+  </div>
+
+  <div class="next">
+  
+      <a href="http://batmass.org/license/" title="License">
+        <span class="direction">
+          Next
+        </span>
+        <div class="page">
+          <div class="stretch">
+            <div class="title">
+              License
+            </div>
+          </div>
+          <div class="button button-next" role="button" aria-label="Next">
+            <i class="icon icon-forward"></i>
+          </div>
+        </div>
+      </a>
+  
+  </div>
+</nav>
+
+
+
+
+
+			</footer>
+		</div>
+	</article>
+
+	<div class="results" role="status" aria-live="polite">
+		<div class="scrollable">
+			<div class="wrapper">
+				<div class="meta"></div>
+				<div class="list"></div>
+			</div>
+		</div>
+	</div>
+</main>
+
+    <script>
+    
+      var base_url = 'http:\/\/batmass.org\/';
+      var repo_id  = 'chhh\/batmass';
+    
+    </script>
+
+    <script src="http://batmass.org/javascripts/application.js"></script>
+    
+
+    <script>
+      /* Add headers to scrollspy */
+      var headers   = document.getElementsByTagName("h2");
+      var scrollspy = document.getElementById('scrollspy');
+
+      if(headers.length > 0) {
+        for(var i = 0; i < headers.length; i++) {
+          var li = document.createElement("li");
+          li.setAttribute("class", "anchor");
+
+          var a  = document.createElement("a");
+          a.setAttribute("href", "#" + headers[i].id);
+          a.setAttribute("title", headers[i].innerHTML);
+          a.innerHTML = headers[i].innerHTML;
+
+          li.appendChild(a)
+          scrollspy.appendChild(li);
+        }
+      } else {
+        scrollspy.parentElement.removeChild(scrollspy)
+      }
+
+
+      /* Add permanent link next to the headers */
+      var headers = document.querySelectorAll("h1, h2, h3, h4, h5, h6");
+
+      for(var i = 0; i < headers.length; i++) {
+          var a = document.createElement("a");
+          a.setAttribute("class", "headerlink");
+          a.setAttribute("href", "#" + headers[i].id);
+          a.setAttribute("title", "Permanent link")
+          a.innerHTML = "#";
+          headers[i].appendChild(a);
+      }
+    </script>
+
+    
+      <script>
+        (function(i,s,o,g,r,a,m){
+          i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){(i[r].q=i[r].q||
+          []).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;
+          m.parentNode.insertBefore(a,m)
+        })(window, document,
+          'script', '//www.google-analytics.com/analytics.js', 'ga');
+         
+        ga('create', 'UA-5572974-10', 'auto');
+        
+        ga('send', 'pageview');
+
+
+        
+        
+        
+        
+        
+        
+        
+
+         
+        var buttons = document.querySelectorAll('a');
+        Array.prototype.map.call(buttons, function(item) {
+          if (item.host != document.location.host) {
+            item.addEventListener('click', function() {
+              var action = item.getAttribute('data-action') || 'follow';
+              ga('send', 'event', 'outbound', action, item.href);
+            });
+          }
+        });
+         
+        var query = document.querySelector('.query');
+        query.addEventListener('blur', function() {
+          if (this.value) {
+            var path = document.location.pathname;
+            ga('send', 'pageview', path + '?q=' + this.value);
+          }
+        });
+      </script>
+    
+
+    
+    
+    
+    
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+  </body>
+</html>
+
