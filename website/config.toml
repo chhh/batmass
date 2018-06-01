@@ -1,5 +1,5 @@
-# baseurl = "http://localhost:1313/"
-baseurl = "http://batmass.org/"
+baseurl = "http://localhost:1313/"
+# baseurl = "http://batmass.org/"
 # baseurl = "http://chhh.github.io/hugo-website-test/"
 # baseurl = "http://batmass.github.io/"
 
@@ -60,6 +60,7 @@ googleAnalytics = "UA-5572974-10"
 [social]
 	twitter = ""
 	github  = "chhh"
+	personal = "https://dmtavt.com/"
 
 
 [[menu.main]]

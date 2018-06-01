@@ -13,8 +13,9 @@ DOI: 10.1021/acs.jproteome.6b00021.](https://dx.doi.org/10.1021/acs.jproteome.6b
 
 
 ## The author and maintainer of the project
-Dmitry Avtonomov, Ph.D. (University of Michigan, Ann Arbor)  
+[Dmitry Avtonomov](http://dmtavt.com/), Ph.D. (University of Michigan, Ann Arbor)  
 Email: dmitriya@umich.edu  
+http://dmtavt.com
 
 
 ## General inquiries

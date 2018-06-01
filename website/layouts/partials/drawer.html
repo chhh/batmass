@@ -44,9 +44,22 @@
 
         {{ if isset .Site.Params "author" }}
         <hr>
-        <span class="section">{{ .Site.Params.author }}</span>
+          {{ if isset .Site.Social "personal" }}
+            <span class="section"><a href="{{ .Site.Social.personal }}">{{ .Site.Params.author }}</a></span>
+          {{ else }}
+            <span class="section">{{ .Site.Params.author }}</span>
+          {{ end }}
 
         <ul>
+
+          {{ with .Site.Social.personal }}
+          <li>
+            <a href="{{ . }}" target="_blank" title="{{ $.Site.Params.author }} personal website">
+              Personal website
+            </a>
+          </li>
+          {{ end }}
+
           {{ with .Site.Social.twitter }}
           <li>
             <a href="https://twitter.com/{{ . }}" target="_blank" title="@{{ . }} on Twitter">
