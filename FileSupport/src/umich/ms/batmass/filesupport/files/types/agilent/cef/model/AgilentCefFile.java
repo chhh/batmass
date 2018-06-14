@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.regex.Pattern;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
@@ -35,7 +34,7 @@ import umich.ms.fileio.filetypes.agilent.cef.jaxb.Spectrum;
  * @author Dmitry Avtonomov
  */
 public class AgilentCefFile {
-    public static String GRP_MOL_IDENTITY = "grp_id";
+    public static String GRP_MOL_IDENTITY = "grp_id"; 
     public static String GRP_M_COUNT = "grp_m_cnt";
     public static String GRP_Z_COUNT = "grp_z_cnt";
     public static String GRP_Z_CARRIER = "grp_z_crr";
@@ -70,30 +69,52 @@ public class AgilentCefFile {
             // use the unmarshalled object
             CEF cef = (CEF) unmarshalled;
 
-            List<Compound> compList = cef.getCompoundList().getCompound();
-            Location l;
-            Spectrum s;
-            RTRange r;
-            List<P> ps;
-            for (Compound c : compList) {
+            List<Compound> compounds = cef.getCompoundList().getCompound();
+            for (Compound c : compounds) {
                 AgilentCompound ac = new AgilentCompound();
-                l = c.getLocation();
+                Location l = c.getLocation();
                 ac.setMass(l.getM());
                 ac.setRt(l.getRt());
                 ac.setAbMax(l.getY());
-                ac.setAbTot(l.getV());
-                s = c.getSpectrum();
-                r = s.getRTRanges().getRTRange();
-                ac.setRtLo(r.getMin());
-                ac.setRtHi(r.getMax());
-                ps = c.getSpectrum().getMSPeaks().getP();
+                if (l.getV() != null)
+                    ac.setAbTot(l.getV());
+                else if (l.getA() != null)
+                    ac.setAbTot(l.getA());
+                else
+                    ac.setAbTot(0);
+                Spectrum s = c.getSpectrum();
+                if (s.getRTRanges() != null && s.getRTRanges().getRTRange() != null) {
+                    RTRange r = s.getRTRanges().getRTRange();
+                    ac.setRtLo(r.getMin());
+                    ac.setRtHi(r.getMax());
+                } else {
+                    ac.setRtLo(l.getRt());
+                    ac.setRtHi(l.getRt());
+                }
+                int chargeSign = +1; // default assumption
+                if (s.getMSDetails() != null && s.getMSDetails().getP() != null) {
+                    String polarity = s.getMSDetails().getP();
+                    if ("-".equals(polarity.trim())) {
+                        chargeSign = -1;
+                    }
+                }
+                
+                List<P> ps = c.getSpectrum().getMSPeaks().getP();
                 for (P p : ps) {
                     AgilentMSPeak peak = new AgilentMSPeak();
                     peak.setMz(p.getX());
-                    peak.setRt(p.getRt());
+                    if (p.getRt() != null) {
+                        peak.setRt(p.getRt());
+                    } else {
+                        peak.setRt(l.getRt());
+                    }
                     peak.setAbMax(p.getY());
-                    peak.setAbTot(p.getV());
-                    peak.setZ(p.getZ());
+                    if (p.getV() != null) {
+                        peak.setAbTot(p.getV());
+                    } else {
+                        peak.setAbTot(p.getY());
+                    }
+                    peak.setZ(p.getZ() * chargeSign);
                     peak.setIonDescription(p.getS());
                     ac.add(peak);
                 }

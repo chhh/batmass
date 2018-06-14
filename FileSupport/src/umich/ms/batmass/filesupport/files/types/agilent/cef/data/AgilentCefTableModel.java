@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2016 Dmitry Avtonomov.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,6 +16,7 @@
 package umich.ms.batmass.filesupport.files.types.agilent.cef.data;
 
 import java.util.List;
+import umich.ms.batmass.data.core.lcms.features.AbstractLCMSTrace;
 import umich.ms.batmass.filesupport.files.types.agilent.cef.model.AgilentCompound;
 import umich.ms.batmass.filesupport.files.types.agilent.cef.model.AgilentMSPeak;
 import umich.ms.batmass.filesupport.files.types.agilent.cef.model.IonId;
@@ -28,7 +29,7 @@ import umich.ms.batmass.gui.core.components.featuretable.AbstractFeatureTableMod
  */
 public class AgilentCefTableModel extends AbstractFeatureTableModel {
     List<AgilentCefFeature> features;
-    
+
     protected String[] colNames = {
         /* 0 */ "Mono m/z",
         /* 1 */ "Num isotopes",
@@ -62,7 +63,7 @@ public class AgilentCefTableModel extends AbstractFeatureTableModel {
     public String getColumnName(int column) {
         return colNames[column];
     }
-    
+
     @Override
     public int getRowCount() {
         return features.size();
@@ -111,6 +112,29 @@ public class AgilentCefTableModel extends AbstractFeatureTableModel {
 
     @Override
     public MzRtRegion rowToRegion(int row) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (row < 0 || row >= features.size())
+            throw new IllegalStateException(String.format("Conversion from illegal row index was requested, no such row index: [%s]", row));
+        AgilentCefFeature f = features.get(row);
+        if (f == null) {
+            throw new IllegalStateException(String.format("Should not happen, row index was ok, but the feature at this id was null."));
+        }
+
+        double mzLo = Double.POSITIVE_INFINITY;
+        double mzHi = Double.NEGATIVE_INFINITY;
+        double rtLo = Double.POSITIVE_INFINITY;
+        double rtHi = Double.NEGATIVE_INFINITY;
+        AbstractLCMSTrace[] traces = f.getTraces();
+        for (AbstractLCMSTrace trace : traces) {
+            if (trace.getMz() - trace.getMzSpread() < mzLo)
+                mzLo = trace.getMz() - trace.getMzSpread();
+            if (trace.getMz() + trace.getMzSpread() > mzHi)
+                mzHi = trace.getMz() + trace.getMzSpread();
+            if (trace.getRtLo() < rtLo)
+                rtLo = trace.getRtLo();
+            if (trace.getRtHi() > rtHi)
+                rtHi = trace.getRtHi();
+        }
+
+        return new MzRtRegion(mzLo - 0.5, mzHi + 0.5, rtLo - 0.5, rtHi + 0.5);
     }
 }

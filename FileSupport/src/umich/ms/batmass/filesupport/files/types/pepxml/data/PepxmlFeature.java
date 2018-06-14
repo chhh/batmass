@@ -50,7 +50,7 @@ public class PepxmlFeature extends AbstractLCMSFeature2D<PepxmlTrace> {
     @Override
     public Color getColor() {
         SearchHit sh = getFirstHit(query);
-        float dm = Math.abs(sh.getMassdiff());
+        double dm = Math.abs(sh.getMassdiff());
         if (dm < 0.1)
             return Color.GREEN;
         else if (dm < 5.0)

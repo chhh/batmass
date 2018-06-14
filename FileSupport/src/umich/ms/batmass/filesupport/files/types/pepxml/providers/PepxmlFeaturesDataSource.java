@@ -51,7 +51,7 @@ public class PepxmlFeaturesDataSource extends DefaultDataSource<Features<PepxmlF
             
             MsmsRunSummary sum = msms.getMsmsRunSummary().get(0);
             
-            Float rt = sum.getSpectrumQuery().get(0).getRetentionTimeSec();
+            Double rt = sum.getSpectrumQuery().get(0).getRetentionTimeSec();
             if (rt == null)
                 throw new DataLoadingException("Pep xml file had no retention time information.");
             
