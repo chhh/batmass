@@ -6,20 +6,11 @@ imageSrc: images/batmass-logo-300.png
 imageClass: batmass-about-image
 ---
 
-## About BatMass
-BatMass is a mass-spectrometry data visualization tool, with the main focus on
-being fast and interactive while providing comprehensive visualizations without
-any parameter tweaking. It is written in pure Java and built on top of the
-[NetBeans Platform](https://netbeans.org/features/platform/all-docs.html).
-BatMass development is kindly supported by <span style='margin-right:5px'> <a
-href='https://www.yourkit.com/java/profiler/index.jsp'>YourKit Java Profiler</a>
-</span> <img src='/images/yklogo-84x20.png' style='vertical-align:text-bottom'/>
+BatMass is a mass-spectrometry data visualization tool, with focus on
+being fast and interactive. Watch a short demo of BatMass in action. To
+understand what it can do.
 
-### Referencing the work
-If you use BatMass for your research or work, please cite the following paper:  
-**[Avtonomov D.M. et al: J. Proteome Res. June 16, 2016. DOI:
-10.1021/acs.jproteome.6b00021.](https://dx.doi.org/10.1021/acs.jproteome.6b00021)**
-
+{{< youtube EY9wvd6ckb0>}}
 
 ## Features
 - Support for the open standard _mzML_ and _mzXML_ mass spectrometry data types.
@@ -43,12 +34,6 @@ See the [getting started guide]({{< relref "getting-started.md" >}}) for
 instructions how to get it up and running.
 
 
-## Demo Video
-Here's a short demo video of BatMass in action.
-
-{{< youtube EY9wvd6ckb0>}}
-
-
 ## Some Examples
 The layout of windows is free and customizable by dragging. ![Free window
 layoyt](/images/about-batmass/free-layout.png)
@@ -63,6 +48,22 @@ time. Look at the color-marked regions. Let's just accept that zero-values are a
 thing, there is no need to try extracting noise to do gap-filling in data.
 ![Multi experiment comparison in Map2D
 zoomed](/images/about-batmass/comparison-6-runs-1-blank-02-zoom-marked.png)
+
+
+## About BatMass
+BatMass is a mass-spectrometry data visualization tool, with focus on
+being fast and interactive while providing comprehensive visualizations without
+any parameter tweaking. It is written in pure Java and built on top of the
+[NetBeans Platform](https://netbeans.org/features/platform/all-docs.html).<br/>  
+BatMass development is kindly supported by <span style='margin-right:5px'> <a
+href='https://www.yourkit.com/java/profiler/index.jsp'>YourKit Java Profiler</a>
+</span> <img src='/images/yklogo-84x20.png' style='vertical-align:text-bottom'/>
+
+## Citing / Referencing the work
+If you use BatMass for your research or work, please cite the following paper:  
+**[Avtonomov D.M. et al: J. Proteome Res. June 16, 2016. DOI:
+10.1021/acs.jproteome.6b00021.](https://dx.doi.org/10.1021/acs.jproteome.6b00021)**
+
 
 
 ## Contacts

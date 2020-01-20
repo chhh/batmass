@@ -5,7 +5,7 @@ title: Contact information
 
 Please use the [bug tracker](https://github.com/chhh/batmass/issues) to request additional functionality or report bugs.
 
-## Referencing the work
+## Citing / Referencing the work
 If you use BatMass for your research or work, please cite the following paper:  
 **[Avtonomov D.M. et al:
 J. Proteome Res. June 16, 2016.
