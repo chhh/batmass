@@ -13,6 +13,11 @@ canonifyurls = true
 # Enable Google Analytics by entering your tracking id
 googleAnalytics = "UA-5572974-10"
 
+[markup]
+  	[markup.goldmark]
+   		[markup.goldmark.renderer]
+      		unsafe = true
+
 [params]
 	# General information
 	author = "Dmitry Avtonomov"
