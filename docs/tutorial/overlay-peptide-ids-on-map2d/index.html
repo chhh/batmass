@@ -9,7 +9,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1">
     <title>Overlay peptide IDs on 2D map - BatMass</title>
-    <meta name="generator" content="Hugo 0.40.3" />
+    <meta name="generator" content="Hugo 0.62.2" />
 
     
     <meta name="description" content="Mass spectrometry data visualization">
@@ -229,9 +229,9 @@
 
 
 
-<a  title="MSFTBX: Data Access Library" href="http://batmass.org/data-access-lib/">
+<a  title="Data Access Library: MSFTBX" href="http://batmass.org/data-access-lib/">
 	
-	MSFTBX: Data Access Library
+	Data Access Library: MSFTBX
 </a>
 
 
@@ -461,41 +461,30 @@
 
 			<h1>Overlay peptide IDs on 2D map </h1>
 
-			
-
-<p>For this tutorial you will need a <em>.pep.xml</em> file and a corresponding <em>mzML/mzXML</em> file. The
+			<p>For this tutorial you will need a <em>.pep.xml</em> file and a corresponding <em>mzML/mzXML</em> file. The
 <em>.pep.xml</em> file <strong>MUST</strong> contain retention time information (<code>retention_time_sec</code> attribute in
 <code>spectrum_query</code> tags). You will likely have that if you used <em>mzML/mzXML</em> or native file formats
 to perform the search (instead of something like an <em>mgf</em> file).</p>
-
-<h2 id="importing-pep-xml-file">Importing <em>.pep.xml</em> file</h2>
-
+<h2 id="importing-_pepxml_-file">Importing <em>.pep.xml</em> file</h2>
 <p>In a <em>Proteomics</em> project right-click <em>Identifications</em> node and select <code>Import</code>.</p>
-
 <h2 id="overlaying-and-viewing-peptides-as-a-table">Overlaying and viewing peptides as a table</h2>
-
 <p>To display the tabular view right-click the imported file, select <code>View -&gt; Table</code>. The table can be sorted by one or multiple columns. To sort by multiple columns hold <kbd>Shift</kbd> when clicking
 on column headers.</p>
-
 <p>To overlay data on 2D map, select both files simultaneously (the <em>.pep.xml</em> file and the LC/MS file)
 to overlay onto, right-click any of them, there should be an option to <code>Overlay on 2D Map</code> in the context menu.</p>
-
 <p>You can now link the Map2D with Table viewer by dragging the link icon
-<img src="http://batmass.org/images/getting-started/icon_link.png" alt="Link icon" /> from the toolbar of Map2D to the link icon
-<img src="http://batmass.org/images/getting-started/icon_link.png" alt="Link icon" /> in the Table view toolbar. Now double-clicking
+<img src="http://batmass.org/images/getting-started/icon_link.png" alt="Link icon"> from the toolbar of Map2D to the link icon
+<img src="http://batmass.org/images/getting-started/icon_link.png" alt="Link icon"> in the Table view toolbar. Now double-clicking
 on a row in the table will automatically zoom the Map2D to the corresponding region.</p>
-
-<p>If you also click the sonar-like button in the toolbar (see screenshot below) of 2D Map, you&rsquo;ll get all the MS2 events marked in magenta. For these boxes the width means the actual isolation window, if that information was available in mzML, otherwise it defaults to 1.5 Da. This way you&rsquo;ll readily see which MS2 even led to identifications &ndash; magenta box will be crossing the green box, see screenshots.</p>
-
+<p>If you also click the sonar-like button in the toolbar (see screenshot below) of 2D Map, you'll get all the MS2 events marked in magenta. For these boxes the width means the actual isolation window, if that information was available in mzML, otherwise it defaults to 1.5 Da. This way you'll readily see which MS2 even led to identifications &ndash; magenta box will be crossing the green box, see screenshots.</p>
 <h2 id="example">Example</h2>
-
-<p><img src="http://batmass.org/images/peptide-overlay/overlay-peptides-on-map2d-instruciton.png" alt="Overlay peptides instruction" />
-<img src="http://batmass.org/images/peptide-overlay/overlay-peptides-overview.png" alt="Overlay peptides overview" /></p>
+<p><img src="http://batmass.org/images/peptide-overlay/overlay-peptides-on-map2d-instruciton.png" alt="Overlay peptides instruction">
+<img src="http://batmass.org/images/peptide-overlay/overlay-peptides-overview.png" alt="Overlay peptides overview"></p>
 
 
 			<aside class="copyright" role="note">
 				
-				&copy; 2018 Dmitry Avtonomov. Released under the Apache 2.0 license. &ndash;
+				&copy; 2020 Dmitry Avtonomov. Released under the Apache 2.0 license. &ndash;
 				
 			</aside>
 
@@ -505,7 +494,7 @@ on a row in the table will automatically zoom the Map2D to the corresponding reg
 <nav class="pagination" aria-label="Footer">
   <div class="previous">
   
-      <a href="http://batmass.org/tutorial/parsing-pep-ids/" title="Parsing pep.xml files">
+      <a href="http://batmass.org/tutorial/custom-drawing/" title="Display custom data on 2D map">
         <span class="direction">
           Previous
         </span>
@@ -515,7 +504,7 @@ on a row in the table will automatically zoom the Map2D to the corresponding reg
           </div>
           <div class="stretch">
             <div class="title">
-              Parsing pep.xml files
+              Display custom data on 2D map
             </div>
           </div>
         </div>
@@ -525,14 +514,14 @@ on a row in the table will automatically zoom the Map2D to the corresponding reg
 
   <div class="next">
   
-      <a href="http://batmass.org/tutorial/custom-drawing/" title="Display custom data on 2D map">
+      <a href="http://batmass.org/tutorial/parsing-pep-ids/" title="Parsing pep.xml files">
         <span class="direction">
           Next
         </span>
         <div class="page">
           <div class="stretch">
             <div class="title">
-              Display custom data on 2D map
+              Parsing pep.xml files
             </div>
           </div>
           <div class="button button-next" role="button" aria-label="Next">

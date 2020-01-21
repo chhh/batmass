@@ -9,7 +9,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1">
     <title>BatMass</title>
-    <meta name="generator" content="Hugo 0.40.3" />
+    <meta name="generator" content="Hugo 0.62.2" />
 
     
     <meta name="description" content="Mass spectrometry data visualization">
@@ -235,9 +235,9 @@
 
 
 
-<a  title="MSFTBX: Data Access Library" href="http://batmass.org/data-access-lib/">
+<a  title="Data Access Library: MSFTBX" href="http://batmass.org/data-access-lib/">
 	
-	MSFTBX: Data Access Library
+	Data Access Library: MSFTBX
 </a>
 
 
@@ -467,91 +467,73 @@
 
 				<h1 class="text-center">BatMass: mass spectrometry data visualization </h1>
 
-				
+				<p>BatMass is a mass-spectrometry data visualization tool, with focus on
+being fast and interactive. Watch a short demo of BatMass in action. To
+understand what it can do.</p>
 
-<h2 id="about-batmass">About BatMass</h2>
-
-<p>BatMass is a mass-spectrometry data visualization tool, with the main focus on
-being fast and interactive while providing comprehensive visualizations without
-any parameter tweaking. It is written in pure Java and built on top of the
-<a href="https://netbeans.org/features/platform/all-docs.html">NetBeans Platform</a>.
-BatMass development is kindly supported by <span style='margin-right:5px'> <a
-href='https://www.yourkit.com/java/profiler/index.jsp'>YourKit Java Profiler</a>
-</span> <img src='http://batmass.org/images/yklogo-84x20.png' style='vertical-align:text-bottom'/></p>
-
-<h3 id="referencing-the-work">Referencing the work</h3>
-
-<p>If you use BatMass for your research or work, please cite the following paper:<br />
-<strong><a href="https://dx.doi.org/10.1021/acs.jproteome.6b00021">Avtonomov D.M. et al: J. Proteome Res. June 16, 2016. DOI:
-10.1021/acs.jproteome.6b00021.</a></strong></p>
+<div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
+  <iframe src="https://www.youtube.com/embed/EY9wvd6ckb0" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" allowfullscreen title="YouTube Video"></iframe>
+</div>
 
 <h2 id="features">Features</h2>
-
 <ul>
-<li><p>Support for the open standard <em>mzML</em> and <em>mzXML</em> mass spectrometry data types.
-We are hoping to bring native vendor format support as well.</p></li>
-
-<li><p>Viewer synchronization. Link any number of viewers and zooming/panning will be
-synchronized across them. If you&rsquo;re viewing MS<sup>1</sup> data in one view
+<li>
+<p>Support for the open standard <em>mzML</em> and <em>mzXML</em> mass spectrometry data types.
+We are hoping to bring native vendor format support as well.</p>
+</li>
+<li>
+<p>Viewer synchronization. Link any number of viewers and zooming/panning will be
+synchronized across them. If you're viewing MS<sup>1</sup> data in one view
 and MS<sup>2</sup> data in the other the retention time is synchronized, while
 m/z is not. Open a detected LC/MS feature table or a peptide identification
 table, a double click on the row will open the corresponding spectrum, or
-bring you to the corresponding location in a 2D Map viewer.</p></li>
-
-<li><p>Data access layer. For the Java developers out there, the highly optimized
+bring you to the corresponding location in a 2D Map viewer.</p>
+</li>
+<li>
+<p>Data access layer. For the Java developers out there, the highly optimized
 mzML/mzXML parsers can be used in any standalone Java program as a simple
 <em>jar</em> dependency. Parsing has been manually tuned to produce few garbage
 objects, thus minimizing time spent in GC (Garbage Collection), the speed is
 comparable to or better than in C/C++ implementations. The API for LC/MS data
-files gives access to most of the features supported by mzML/mzXML standards.</p></li>
+files gives access to most of the features supported by mzML/mzXML standards.</p>
+</li>
 </ul>
-
 <p>See the <a href="http://batmass.org/getting-started/">getting started guide</a> for
 instructions how to get it up and running.</p>
-
-<h2 id="demo-video">Demo Video</h2>
-
-<p>Here&rsquo;s a short demo video of BatMass in action.</p>
-
-
-<div style="position: relative; padding-bottom: 56.25%; padding-top: 30px; height: 0; overflow: hidden;">
-  <iframe src="//www.youtube.com/embed/EY9wvd6ckb0" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;" allowfullscreen frameborder="0" title="YouTube Video"></iframe>
- </div>
-
-
 <h2 id="some-examples">Some Examples</h2>
-
-<p>The layout of windows is free and customizable by dragging. <img src="http://batmass.org/images/about-batmass/free-layout.png" alt="Free window
-layoyt" /></p>
-
+<p>The layout of windows is free and customizable by dragging. <img src="http://batmass.org/images/about-batmass/free-layout.png" alt="Free windowlayoyt"></p>
 <p>Compare multiple experiments at once. The bottom-middle run in this figure is a
 blank (no sample was injected), while the other 5 were runs with some sample.
-Amazing how much stuff comes from the background. <img src="http://batmass.org/images/about-batmass/comparison-6-runs-1-blank.png" alt="Multi experiment comparison
-in Map2D" /></p>
-
+Amazing how much stuff comes from the background. <img src="http://batmass.org/images/about-batmass/comparison-6-runs-1-blank.png" alt="Multi experiment comparisonin Map2D"></p>
 <p>And here are the same runs but zoomed in to a small region of m/z and retentino
-time. Look at the color-marked regions. Let&rsquo;s just accept that zero-values are a
+time. Look at the color-marked regions. Let's just accept that zero-values are a
 thing, there is no need to try extracting noise to do gap-filling in data.
-<img src="http://batmass.org/images/about-batmass/comparison-6-runs-1-blank-02-zoom-marked.png" alt="Multi experiment comparison in Map2D
-zoomed" /></p>
-
+<img src="http://batmass.org/images/about-batmass/comparison-6-runs-1-blank-02-zoom-marked.png" alt="Multi experiment comparison in Map2Dzoomed"></p>
+<h2 id="about-batmass">About BatMass</h2>
+<p>BatMass is a mass-spectrometry data visualization tool, with focus on
+being fast and interactive while providing comprehensive visualizations without
+any parameter tweaking. It is written in pure Java and built on top of the
+<a href="https://netbeans.org/features/platform/all-docs.html">NetBeans Platform</a>.<br/><br>
+BatMass development is kindly supported by <span style='margin-right:5px'> <a
+href='https://www.yourkit.com/java/profiler/index.jsp'>YourKit Java Profiler</a>
+</span> <img src='http://batmass.org/images/yklogo-84x20.png' style='vertical-align:text-bottom'/></p>
+<h2 id="citing--referencing-the-work">Citing / Referencing the work</h2>
+<p>If you use BatMass for your research or work, please cite the following paper:<br>
+<strong><a href="https://dx.doi.org/10.1021/acs.jproteome.6b00021">Avtonomov D.M. et al: J. Proteome Res. June 16, 2016. DOI:
+10.1021/acs.jproteome.6b00021.</a></strong></p>
 <h2 id="contacts">Contacts</h2>
-
-<p><strong>The author and maintainer of the project</strong><br />
-Dmitry Avtonomov, Ph.D.<br />
-University of Michigan, Ann Arbor<br />
-Email: dmitriya@umich.edu</p>
-
-<p><strong>General inquiries</strong><br />
-Alexey Nesvizhskii, Ph.D.<br />
-University of Michigan, Ann Arbor<br />
-Email: nesvi@umich.edu<br />
+<p><strong>The author and maintainer of the project</strong><br>
+Dmitry Avtonomov, Ph.D.<br>
+University of Michigan, Ann Arbor<br>
+Email: <a href="mailto:dmitriya@umich.edu">dmitriya@umich.edu</a></p>
+<p><strong>General inquiries</strong><br>
+Alexey Nesvizhskii, Ph.D.<br>
+University of Michigan, Ann Arbor<br>
+Email: <a href="mailto:nesvi@umich.edu">nesvi@umich.edu</a><br>
 <a href="http://www.nesvilab.org">http://www.nesvilab.org</a></p>
-
 <p>Please use the <a href="https://github.com/chhh/batmass/issues">bug tracker</a> to ask
 questions, submit feature requests and bug reports.</p>
-
-<p>This software was made possible thanks to:
+<p>This software was made possible thanks to:</p>
 <table >
   <tr>
     <td style='vertical-align:middle'><img src='http://batmass.org/images/yklogo-114x27.png'/></td>
@@ -565,13 +547,13 @@ questions, submit feature requests and bug reports.</p>
     <td style='vertical-align:middle align:right'><img src='http://batmass.org/images/netbeans-logo-40x40.png'/></td>
     <td style='vertical-align:middle'><a href='https://netbeans.org/features/platform/all-docs.html'>NetBeans Platform</a> community</td>
   </tr>
-</table></p>
+</table>
 
 			
 
 			<aside class="copyright" role="note">
 				
-				&copy; 2018 Dmitry Avtonomov. Released under the Apache 2.0 license.
+				&copy; 2020 Dmitry Avtonomov. Released under the Apache 2.0 license.
 				
 			</aside>
 

@@ -9,7 +9,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1">
     <title>Setting up development environment - BatMass</title>
-    <meta name="generator" content="Hugo 0.40.3" />
+    <meta name="generator" content="Hugo 0.62.2" />
 
     
     <meta name="description" content="Mass spectrometry data visualization">
@@ -229,9 +229,9 @@
 
 
 
-<a  title="MSFTBX: Data Access Library" href="http://batmass.org/data-access-lib/">
+<a  title="Data Access Library: MSFTBX" href="http://batmass.org/data-access-lib/">
 	
-	MSFTBX: Data Access Library
+	Data Access Library: MSFTBX
 </a>
 
 
@@ -461,53 +461,42 @@
 
 			<h1>Setting up development environment </h1>
 
-			
-
-<p>This guide will quickly step you through setting up the environment for developing new functionality for BatMass. All the downloads, setting up the IDE and up to building BatMass from scratch.</p>
-
+			<p>This guide will quickly step you through setting up the environment for developing new functionality for BatMass. All the downloads, setting up the IDE and up to building BatMass from scratch.</p>
 <h2 id="setting-up-development-environement-for-batmass">Setting up development environement for BatMass</h2>
-
 <p>You will only need this information if you want to develop your own plugins
-for BatMass or change its functionality in some way, if you&rsquo;re just a regular
+for BatMass or change its functionality in some way, if you're just a regular
 user you can skip this tutorial.</p>
-
-<p>Don&rsquo;t be scared by the size of this tutorial, it just assumes that you know
+<p>Don't be scared by the size of this tutorial, it just assumes that you know
 nothing about NetBeans and the NetBeans Platform. All the steps are simple.</p>
-
 <h2 id="get-the-jdk-java-development-kit">Get the JDK (Java Development Kit)</h2>
-
-<p>BatMass is written in Java, so we&rsquo;ll need Java. Download and isntall JDK 7:
+<p>BatMass is written in Java, so we'll need Java. Download and isntall JDK 7:
 <a href="http://www.oracle.com/technetwork/java/javase/downloads/jdk7-downloads-1880260.html">e.g. from Oracle</a>.
 It should work with <em>OpenJDK</em> as well.</p>
-
 <h2 id="the-netbeans-platform">The NetBeans platform</h2>
-
 <p>BatMass is built on top of the NetBeans platform (we will call it just <strong>the
-platform</strong> or <strong>NBP</strong> for simplicity). It&rsquo;s the same infrastructure  that the NetBeans IDE
+platform</strong> or <strong>NBP</strong> for simplicity). It's the same infrastructure  that the NetBeans IDE
 is built on top of itself. This is an essential part of the setup, it is the
 platform that provides the Window system, the Loader, Automatic Updates and much more.
 All platform applications are developed against some version of the platform,
 which itself is just a collection of libraries (called <em>Modules</em>). Though it is
-possible to use the platform that comes with the NetBeans IDE, you&rsquo;ll likely
-encounter multiple errors due to incorrect dependency versions, so <strong>you&rsquo;ll need
+possible to use the platform that comes with the NetBeans IDE, you'll likely
+encounter multiple errors due to incorrect dependency versions, so <strong>you'll need
 to get the platform version that we are providing</strong>.</p>
-
 <p>Developing platform applications is much simpler with the NetBeans IDE as it
 provides a lot of wizards and other core functionality. It is possible to use
 <em>ItelliJ</em> as well, but we will not be covering this option, so <a href="https://netbeans.org/downloads/">go ahead and get
 the latest version of NetBeans</a> (which is 8.1
 as of this writing). You can select the <em>Java SE</em> version among all downloads.</p>
-
 <ul>
 <li>Download the platform files: <a href="https://github.com/chhh/batmass/releases/download/v.0.1.0/nb81-batmass.zip">from BatMass github repository</a>.</li>
 <li>Unpack the downloaded archive, it contains four zip files</li>
 <li>Unpack the following 3 files to the same location, e.g. <code>/&lt;path&gt;/nbp</code>:
-
 <ul>
 <li><code>netbeans-...-harness.zip</code></li>
 <li><code>netbeans-...-ide.zip</code></li>
 <li><code>netbeans-...-platform.zip</code></li>
-</ul></li>
+</ul>
+</li>
 <li>Do not unpack <code>netbeans-8.1-...-platform-src.zip</code></li>
 <li>You should now have <code>/&lt;path&gt;/nbp/harness</code>, <code>/&lt;path&gt;/nbp/ide</code>,
 <code>/&lt;path&gt;/nbp/platform</code></li>
@@ -518,90 +507,95 @@ on the right will show something like <em>nb81</em>, which means that the direct
 has been recognized as containing <em>platform</em> files.</li>
 <li>Click <em>Next</em>, change the platform name to <code>nb-batmass</code> (<strong>This is very
 important!</strong>) as it is and click <em>Finish</em>.</li>
-<li>You should now see the newly created <em>platform</em> in the list, like this:<br />
-<img src="http://batmass.org/images/setting-up-development-environment/nb-platform-created.png" alt="NetBeans platform added" /></li>
+<li>You should now see the newly created <em>platform</em> in the list, like this:<br>
+<img src="http://batmass.org/images/setting-up-development-environment/nb-platform-created.png" alt="NetBeans platform added"></li>
 <li>Change the tab to <em>Harness</em> and make sure to switch the radio button to
 <em>Harness supplied with Platform</em>.</li>
 <li>Change the tab to <em>Sources</em> and add the path to <em>.zip</em> file
 <code>netbeans-*-platform-src.zip</code> that came with your platform download.</li>
 </ul>
-
 <p>You should now have the environment set-up to bebing development.</p>
-
 <h2 id="batmass-modules">BatMass modules</h2>
-
 <p>BatMass itself is composed of multiple modules which are split into several
 module suits. A module suite in the platform terms is just a collection of
 modules groupped together all of which have access to some common set of
 dependencies. Each suite lives in its own github repository, clone them all to
 the to the same location:</p>
-
 <ul>
-<li><p><a href="https://github.com/chhh/batmass">BatMass</a> - the main suite, most of
-development happens here</p></li>
-
-<li><p><a href="https://github.com/chhh/batmass-libs">BatMassLibs</a> - all the library
-dependencies reside in this suite. In</p></li>
-
-<li><p><a href="https://github.com/chhh/batmass-ext">BatMassExternalSuite</a> - contains
+<li>
+<p><a href="https://github.com/chhh/batmass">BatMass</a> - the main suite, most of
+development happens here</p>
+</li>
+<li>
+<p><a href="https://github.com/chhh/batmass-libs">BatMassLibs</a> - all the library
+dependencies reside in this suite. In</p>
+</li>
+<li>
+<p><a href="https://github.com/chhh/batmass-ext">BatMassExternalSuite</a> - contains
 separate functional pieces borrowed from the web or elsewhere. E.g. the color-
-picker used in the options lives here.</p></li>
-
-<li><p><a href="https://github.com/chhh/MSFTBX">MSFTBX</a> - this is the data access library.
+picker used in the options lives here.</p>
+</li>
+<li>
+<p><a href="https://github.com/chhh/MSFTBX">MSFTBX</a> - this is the data access library.
 It provides pure-java implementations of <em>mzXML</em>, <em>mzML</em>, <em>pep.xml</em>, <em>prot.xml</em>
-files among some others as well. The API (interfaces) is bundled with it.<br />
-Although this repository contains a NetBeans platform module project, you&rsquo;ll
+files among some others as well. The API (interfaces) is bundled with it.<br>
+Although this repository contains a NetBeans platform module project, you'll
 also notice that it contains a regular IntelliJ IDEA project as well, which
-has artifacts configured to build a regular <em>jar</em> out of it.</p></li>
+has artifacts configured to build a regular <em>jar</em> out of it.</p>
+</li>
 </ul>
-
-<pre><code class="language-bash">mkdir /&lt;some-path&gt;/batmass-projects
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">mkdir /&lt;some-path&gt;/batmass-projects
 cd /&lt;some-path&gt;/batmass-projects
 git clone https://github.com/chhh/batmass.git
 git clone https://github.com/chhh/batmass-libs.git
 git clone https://github.com/chhh/batmass-ext.git
 git clone https://github.com/chhh/MSFTBX.git
-</code></pre>
-
-<p>You now have all the source code and libraries necessary to build BatMass.</p>
-
+</code></pre></div><p>You now have all the source code and libraries necessary to build BatMass.</p>
 <h2 id="building-the-projects">Building the projects</h2>
-
 <ul>
-<li>Start NetBeans IDE</li>
-<li><code>Main Menu -&gt; File -&gt; Open Project</code></li>
-<li>Holding down <kbd>Ctrl</kbd> select the 4 cloned projects, and open them (see
+<li>
+<p>Start NetBeans IDE</p>
+</li>
+<li>
+<p><code>Main Menu -&gt; File -&gt; Open Project</code></p>
+</li>
+<li>
+<p>Holding down <kbd>Ctrl</kbd> select the 4 cloned projects, and open them (see
 image below)
-<img src="http://batmass.org/images/setting-up-development-environment/netbeans-opening-projects.png" alt="Open Cloned Projects" /><br /></li>
-<li>Check the bottom right corner of the IDE for a progress bar, it might take a
-while to index the projects.</li>
-<li>Right click <code>BatMass</code> project, select <code>Properties</code> in the context menu.</li>
-<li>Select <code>Libraries</code> in the <em>Categories</em> list on the left.</li>
-
-<li><p>Make sure that drop-down <em>NetBeans Platform</em> is set to <code>nb-batmass</code> as in
-the image below, if this shows some other platform, switch to <code>nb-batmass</code><br />
-<img src="http://batmass.org/images/setting-up-development-environment/netbeans-project-batmass-check-library-settings.png" alt="Make sure opened projects are set to use the provided platform" /></p>
-
+<img src="http://batmass.org/images/setting-up-development-environment/netbeans-opening-projects.png" alt="Open Cloned Projects"></p>
+</li>
+<li>
+<p>Check the bottom right corner of the IDE for a progress bar, it might take a
+while to index the projects.</p>
+</li>
+<li>
+<p>Right click <code>BatMass</code> project, select <code>Properties</code> in the context menu.</p>
+</li>
+<li>
+<p>Select <code>Libraries</code> in the <em>Categories</em> list on the left.</p>
+</li>
+<li>
+<p>Make sure that drop-down <em>NetBeans Platform</em> is set to <code>nb-batmass</code> as in
+the image below, if this shows some other platform, switch to <code>nb-batmass</code><br>
+<img src="http://batmass.org/images/setting-up-development-environment/netbeans-project-batmass-check-library-settings.png" alt="Make sure opened projects are set to use the provided platform"></p>
 <ul>
 <li>If you see some errors in the <em>Project Properties</em> window (e.g. saying that
 some module lacks some dependencies, and the <em>Resolve</em> button is inactive),
 please contact us.</li>
-</ul></li>
-
-<li><p>Check the selected platform for the other 3 projects as well.</p></li>
 </ul>
-
+</li>
+<li>
+<p>Check the selected platform for the other 3 projects as well.</p>
+</li>
+</ul>
 <h2 id="we-are-ready-to-build-the-final-product">We are ready to build the final product!</h2>
-
 <p>The build order is of importance. Automatic rebuilding of dependent module suits
-was not set up to improve build performance.<br />
+was not set up to improve build performance.<br>
 Only the <code>BatMass</code> project depends on others, so whenever you make changes to
 <code>BatMassLibs</code>, <code>BatMassExternalSuite</code> or <code>MSFTBX</code> you will need to manually
 trigger a <code>clean build</code> on them, and rebuild the <code>BatMass</code> project  after that.</p>
-
 <ul>
-<li>Right click <code>MSFTBX</code> project node in the <em>Project Explorer</em> and choose <code>clean
-build</code></li>
+<li>Right click <code>MSFTBX</code> project node in the <em>Project Explorer</em> and choose <code>clean build</code></li>
 <li>Now do <code>clean build</code> for <code>BatMassLibs</code> and <code>BatMassExternalSuite</code></li>
 <li>You can now <code>clean build</code> the main <code>BatMass</code> project</li>
 <li>When the build is done, go to <code>Main menu -&gt; Run -&gt; Set main project</code> and
@@ -609,16 +603,14 @@ select <code>BatMass</code> there. This will force the green <code>Run</code> bu
 shortcurt) to always launch this project and not the currently selected one.</li>
 <li>Run the project: <code>Main menu -&gt; Run -&gt; Run main project</code></li>
 </ul>
-
 <p>If all is well and you can start the project, you should also be able to
-create the installers for it. Right click <code>BatMass</code> project, <code>Package as -&gt;
-Installers</code>. This is a time-consuming process, when done, you&rsquo;ll find the
+create the installers for it. Right click <code>BatMass</code> project, <code>Package as -&gt; Installers</code>. This is a time-consuming process, when done, you'll find the
 installers for different platforms in <code>batmass-projects/batmass/dist</code>.</p>
 
 
 			<aside class="copyright" role="note">
 				
-				&copy; 2018 Dmitry Avtonomov. Released under the Apache 2.0 license. &ndash;
+				&copy; 2020 Dmitry Avtonomov. Released under the Apache 2.0 license. &ndash;
 				
 			</aside>
 
@@ -628,7 +620,7 @@ installers for different platforms in <code>batmass-projects/batmass/dist</code>
 <nav class="pagination" aria-label="Footer">
   <div class="previous">
   
-      <a href="http://batmass.org/tutorial/custom-drawing/" title="Display custom data on 2D map">
+      <a href="http://batmass.org/tutorial/developing-first-plugin/" title="Developing the first plugin">
         <span class="direction">
           Previous
         </span>
@@ -638,7 +630,7 @@ installers for different platforms in <code>batmass-projects/batmass/dist</code>
           </div>
           <div class="stretch">
             <div class="title">
-              Display custom data on 2D map
+              Developing the first plugin
             </div>
           </div>
         </div>
@@ -648,14 +640,14 @@ installers for different platforms in <code>batmass-projects/batmass/dist</code>
 
   <div class="next">
   
-      <a href="http://batmass.org/tutorial/developing-first-plugin/" title="Developing the first plugin">
+      <a href="http://batmass.org/tutorial/custom-drawing/" title="Display custom data on 2D map">
         <span class="direction">
           Next
         </span>
         <div class="page">
           <div class="stretch">
             <div class="title">
-              Developing the first plugin
+              Display custom data on 2D map
             </div>
           </div>
           <div class="button button-next" role="button" aria-label="Next">

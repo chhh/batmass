@@ -9,7 +9,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1">
     <title>Display custom data on 2D map - BatMass</title>
-    <meta name="generator" content="Hugo 0.40.3" />
+    <meta name="generator" content="Hugo 0.62.2" />
 
     
     <meta name="description" content="Mass spectrometry data visualization">
@@ -229,9 +229,9 @@
 
 
 
-<a  title="MSFTBX: Data Access Library" href="http://batmass.org/data-access-lib/">
+<a  title="Data Access Library: MSFTBX" href="http://batmass.org/data-access-lib/">
 	
-	MSFTBX: Data Access Library
+	Data Access Library: MSFTBX
 </a>
 
 
@@ -461,79 +461,58 @@
 
 			<h1>Display custom data on 2D map </h1>
 
-			
-
-<p>In this guide I will show how to overlay custom rectangles on Map2D. It supports colors and opacity as well.
+			<p>In this guide I will show how to overlay custom rectangles on Map2D. It supports colors and opacity as well.
 We will need to:</p>
-
 <ul>
 <li><a href="#writing-mzrt-csv-file">Write an <em>.mzrt.csv</em> file</a></li>
 <li><a href="#import-the-file-to-features-section">Import the file to <em>features</em> section</a></li>
 <li><a href="#display-in-a-table-or-overlay-on-2d-map">Display in a table  or overlay on 2D map</a></li>
 </ul>
-
 <p>There are no prerequisites for this tutorial except for <a href="http://batmass.org/getting-started">Getting started Tutorial</a>.</p>
-
-<h2 id="writing-mzrt-csv-file">Writing <em>.mzrt.csv</em> file</h2>
-
+<h2 id="writing-_mzrtcsv_-file">Writing <em>.mzrt.csv</em> file</h2>
 <p>All you need is a delimited file of a very simple format. It should be a UTF-8 delimited text file with column headers. Delimiter character is auto-detected, allowed chars are tab (\t), comma and space. The file can contain any columns you like, however it <strong>MUST</strong> contain the following columns:</p>
-
 <ul>
 <li>mzLo</li>
 <li>mzHi</li>
 <li>rtLo</li>
 <li>rtHi</li>
 </ul>
-
 <p>RT is specified in minutes. This is enough information to draw a rectangle over Map2D. <strong>Optionally</strong> you can also provide:</p>
-
 <ul>
 <li>color (must be a valid hex value, e.g. #FF0000 for red)</li>
 <li>opacity (in the range [0.0 - 1.0])</li>
 </ul>
-
-<h2 id="example-mzrt-csv-file">Example <em>.mzrt.csv</em> file</h2>
-
+<h2 id="example-_mzrtcsv_-file">Example <em>.mzrt.csv</em> file</h2>
 <p>We will use this file in the example below. Note that the red rectangle was out of range of in m/z dimension
 (the LC/MS file only had m/z valus starting from 300, however the red rectangle calls for
 200-210 range).</p>
-
 <pre><code>some-column,mzLo,mzHi,rtLo,rtHi,color,opacity,sequence
 123457,200,210,1,2,#FF0000,0.9,AKJSHDLASHDSALHDSKAHDAJ
 asdfsdaf,300,310,2,3,#00FF00,0.8,HALD SAJDSAHLLJJASD HL
 aa,400,410,3,3.5,#00FFFF,0.75, ASJDLKSA JDLKAS JDLKSAJD
 bb,500,510,4,5,#ff7f50,0.1,ADHSAKDHSAJHSAHDFGHDJG
-</code></pre>
-
-<h2 id="how-it-should-look-like">How it should look like</h2>
-
-<p><img src="http://batmass.org/images/custom-drawing/custom-drawing-table.png" alt="Custom drawing table" />
-<img src="http://batmass.org/images/custom-drawing/custom-drawing-overlay.png" alt="Custom drawing overlay" />
+</code></pre><h2 id="how-it-should-look-like">How it should look like</h2>
+<p><img src="http://batmass.org/images/custom-drawing/custom-drawing-table.png" alt="Custom drawing table">
+<img src="http://batmass.org/images/custom-drawing/custom-drawing-overlay.png" alt="Custom drawing overlay">
 Notice how the orange rectangle had opacity 0.1, thus only its border is visible and the contents is
 transparent.</p>
-
-<h2 id="import-the-file-to-lc-ms-features-section">Import the file to <em>LC/MS Features</em> section</h2>
-
+<h2 id="import-the-file-to-_lcms-features_-section">Import the file to <em>LC/MS Features</em> section</h2>
 <p>In any project right-click <em>LC/MS Features</em> node and select <code>Import</code>. You should be able to add
 any file that has double-extension <em>.mzrt.csv</em>.</p>
-
 <h2 id="display-in-a-table-or-overlay-on-2d-map">Display in a table or overlay on 2D map</h2>
-
 <p>To display the tabular view right-click the imported file, select <code>View -&gt; Table</code>. The table can be sorted by one or multiple columns. To sort by multiple columns hold <kbd>Shift</kbd> when clicking
 on column headers.</p>
-
 <p>To overlay data on 2D map, select both files simultaneously (the <em>.mzrt.csv</em> file and the LC/MS file)
 to overlay onto, right-click any of them, there should be an option to <code>Overlay on 2D Map</code> in the context menu.</p>
-
 <p>You can now link the Map2D with Table viewer by dragging the link icon
-<img src="http://batmass.org/images/getting-started/icon_link.png" alt="Link icon" /> from the toolbar of Map2D to the link icon
-<img src="http://batmass.org/images/getting-started/icon_link.png" alt="Link icon" /> in the Table view toolbar. Now double-clicking
+<img src="http://batmass.org/images/getting-started/icon_link.png" alt="Link icon"> from the toolbar of Map2D to the link icon
+<img src="http://batmass.org/images/getting-started/icon_link.png" alt="Link icon"> in the Table view toolbar. Now double-clicking
 on a row in the table will automatically zoom the Map2D to the corresponding region.</p>
 
 
 			<aside class="copyright" role="note">
 				
-				&copy; 2018 Dmitry Avtonomov. Released under the Apache 2.0 license. &ndash;
+				&copy; 2020 Dmitry Avtonomov. Released under the Apache 2.0 license. &ndash;
 				
 			</aside>
 
@@ -543,7 +522,7 @@ on a row in the table will automatically zoom the Map2D to the corresponding reg
 <nav class="pagination" aria-label="Footer">
   <div class="previous">
   
-      <a href="http://batmass.org/tutorial/overlay-peptide-ids-on-map2d/" title="Overlay peptide IDs on 2D map">
+      <a href="http://batmass.org/tutorial/setting-up-development-environment/" title="Setting up development environment">
         <span class="direction">
           Previous
         </span>
@@ -553,7 +532,7 @@ on a row in the table will automatically zoom the Map2D to the corresponding reg
           </div>
           <div class="stretch">
             <div class="title">
-              Overlay peptide IDs on 2D map
+              Setting up development environment
             </div>
           </div>
         </div>
@@ -563,14 +542,14 @@ on a row in the table will automatically zoom the Map2D to the corresponding reg
 
   <div class="next">
   
-      <a href="http://batmass.org/tutorial/setting-up-development-environment/" title="Setting up development environment">
+      <a href="http://batmass.org/tutorial/overlay-peptide-ids-on-map2d/" title="Overlay peptide IDs on 2D map">
         <span class="direction">
           Next
         </span>
         <div class="page">
           <div class="stretch">
             <div class="title">
-              Setting up development environment
+              Overlay peptide IDs on 2D map
             </div>
           </div>
           <div class="button button-next" role="button" aria-label="Next">

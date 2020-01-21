@@ -9,7 +9,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1">
     <title>Parsing pep.xml files - BatMass</title>
-    <meta name="generator" content="Hugo 0.40.3" />
+    <meta name="generator" content="Hugo 0.62.2" />
 
     
     <meta name="description" content="Mass spectrometry data visualization">
@@ -229,9 +229,9 @@
 
 
 
-<a  title="MSFTBX: Data Access Library" href="http://batmass.org/data-access-lib/">
+<a  title="Data Access Library: MSFTBX" href="http://batmass.org/data-access-lib/">
 	
-	MSFTBX: Data Access Library
+	Data Access Library: MSFTBX
 </a>
 
 
@@ -461,118 +461,98 @@
 
 			<h1>Parsing pep.xml files </h1>
 
-			
-
-<p>All the classes responsible for parsing files live in <code>umich.ms.fileio.filetypes</code> package, each in its own subpackage, e.g. <code>umich.ms.fileio.filetypes.pepxml</code> for PepXML files. Most of those sub-packages contain a separate package <code>example</code> with working examples.</p>
-
+			<p>All the classes responsible for parsing files live in <code>umich.ms.fileio.filetypes</code> package, each in its own subpackage, e.g. <code>umich.ms.fileio.filetypes.pepxml</code> for PepXML files. Most of those sub-packages contain a separate package <code>example</code> with working examples.</p>
 <h2 id="parsing-identification-files-pepxml-protxml-mzidentml">Parsing identification files (PepXML, ProtXML, MzIdentML)</h2>
-
 <p>The library gives low level access file formats storing peptide identifications.
 There is no unifying API here, as the formats are very different. These parsers are not hand optimized for efficiency, so they might consume quite a bit more memory than they should, but they also are error resilient.</p>
-
 <p>Working with these files is as simple as making a single call to <code>parse(Path)</code> method
 of a corresponding parser. You get a single data-structure that follows the respective
-XML schemas for the format. Here&rsquo;s a quick PepXML example:</p>
-
-<pre><code class="language-java">Path path = Paths.get(&quot;some-path-to.pep.xml&quot;);
-// a single call to parse the whole file
-MsmsPipelineAnalysis analysis = PepXmlParser.parse(path);
-</code></pre>
-
-<p>And that&rsquo;s it. The whole file is parsed and stored in memory. Let&rsquo;s explore
+XML schemas for the format. Here's a quick PepXML example:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">Path path <span style="color:#f92672">=</span> Paths<span style="color:#f92672">.</span><span style="color:#a6e22e">get</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;some-path-to.pep.xml&#34;</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+<span style="color:#75715e">// a single call to parse the whole file
+</span><span style="color:#75715e"></span>MsmsPipelineAnalysis analysis <span style="color:#f92672">=</span> PepXmlParser<span style="color:#f92672">.</span><span style="color:#a6e22e">parse</span><span style="color:#f92672">(</span>path<span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+</code></pre></div><p>And that's it. The whole file is parsed and stored in memory. Let's explore
 the contents of the file:</p>
-
-<pre><code class="language-java">// iterate over the parsed search results
-List&lt;MsmsRunSummary&gt; runSummaries = analysis.getMsmsRunSummary();
-for (MsmsRunSummary runSummary : runSummaries) {
-    List&lt;SpectrumQuery&gt; spectrumQueries = runSummary.getSpectrumQuery();
-    System.out.printf(&quot;Spectrum queries from MS/MS run summary: %s\n&quot;,
-                      runSummary.getBaseName());
-    for (SpectrumQuery sq : spectrumQueries) {
-        System.out.printf(&quot;Spec ID: [%s], RT: [%.2f], precursor neutral mass: [%.3f]\n&quot;,
-                          sq.getSpectrum(), sq.getRetentionTimeSec(), sq.getPrecursorNeutralMass());
-    }
-    System.out.printf(&quot;Done with MS/MS run summary: %s\n&quot;, runSummary.getBaseName());
-}
-</code></pre>
-
-<h2 id="parsing-huge-identification-files-more-efficiently">Parsing huge identification files more efficiently</h2>
-
-<p>Sometimes you might have PepXML files that are many gigabytes in size. This happens when you combine search results from multiple experiments and store them in a single output file. In that case, using <code>XMLStreamReader</code> class it is possible to first rewind the input stream to some large structural element of the underlying file, such as <code>&lt;msms_run_summary&gt;</code> in PepXML files.<br />
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">// iterate over the parsed search results
+</span><span style="color:#75715e"></span>List<span style="color:#f92672">&lt;</span>MsmsRunSummary<span style="color:#f92672">&gt;</span> runSummaries <span style="color:#f92672">=</span> analysis<span style="color:#f92672">.</span><span style="color:#a6e22e">getMsmsRunSummary</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+<span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span>MsmsRunSummary runSummary <span style="color:#f92672">:</span> runSummaries<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+    List<span style="color:#f92672">&lt;</span>SpectrumQuery<span style="color:#f92672">&gt;</span> spectrumQueries <span style="color:#f92672">=</span> runSummary<span style="color:#f92672">.</span><span style="color:#a6e22e">getSpectrumQuery</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+    System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">printf</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Spectrum queries from MS/MS run summary: %s\n&#34;</span><span style="color:#f92672">,</span>
+                      runSummary<span style="color:#f92672">.</span><span style="color:#a6e22e">getBaseName</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+    <span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span>SpectrumQuery sq <span style="color:#f92672">:</span> spectrumQueries<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">printf</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Spec ID: [%s], RT: [%.2f], precursor neutral mass: [%.3f]\n&#34;</span><span style="color:#f92672">,</span>
+                          sq<span style="color:#f92672">.</span><span style="color:#a6e22e">getSpectrum</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">,</span> sq<span style="color:#f92672">.</span><span style="color:#a6e22e">getRetentionTimeSec</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">,</span> sq<span style="color:#f92672">.</span><span style="color:#a6e22e">getPrecursorNeutralMass</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+    <span style="color:#f92672">}</span>
+    System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">printf</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Done with MS/MS run summary: %s\n&#34;</span><span style="color:#f92672">,</span> runSummary<span style="color:#f92672">.</span><span style="color:#a6e22e">getBaseName</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><h2 id="parsing-huge-identification-files-more-efficiently">Parsing huge identification files more efficiently</h2>
+<p>Sometimes you might have PepXML files that are many gigabytes in size. This happens when you combine search results from multiple experiments and store them in a single output file. In that case, using <code>XMLStreamReader</code> class it is possible to first rewind the input stream to some large structural element of the underlying file, such as <code>&lt;msms_run_summary&gt;</code> in PepXML files.<br>
 You will need to have an idea of how the files are organized for this to work in general though, explore the corresponding XML schemas for insights. The schemas can also be found in the sources of the library in file-specific sub-packages of <code>umich.ms.fileio.filetypes</code> in <code>resources</code> directories.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">String file <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;/path/to/some.pep.xml&#34;</span><span style="color:#f92672">;</span>
+Path path <span style="color:#f92672">=</span> Paths<span style="color:#f92672">.</span><span style="color:#a6e22e">get</span><span style="color:#f92672">(</span>file<span style="color:#f92672">)</span><span style="color:#f92672">;</span>
 
-<pre><code class="language-java">String file = &quot;/path/to/some.pep.xml&quot;;
-Path path = Paths.get(file);
+<span style="color:#66d9ef">try</span> <span style="color:#f92672">(</span>FileInputStream fis <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> FileInputStream<span style="color:#f92672">(</span>file<span style="color:#f92672">)</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+    <span style="color:#75715e">// we&#39;ll manually iterate over msmsRunSummaries - won&#39;t need so much memory
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">// at once for processing large files.
+</span><span style="color:#75715e"></span>    JAXBContext ctx <span style="color:#f92672">=</span> JAXBContext<span style="color:#f92672">.</span><span style="color:#a6e22e">newInstance</span><span style="color:#f92672">(</span>MsmsRunSummary<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+    Unmarshaller unmarshaller <span style="color:#f92672">=</span> ctx<span style="color:#f92672">.</span><span style="color:#a6e22e">createUnmarshaller</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
 
-try (FileInputStream fis = new FileInputStream(file)) {
-    // we'll manually iterate over msmsRunSummaries - won't need so much memory
-    // at once for processing large files.
-    JAXBContext ctx = JAXBContext.newInstance(MsmsRunSummary.class);
-    Unmarshaller unmarshaller = ctx.createUnmarshaller();
+    XMLInputFactory xif <span style="color:#f92672">=</span> XMLInputFactory<span style="color:#f92672">.</span><span style="color:#a6e22e">newFactory</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
 
-    XMLInputFactory xif = XMLInputFactory.newFactory();
-
-    StreamSource ss = new StreamSource(fis);
-    XMLStreamReader xsr = xif.createXMLStreamReader(ss);
+    StreamSource ss <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> StreamSource<span style="color:#f92672">(</span>fis<span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+    XMLStreamReader xsr <span style="color:#f92672">=</span> xif<span style="color:#f92672">.</span><span style="color:#a6e22e">createXMLStreamReader</span><span style="color:#f92672">(</span>ss<span style="color:#f92672">)</span><span style="color:#f92672">;</span>
 
 
-    while (advanceReaderToNextRunSummary(xsr)) {
-        // we've advanced to the next MsmsRunSummary in the file
-        long timeLo = System.nanoTime();
-        JAXBElement&lt;MsmsRunSummary&gt; unmarshalled = unmarshaller
-                .unmarshal(xsr, MsmsRunSummary.class);
-        long timeHi = System.nanoTime();
-        System.out.printf(&quot;Unmarshalling took %.4fms (%.2fs)\n&quot;,
-                          (timeHi-timeLo)/1e6, (timeHi-timeLo)/1e9);
-        MsmsRunSummary runSummary = unmarshalled.getValue();
-        if (runSummary.getSpectrumQuery().isEmpty()) {
-            String msg = String.format(&quot;Parsed msms_run_summary was empty for &quot; +
-                        &quot;'%s', summary base_name '%s'&quot;,
-                        path.toUri().toString(), runSummary.getBaseName());
-            System.out.println(msg);
-        }
-    }
-}
-</code></pre>
-
-<p>The secret ingredient here is the code to rewind the <code>XMLStreamReader</code>, the <code>advanceReaderToNextRunSummary(XMLStreamReader)</code> method.
+    <span style="color:#66d9ef">while</span> <span style="color:#f92672">(</span>advanceReaderToNextRunSummary<span style="color:#f92672">(</span>xsr<span style="color:#f92672">)</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+        <span style="color:#75715e">// we&#39;ve advanced to the next MsmsRunSummary in the file
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">long</span> timeLo <span style="color:#f92672">=</span> System<span style="color:#f92672">.</span><span style="color:#a6e22e">nanoTime</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+        JAXBElement<span style="color:#f92672">&lt;</span>MsmsRunSummary<span style="color:#f92672">&gt;</span> unmarshalled <span style="color:#f92672">=</span> unmarshaller
+                <span style="color:#f92672">.</span><span style="color:#a6e22e">unmarshal</span><span style="color:#f92672">(</span>xsr<span style="color:#f92672">,</span> MsmsRunSummary<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+        <span style="color:#66d9ef">long</span> timeHi <span style="color:#f92672">=</span> System<span style="color:#f92672">.</span><span style="color:#a6e22e">nanoTime</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">printf</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Unmarshalling took %.4fms (%.2fs)\n&#34;</span><span style="color:#f92672">,</span>
+                          <span style="color:#f92672">(</span>timeHi<span style="color:#f92672">-</span>timeLo<span style="color:#f92672">)</span><span style="color:#f92672">/</span>1e6<span style="color:#f92672">,</span> <span style="color:#f92672">(</span>timeHi<span style="color:#f92672">-</span>timeLo<span style="color:#f92672">)</span><span style="color:#f92672">/</span>1e9<span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+        MsmsRunSummary runSummary <span style="color:#f92672">=</span> unmarshalled<span style="color:#f92672">.</span><span style="color:#a6e22e">getValue</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>runSummary<span style="color:#f92672">.</span><span style="color:#a6e22e">getSpectrumQuery</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">.</span><span style="color:#a6e22e">isEmpty</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+            String msg <span style="color:#f92672">=</span> String<span style="color:#f92672">.</span><span style="color:#a6e22e">format</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Parsed msms_run_summary was empty for &#34;</span> <span style="color:#f92672">+</span>
+                        <span style="color:#e6db74">&#34;&#39;%s&#39;, summary base_name &#39;%s&#39;&#34;</span><span style="color:#f92672">,</span>
+                        path<span style="color:#f92672">.</span><span style="color:#a6e22e">toUri</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">.</span><span style="color:#a6e22e">toString</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">,</span> runSummary<span style="color:#f92672">.</span><span style="color:#a6e22e">getBaseName</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+            System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>msg<span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+        <span style="color:#f92672">}</span>
+    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><p>The secret ingredient here is the code to rewind the <code>XMLStreamReader</code>, the <code>advanceReaderToNextRunSummary(XMLStreamReader)</code> method.
 In this case the example assumes we try to parse multiple msms_run_summary tags one by one from the file.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">advanceReaderToNextRunSummary</span><span style="color:#f92672">(</span>XMLStreamReader xsr<span style="color:#f92672">)</span>
+    <span style="color:#66d9ef">throws</span> XMLStreamException <span style="color:#f92672">{</span>
+  <span style="color:#66d9ef">do</span> <span style="color:#f92672">{</span>
+      <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>xsr<span style="color:#f92672">.</span><span style="color:#a6e22e">next</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span> <span style="color:#f92672">=</span><span style="color:#f92672">=</span> XMLStreamConstants<span style="color:#f92672">.</span><span style="color:#a6e22e">END_DOCUMENT</span><span style="color:#f92672">)</span>
+          <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span><span style="color:#f92672">;</span>
+  <span style="color:#f92672">}</span> <span style="color:#66d9ef">while</span> <span style="color:#f92672">(</span><span style="color:#f92672">!</span><span style="color:#f92672">(</span>xsr<span style="color:#f92672">.</span><span style="color:#a6e22e">isStartElement</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span> <span style="color:#f92672">&amp;</span><span style="color:#f92672">&amp;</span> xsr<span style="color:#f92672">.</span><span style="color:#a6e22e">getLocalName</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">.</span><span style="color:#a6e22e">equals</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;msms_run_summary&#34;</span><span style="color:#f92672">)</span><span style="color:#f92672">)</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
 
-<pre><code class="language-java">private static boolean advanceReaderToNextRunSummary(XMLStreamReader xsr)
-    throws XMLStreamException {
-  do {
-      if (xsr.next() == XMLStreamConstants.END_DOCUMENT)
-          return false;
-  } while (!(xsr.isStartElement() &amp;&amp; xsr.getLocalName().equals(&quot;msms_run_summary&quot;)));
+  <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">true</span><span style="color:#f92672">;</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><p>And here are all the import statements for the last example:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#f92672">import</span> umich.ms.fileio.filetypes.pepxml.PepXmlParser<span style="color:#f92672">;</span>
+<span style="color:#f92672">import</span> umich.ms.fileio.filetypes.pepxml.jaxb.standard.MsmsPipelineAnalysis<span style="color:#f92672">;</span>
+<span style="color:#f92672">import</span> umich.ms.fileio.filetypes.pepxml.jaxb.standard.MsmsRunSummary<span style="color:#f92672">;</span>
 
-  return true;
-}
-</code></pre>
-
-<p>And here are all the import statements for the last example:</p>
-
-<pre><code class="language-java">import umich.ms.fileio.filetypes.pepxml.PepXmlParser;
-import umich.ms.fileio.filetypes.pepxml.jaxb.standard.MsmsPipelineAnalysis;
-import umich.ms.fileio.filetypes.pepxml.jaxb.standard.MsmsRunSummary;
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamConstants;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
-import javax.xml.transform.stream.StreamSource;
-import java.io.FileInputStream;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-</code></pre>
-
+<span style="color:#f92672">import</span> javax.xml.bind.JAXBContext<span style="color:#f92672">;</span>
+<span style="color:#f92672">import</span> javax.xml.bind.JAXBElement<span style="color:#f92672">;</span>
+<span style="color:#f92672">import</span> javax.xml.bind.JAXBException<span style="color:#f92672">;</span>
+<span style="color:#f92672">import</span> javax.xml.bind.Unmarshaller<span style="color:#f92672">;</span>
+<span style="color:#f92672">import</span> javax.xml.stream.XMLInputFactory<span style="color:#f92672">;</span>
+<span style="color:#f92672">import</span> javax.xml.stream.XMLStreamConstants<span style="color:#f92672">;</span>
+<span style="color:#f92672">import</span> javax.xml.stream.XMLStreamException<span style="color:#f92672">;</span>
+<span style="color:#f92672">import</span> javax.xml.stream.XMLStreamReader<span style="color:#f92672">;</span>
+<span style="color:#f92672">import</span> javax.xml.transform.stream.StreamSource<span style="color:#f92672">;</span>
+<span style="color:#f92672">import</span> java.io.FileInputStream<span style="color:#f92672">;</span>
+<span style="color:#f92672">import</span> java.nio.file.Path<span style="color:#f92672">;</span>
+<span style="color:#f92672">import</span> java.nio.file.Paths<span style="color:#f92672">;</span>
+</code></pre></div>
 
 			<aside class="copyright" role="note">
 				
-				&copy; 2018 Dmitry Avtonomov. Released under the Apache 2.0 license. &ndash;
+				&copy; 2020 Dmitry Avtonomov. Released under the Apache 2.0 license. &ndash;
 				
 			</aside>
 
@@ -582,7 +562,7 @@ import java.nio.file.Paths;
 <nav class="pagination" aria-label="Footer">
   <div class="previous">
   
-      <a href="http://batmass.org/tutorial/data-access-layer/" title="Data access library (LC/MS files and simple Peptide ID examples)">
+      <a href="http://batmass.org/tutorial/overlay-peptide-ids-on-map2d/" title="Overlay peptide IDs on 2D map">
         <span class="direction">
           Previous
         </span>
@@ -592,7 +572,7 @@ import java.nio.file.Paths;
           </div>
           <div class="stretch">
             <div class="title">
-              Data access library (LC/MS files and simple Peptide ID examples)
+              Overlay peptide IDs on 2D map
             </div>
           </div>
         </div>
@@ -602,14 +582,14 @@ import java.nio.file.Paths;
 
   <div class="next">
   
-      <a href="http://batmass.org/tutorial/overlay-peptide-ids-on-map2d/" title="Overlay peptide IDs on 2D map">
+      <a href="http://batmass.org/tutorial/data-access-layer/" title="Data access library (LC/MS files and simple Peptide ID examples)">
         <span class="direction">
           Next
         </span>
         <div class="page">
           <div class="stretch">
             <div class="title">
-              Overlay peptide IDs on 2D map
+              Data access library (LC/MS files and simple Peptide ID examples)
             </div>
           </div>
           <div class="button button-next" role="button" aria-label="Next">

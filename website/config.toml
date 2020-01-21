@@ -79,7 +79,7 @@ googleAnalytics = "UA-5572974-10"
 	weight = 20
 
 [[menu.main]]
-	name   = "MSFTBX: Data Access Library"
+	name   = "Data Access Library: MSFTBX"
 	url    = "/data-access-lib/"
 	weight = 30
 

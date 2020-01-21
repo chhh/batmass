@@ -9,7 +9,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1">
     <title>Developing the first plugin - BatMass</title>
-    <meta name="generator" content="Hugo 0.40.3" />
+    <meta name="generator" content="Hugo 0.62.2" />
 
     
     <meta name="description" content="Mass spectrometry data visualization">
@@ -229,9 +229,9 @@
 
 
 
-<a  title="MSFTBX: Data Access Library" href="http://batmass.org/data-access-lib/">
+<a  title="Data Access Library: MSFTBX" href="http://batmass.org/data-access-lib/">
 	
-	MSFTBX: Data Access Library
+	Data Access Library: MSFTBX
 </a>
 
 
@@ -461,11 +461,8 @@
 
 			<h1>Developing the first plugin </h1>
 
-			
-
-<p>In this guide we will develop a new module for BatMass that will add support for a new file format for detected LC/MS features.<br />
+			<p>In this guide we will develop a new module for BatMass that will add support for a new file format for detected LC/MS features.<br>
 We will need to:</p>
-
 <ul>
 <li><a href="#create-a-new-netbeans-module">Create a new NetBeans module</a></li>
 <li><a href="#create-a-parser-for-the-file">Create a parser for the file</a></li>
@@ -473,607 +470,501 @@ We will need to:</p>
 <li><a href="#adding-capabilities-to-the-node">Add support for importing the file into a project</a></li>
 <li><a href="#making-our-data-recognizable-by-table-and-map2d-viewers">Add basic support for viewing the data in tabular viewer and overlay of data over Map2D</a></li>
 </ul>
-
-<p>The prerequisite for this tutorial is that you have the development environment set up. If you don&rsquo;t have that yet, make sure to go through <a href="http://batmass.org/tutorial/setting-up-development-environment/">the setting up dev environment tutorial</a>.</p>
-
+<p>The prerequisite for this tutorial is that you have the development environment set up. If you don't have that yet, make sure to go through <a href="http://batmass.org/tutorial/setting-up-development-environment/">the setting up dev environment tutorial</a>.</p>
 <p>This tutorial might be a little too much if you had no exposure to the NetBeans platform development, so I also strongly recommend that you visit <a href="https://netbeans.org/features/platform/all-docs.html">the NetBeans platform documentation website</a> and at least walk through <a href="https://platform.netbeans.org/tutorials/nbm-quick-start.html">NetBeans Platform Quick Start tutorial</a> it provides plus read <a href="http://wiki.netbeans.org/NbmIdioms#NetBeans_APIs_in_a_Nutshell">this document</a>. The documentation website has a lot of tutorials covering many aspects of the platform in great detail.</p>
-
-<p>Also recommended are: <a href="https://platform.netbeans.org/tutorials/nbm-runtime-container.html">NetBeans Platform Runtime Container Tutorial</a> - so you&rsquo;ll know the anatomy of a platform application better and the set of 10 videos links to which can be found <a href="https://platform.netbeans.org/tutorials/nbm-10-top-apis.html">here</a>.</p>
-
+<p>Also recommended are: <a href="https://platform.netbeans.org/tutorials/nbm-runtime-container.html">NetBeans Platform Runtime Container Tutorial</a> - so you'll know the anatomy of a platform application better and the set of 10 videos links to which can be found <a href="https://platform.netbeans.org/tutorials/nbm-10-top-apis.html">here</a>.</p>
 <h2 id="create-a-new-netbeans-module">Create a new NetBeans module</h2>
-
 <p>Open <code>BatMass</code> module suite in NetBeans, expand its node in Project Explorer, right click the <code>Modules</code> node, click <code>Add New</code>. Follow the instructions in the wizard to create a new module. Give it a descriptive, unique name and <em>Code Name Base</em>, the code name base will be used as the base package of all the source files. All <em>BatMass</em> modules use <code>umich.ms.batmass</code> as the base-name and add suffixes for different modules, e.g. <code>umich.ms.batmass.filesupport</code> for the <em>File Support</em> module. This is needed to avoid class-name clashes.</p>
-
-<p><img src="http://batmass.org/images/developing-first-plugin/add-new-module-01.png" alt="Add new module" />
-<img src="http://batmass.org/images/developing-first-plugin/add-new-module-02.png" alt="Give the module a name" />
-<img src="http://batmass.org/images/developing-first-plugin/add-new-module-03.png" alt="Provide code name base" /></p>
-
+<p><img src="http://batmass.org/images/developing-first-plugin/add-new-module-01.png" alt="Add new module">
+<img src="http://batmass.org/images/developing-first-plugin/add-new-module-02.png" alt="Give the module a name">
+<img src="http://batmass.org/images/developing-first-plugin/add-new-module-03.png" alt="Provide code name base"></p>
 <p>Add 3 packages <code>data</code>, <code>model</code> and <code>providers</code>.</p>
-
 <ul>
 <li>The <code>model</code> package will contain our java model for the data in the file.</li>
 <li>The <code>data</code> package will contain the wrappers which will adapt the raw data model to the format suitable for viewers.</li>
 <li>The <code>providers</code> package will hold the necessary infrastructure to hook into the project system - it will give a way to import existing files into the project, provide an icon for the node, etc.</li>
 </ul>
-
 <h2 id="create-a-parser-for-the-file">Create a parser for the file</h2>
-
-<p>We will use DIA-Umpire Signal Extraction text output file as an example. It&rsquo;s a simple delimited text format with the first line being column headers, the rest being data stored as text. Even though these are simple text delimited files, we will not be using a library for parsing, instead we&rsquo;ll provide a fast home-grown reader. We&rsquo;ll be using existing helper classes from other <em>BatMass</em> modules for that.</p>
-
+<p>We will use DIA-Umpire Signal Extraction text output file as an example. It's a simple delimited text format with the first line being column headers, the rest being data stored as text. Even though these are simple text delimited files, we will not be using a library for parsing, instead we'll provide a fast home-grown reader. We'll be using existing helper classes from other <em>BatMass</em> modules for that.</p>
 <p>To use functionality provided by some NetBeans module from another module two requirements must be met:</p>
-
 <ul>
 <li>The module providing the functionality should declare the package it wants to expose to the outside world as public API</li>
 <li>The module that needs to use that functionality must declare a dependency on the providing module. For code completion to work as expected, first compile the provider module.</li>
 </ul>
-
 <h3 id="providing-public-api-from-modules">Providing public API from modules</h3>
-
-<p>Expand <code>BatMass -&gt; Modules</code> node in the project explorer, open <code>FileSupport Core (BatMass)</code> module by double clicking on it. In <em>Source Packages</em> node navigate to <code>umich.ms.batmass.filesupport.core.util</code> package. We will be using the <code>DelimitedFiles</code> class. This package is already declared public, but for the learning purposes let&rsquo;s go ahead and check that. Right click <code>FileSupport Core (BatMass)</code> module in the Project Explorer and go to <code>Properties -&gt; API Versioning</code>. You should see that checkboxes of all packages but one are already selected, these packages will be available to other modules if they set dependency on the <code>FileSupport Core (BatMass)</code> module. If you change selection here, recompile the module by right clicking the module node, and running <em>Build</em> (<em>Clean Build</em> is not necessary).</p>
-
-<p><img src="http://batmass.org/images/developing-first-plugin/expose-public-api-from-module.png" alt="Expose public API from module" /></p>
-
+<p>Expand <code>BatMass -&gt; Modules</code> node in the project explorer, open <code>FileSupport Core (BatMass)</code> module by double clicking on it. In <em>Source Packages</em> node navigate to <code>umich.ms.batmass.filesupport.core.util</code> package. We will be using the <code>DelimitedFiles</code> class. This package is already declared public, but for the learning purposes let's go ahead and check that. Right click <code>FileSupport Core (BatMass)</code> module in the Project Explorer and go to <code>Properties -&gt; API Versioning</code>. You should see that checkboxes of all packages but one are already selected, these packages will be available to other modules if they set dependency on the <code>FileSupport Core (BatMass)</code> module. If you change selection here, recompile the module by right clicking the module node, and running <em>Build</em> (<em>Clean Build</em> is not necessary).</p>
+<p><img src="http://batmass.org/images/developing-first-plugin/expose-public-api-from-module.png" alt="Expose public API from module"></p>
 <h3 id="setting-another-module-as-a-dependency">Setting another module as a dependency</h3>
-
-<p>Now right click the newly created <code>DIA Umpire SE Features</code> module, go to <code>Properties -&gt; Libraries</code>. In the <code>Module Dependencies</code> tab click <code>Add Dependency</code>. In the search bar at the top start typing &ldquo;FileSupport&rdquo;, it should find 2 modules: &ldquo;FileSupport (BatMass)&rdquo; and &ldquo;FileSupport Core (BatMass)&rdquo;. We&rsquo;re interested in the second one, so select it and click OK, you should now see it in the dependencies list.</p>
-
-<p><img src="http://batmass.org/images/developing-first-plugin/search-for-module-dependency.png" alt="Search for module dependency" />
-<img src="http://batmass.org/images/developing-first-plugin/module-dependency-added.png" alt="Module dependency added" /></p>
-
+<p>Now right click the newly created <code>DIA Umpire SE Features</code> module, go to <code>Properties -&gt; Libraries</code>. In the <code>Module Dependencies</code> tab click <code>Add Dependency</code>. In the search bar at the top start typing &ldquo;FileSupport&rdquo;, it should find 2 modules: &ldquo;FileSupport (BatMass)&rdquo; and &ldquo;FileSupport Core (BatMass)&quot;. We're interested in the second one, so select it and click OK, you should now see it in the dependencies list.</p>
+<p><img src="http://batmass.org/images/developing-first-plugin/search-for-module-dependency.png" alt="Search for module dependency">
+<img src="http://batmass.org/images/developing-first-plugin/module-dependency-added.png" alt="Module dependency added"></p>
 <p>We should now be able to use <code>umich.ms.batmass.filesupport.core.util.DelimitedFiles</code> in our module.</p>
-
-<p>It might seem like a lot of work at first, but as you get used to it, it&rsquo;s not harder than adding dependencies in maven, for example. It is also possible to create maven-based NetBeans modules, but we will not be covering that in this tutorial and this is not used in BatMass.</p>
-
+<p>It might seem like a lot of work at first, but as you get used to it, it's not harder than adding dependencies in maven, for example. It is also possible to create maven-based NetBeans modules, but we will not be covering that in this tutorial and this is not used in BatMass.</p>
 <h3 id="model-the-data">Model the data</h3>
-
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>You can skip that part of this section if you like. It just describes the usual Java stuff of reading a file and parsing it into some POJO (Plain Old Java Object). This does not have to be done the way described here.</p>
 </div>
+<p>You can find a sample Umpire Signal Extraction text output file in the folder <em>DiaUmpireSeSeFeatures/resources</em> inside <em>BatMass</em> project. We will not be using all the columns from the file, only a few. Here's our model class:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">UmpireSeIsoCluster</span> <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">double</span> rtLo<span style="color:#f92672">;</span>
+    <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">double</span> rtHi<span style="color:#f92672">;</span>
+    <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">int</span> scanNumLo<span style="color:#f92672">;</span>
+    <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">int</span> scanNumHi<span style="color:#f92672">;</span>
+    <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">int</span> charge<span style="color:#f92672">;</span>
+    <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">double</span><span style="color:#f92672">[</span><span style="color:#f92672">]</span> mz <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#66d9ef">double</span><span style="color:#f92672">[</span>4<span style="color:#f92672">]</span><span style="color:#f92672">;</span>
+    <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">double</span> peakHeight<span style="color:#f92672">;</span>
+    <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">double</span> peakArea<span style="color:#f92672">;</span>
 
-<p>You can find a sample Umpire Signal Extraction text output file in the folder <em>DiaUmpireSeSeFeatures/resources</em> inside <em>BatMass</em> project. We will not be using all the columns from the file, only a few. Here&rsquo;s our model class:</p>
+    <span style="color:#75715e">/**
+</span><span style="color:#75715e">     * Bare minimum info required to plot something.
+</span><span style="color:#75715e">     * @param rtLo
+</span><span style="color:#75715e">     * @param rtHi
+</span><span style="color:#75715e">     * @param mz
+</span><span style="color:#75715e">     */</span>
+    <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">UmpireSeIsoCluster</span><span style="color:#f92672">(</span><span style="color:#66d9ef">double</span> rtLo<span style="color:#f92672">,</span> <span style="color:#66d9ef">double</span> rtHi<span style="color:#f92672">,</span> <span style="color:#66d9ef">double</span> mz<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">rtLo</span> <span style="color:#f92672">=</span> rtLo<span style="color:#f92672">;</span>
+        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">rtHi</span> <span style="color:#f92672">=</span> rtHi<span style="color:#f92672">;</span>
+        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">mz</span><span style="color:#f92672">[</span>0<span style="color:#f92672">]</span> <span style="color:#f92672">=</span> mz<span style="color:#f92672">;</span>
+    <span style="color:#f92672">}</span>
 
-<pre><code class="language-java">public class UmpireSeIsoCluster {
-    protected double rtLo;
-    protected double rtHi;
-    protected int scanNumLo;
-    protected int scanNumHi;
-    protected int charge;
-    protected double[] mz = new double[4];
-    protected double peakHeight;
-    protected double peakArea;
+    <span style="color:#75715e">// ... getters and setters
+</span><span style="color:#75715e"></span><span style="color:#f92672">}</span>
+</code></pre></div><p>We will have a factory class, that knows how to parse the file, I will omit the implementation of <code>create(Path)</code> method.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">/**
+</span><span style="color:#75715e"> * A simple array-list storage for parsed LCMS features from Umpire PeakCluster csv files.
+</span><span style="color:#75715e"> * @author Dmitry Avtonomov
+</span><span style="color:#75715e"> */</span>
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">UmpireSeIsoClusters</span> <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> String COL_NAME_RT_LO <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;StartRT&#34;</span><span style="color:#f92672">;</span>
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> String COL_NAME_RT_HI <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;EndRT&#34;</span><span style="color:#f92672">;</span>
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> String COL_NAME_SCAN_NUM_LO <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;StartScan&#34;</span><span style="color:#f92672">;</span>
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> String COL_NAME_SCAN_NUM_HI <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;EndScan&#34;</span><span style="color:#f92672">;</span>
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> String COL_NAME_CHARGE <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Charge&#34;</span><span style="color:#f92672">;</span>
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> String COL_NAME_MZ1 <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;mz1&#34;</span><span style="color:#f92672">;</span>
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> String COL_NAME_MZ2 <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;mz2&#34;</span><span style="color:#f92672">;</span>
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> String COL_NAME_MZ3 <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;mz3&#34;</span><span style="color:#f92672">;</span>
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> String COL_NAME_MZ4 <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;mz4&#34;</span><span style="color:#f92672">;</span>
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> String COL_NAME_PEAK_HEIGHT <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;PeakHeight1&#34;</span><span style="color:#f92672">;</span>
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> String COL_NAME_PEAK_AREA <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;PeakArea1&#34;</span><span style="color:#f92672">;</span>
 
-    /**
-     * Bare minimum info required to plot something.
-     * @param rtLo
-     * @param rtHi
-     * @param mz
-     */
-    public UmpireSeIsoCluster(double rtLo, double rtHi, double mz) {
-        this.rtLo = rtLo;
-        this.rtHi = rtHi;
-        this.mz[0] = mz;
-    }
+    <span style="color:#66d9ef">protected</span> List<span style="color:#f92672">&lt;</span>UmpireSeIsoCluster<span style="color:#f92672">&gt;</span> clusters<span style="color:#f92672">;</span>
 
-    // ... getters and setters
-}
-</code></pre>
+    <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">UmpireSeIsoClusters</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+        clusters <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ArrayList<span style="color:#f92672">&lt;</span><span style="color:#f92672">&gt;</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+    <span style="color:#f92672">}</span>
 
-<p>We will have a factory class, that knows how to parse the file, I will omit the implementation of <code>create(Path)</code> method.</p>
+    <span style="color:#66d9ef">public</span> List<span style="color:#f92672">&lt;</span>UmpireSeIsoCluster<span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">getClusters</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+        <span style="color:#66d9ef">return</span> clusters<span style="color:#f92672">;</span>
+    <span style="color:#f92672">}</span>
 
-<pre><code class="language-java">/**
- * A simple array-list storage for parsed LCMS features from Umpire PeakCluster csv files.
- * @author Dmitry Avtonomov
- */
-public class UmpireSeIsoClusters {
-    public static String COL_NAME_RT_LO = &quot;StartRT&quot;;
-    public static String COL_NAME_RT_HI = &quot;EndRT&quot;;
-    public static String COL_NAME_SCAN_NUM_LO = &quot;StartScan&quot;;
-    public static String COL_NAME_SCAN_NUM_HI = &quot;EndScan&quot;;
-    public static String COL_NAME_CHARGE = &quot;Charge&quot;;
-    public static String COL_NAME_MZ1 = &quot;mz1&quot;;
-    public static String COL_NAME_MZ2 = &quot;mz2&quot;;
-    public static String COL_NAME_MZ3 = &quot;mz3&quot;;
-    public static String COL_NAME_MZ4 = &quot;mz4&quot;;
-    public static String COL_NAME_PEAK_HEIGHT = &quot;PeakHeight1&quot;;
-    public static String COL_NAME_PEAK_AREA = &quot;PeakArea1&quot;;
-
-    protected List&lt;UmpireSeIsoCluster&gt; clusters;
-
-    public UmpireSeIsoClusters() {
-        clusters = new ArrayList&lt;&gt;();
-    }
-
-    public List&lt;UmpireSeIsoCluster&gt; getClusters() {
-        return clusters;
-    }
-
-    /**
-     * Factory method to create UmpireSeIsoClusters object from a file.
-     * @param path the file to parse data from
-     * @return
-     */
-    public static UmpireSeIsoClusters create(Path path) throws IOException {
-        ...
-    }
-}
-</code></pre>
-
-<h2 id="adding-support-for-the-new-file-type">Adding support for the new file-type</h2>
-
-<p>We&rsquo;ll be working in the <code>providers</code> package.<br />
-You can find a working example of what we&rsquo;re about to create in package <code>umich.ms.batmass.filesupport.files.types.agilent.cef.providers</code> of <code>FileSupport (BatMass)</code> module.</p>
-
+    <span style="color:#75715e">/**
+</span><span style="color:#75715e">     * Factory method to create UmpireSeIsoClusters object from a file.
+</span><span style="color:#75715e">     * @param path the file to parse data from
+</span><span style="color:#75715e">     * @return
+</span><span style="color:#75715e">     */</span>
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> UmpireSeIsoClusters <span style="color:#a6e22e">create</span><span style="color:#f92672">(</span>Path path<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> IOException <span style="color:#f92672">{</span>
+        <span style="color:#f92672">.</span><span style="color:#f92672">.</span><span style="color:#f92672">.</span>
+    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><h2 id="adding-support-for-the-new-file-type">Adding support for the new file-type</h2>
+<p>We'll be working in the <code>providers</code> package.<br>
+You can find a working example of what we're about to create in package <code>umich.ms.batmass.filesupport.files.types.agilent.cef.providers</code> of <code>FileSupport (BatMass)</code> module.</p>
 <p>The first thing to do is to make the system recognize the new files.</p>
-
 <h3 id="registering-a-typeresolver">Registering a TypeResolver</h3>
-
-<p>To make the system recognize new files we need to register an implementation of <code>umich.ms.batmass.filesupport.core.spi.filetypes.FileTypeResolver</code> interface using <code>@FileTypeResolverRegistration</code> annotation. To simplify things there&rsquo;s an abstract class <code>AbstractFileTypeResolver</code>, so we&rsquo;ll use that.</p>
-
-<p>Create a class <code>UmpireSeTypeResolver</code> extending <code>AbstractFileTypeResolver</code>. Then copy the contents of <code>AgilentCefTypeResolver</code> for simplicity and modify as needed. After copy-pasting you&rsquo;ll notice that some parts are underlined with a red wavy line (specifically <code>@StaticResource</code>, <code>ImageUtilities</code>). Those two come from other NetBeans modules provided by the NetBeans platform, so we&rsquo;ll need to add dependencies. There is a simpler way, rather than going to the <em>Properties</em> of your module. Place the cursor on the line with an error and press <kbd>Alt+Enter</kbd> and select <code>Search module dependency for ...</code>, in this case there will be a single search hit for both errors: &ldquo;Utilities API&rdquo; and &ldquo;Common Annotations&rdquo;.</p>
-
+<p>To make the system recognize new files we need to register an implementation of <code>umich.ms.batmass.filesupport.core.spi.filetypes.FileTypeResolver</code> interface using <code>@FileTypeResolverRegistration</code> annotation. To simplify things there's an abstract class <code>AbstractFileTypeResolver</code>, so we'll use that.</p>
+<p>Create a class <code>UmpireSeTypeResolver</code> extending <code>AbstractFileTypeResolver</code>. Then copy the contents of <code>AgilentCefTypeResolver</code> for simplicity and modify as needed. After copy-pasting you'll notice that some parts are underlined with a red wavy line (specifically <code>@StaticResource</code>, <code>ImageUtilities</code>). Those two come from other NetBeans modules provided by the NetBeans platform, so we'll need to add dependencies. There is a simpler way, rather than going to the <em>Properties</em> of your module. Place the cursor on the line with an error and press <kbd>Alt+Enter</kbd> and select <code>Search module dependency for ...</code>, in this case there will be a single search hit for both errors: &ldquo;Utilities API&rdquo; and &ldquo;Common Annotations&rdquo;.</p>
 <p>The <code>@StaticResource</code> annotation is particularly useful - it checks if a static resource can be found at the provided path. If you copy-pasted everything from <code>AgilentCefTypeResolver</code>, then after adding the correct dependency the line</p>
-
-<pre><code class="language-java">@StaticResource
-public static final String ICON_BASE_PATH = &quot;umich/ms/batmass/filesupport/resources/features_16.png&quot;;
-</code></pre>
-
-<p>should still be underlined with the error saying that it &ldquo;cannot find resource&rdquo;.<br />
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@StaticResource</span>
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> String ICON_BASE_PATH <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;umich/ms/batmass/filesupport/resources/features_16.png&#34;</span><span style="color:#f92672">;</span>
+</code></pre></div><p>should still be underlined with the error saying that it &ldquo;cannot find resource&rdquo;.<br>
 Create a new package <code>resources</code> under <code>umich.ms.batmass.diaumpire</code> and put some 16x16 pixels icon there. You can copy <code>features_16.png</code> from <code>umich.ms.batmass.filesupport.resources</code> (which is in <code>FileSupport (BatMass)</code> module) and change the <code>ICON_BASE_PATH</code> to the correct path to the new icon. Fix other things, like the FileFilter, which will be used in the FileChooser when the user imports the file in.</p>
+<p>I ended up with the following class, everything should be clear to you, except maybe <code>BMFileFilter</code> and <code>@FileTypeResolverRegistration</code>. I used <code>FileFilterUtils.suffixFileFilter(EXT, IOCase.INSENSITIVE)</code> instead of an extension filter, because we want to match the files that end in &ldquo;_PeakCluster.csv&rdquo;. You'll also need to add a dependencies on &ldquo;Lib Apache Commons IO&rdquo; to make this work. We'll get to that <code>@FileTypeResolverRegistration</code> thing right after the code listing:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@FileTypeResolverRegistration</span><span style="color:#f92672">(</span>
+        fileCategory <span style="color:#f92672">=</span> UmpireSeTypeResolver<span style="color:#f92672">.</span><span style="color:#a6e22e">CATEGORY</span><span style="color:#f92672">,</span>
+        fileType <span style="color:#f92672">=</span> UmpireSeTypeResolver<span style="color:#f92672">.</span><span style="color:#a6e22e">TYPE</span>
+<span style="color:#f92672">)</span>
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">UmpireSeTypeResolver</span> <span style="color:#66d9ef">extends</span> AbstractFileTypeResolver <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> UmpireSeTypeResolver INSTANCE <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> UmpireSeTypeResolver<span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
 
-<p>I ended up with the following class, everything should be clear to you, except maybe <code>BMFileFilter</code> and <code>@FileTypeResolverRegistration</code>. I used <code>FileFilterUtils.suffixFileFilter(EXT, IOCase.INSENSITIVE)</code> instead of an extension filter, because we want to match the files that end in &ldquo;_PeakCluster.csv&rdquo;. You&rsquo;ll also need to add a dependencies on &ldquo;Lib Apache Commons IO&rdquo; to make this work. We&rsquo;ll get to that <code>@FileTypeResolverRegistration</code> thing right after the code listing:</p>
+    <span style="color:#a6e22e">@StaticResource</span>
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> String ICON_BASE_PATH <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;umich/ms/batmass/diaumpire/resources/features_16.png&#34;</span><span style="color:#f92672">;</span>
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> ImageIcon ICON <span style="color:#f92672">=</span> ImageUtilities<span style="color:#f92672">.</span><span style="color:#a6e22e">loadImageIcon</span><span style="color:#f92672">(</span>ICON_BASE_PATH<span style="color:#f92672">,</span> <span style="color:#66d9ef">false</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
 
-<pre><code class="language-java">@FileTypeResolverRegistration(
-        fileCategory = UmpireSeTypeResolver.CATEGORY,
-        fileType = UmpireSeTypeResolver.TYPE
-)
-public class UmpireSeTypeResolver extends AbstractFileTypeResolver {
-    private static final UmpireSeTypeResolver INSTANCE = new UmpireSeTypeResolver();
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> String CATEGORY <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;features&#34;</span><span style="color:#f92672">;</span>
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> String TYPE <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;umpire-se&#34;</span><span style="color:#f92672">;</span>
+    <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> String EXT <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;_PeakCluster.csv&#34;</span><span style="color:#f92672">;</span>
+    <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> BMFileFilter FILE_FILTER <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> UmpireSeSeFileFilter<span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+    <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> String DESCRIPTION <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;DIA-Umpire Signal Extraction peak clusters&#34;</span><span style="color:#f92672">;</span>
 
-    @StaticResource
-    public static final String ICON_BASE_PATH = &quot;umich/ms/batmass/diaumpire/resources/features_16.png&quot;;
-    public static final ImageIcon ICON = ImageUtilities.loadImageIcon(ICON_BASE_PATH, false);
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> UmpireSeTypeResolver <span style="color:#a6e22e">getInstance</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+        <span style="color:#66d9ef">return</span> INSTANCE<span style="color:#f92672">;</span>
+    <span style="color:#f92672">}</span>
 
-    public static final String CATEGORY = &quot;features&quot;;
-    public static final String TYPE = &quot;umpire-se&quot;;
-    protected static final String EXT = &quot;_PeakCluster.csv&quot;;
-    protected static final BMFileFilter FILE_FILTER = new UmpireSeSeFileFilter();
-    protected static final String DESCRIPTION = &quot;DIA-Umpire Signal Extraction peak clusters&quot;;
+    <span style="color:#a6e22e">@Override</span>
+    <span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">getCategory</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+        <span style="color:#66d9ef">return</span> CATEGORY<span style="color:#f92672">;</span>
+    <span style="color:#f92672">}</span>
 
-    public static UmpireSeTypeResolver getInstance() {
-        return INSTANCE;
-    }
+    <span style="color:#a6e22e">@Override</span>
+    <span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">getType</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+        <span style="color:#66d9ef">return</span> TYPE<span style="color:#f92672">;</span>
+    <span style="color:#f92672">}</span>
 
-    @Override
-    public String getCategory() {
-        return CATEGORY;
-    }
+    <span style="color:#a6e22e">@Override</span>
+    <span style="color:#66d9ef">public</span> ImageIcon <span style="color:#a6e22e">getIcon</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+        <span style="color:#66d9ef">return</span> ICON<span style="color:#f92672">;</span>
+    <span style="color:#f92672">}</span>
 
-    @Override
-    public String getType() {
-        return TYPE;
-    }
+    <span style="color:#a6e22e">@Override</span>
+    <span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">getIconPath</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+        <span style="color:#66d9ef">return</span> ICON_BASE_PATH<span style="color:#f92672">;</span>
+    <span style="color:#f92672">}</span>
 
-    @Override
-    public ImageIcon getIcon() {
-        return ICON;
-    }
+    <span style="color:#a6e22e">@Override</span>
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">isFileOnly</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">true</span><span style="color:#f92672">;</span>
+    <span style="color:#f92672">}</span>
 
-    @Override
-    public String getIconPath() {
-        return ICON_BASE_PATH;
-    }
+    <span style="color:#a6e22e">@Override</span>
+    <span style="color:#66d9ef">public</span> BMFileFilter <span style="color:#a6e22e">getFileFilter</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+        <span style="color:#66d9ef">return</span> FILE_FILTER<span style="color:#f92672">;</span>
+    <span style="color:#f92672">}</span>
 
-    @Override
-    public boolean isFileOnly() {
-        return true;
-    }
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">UmpireSeSeFileFilter</span> <span style="color:#66d9ef">extends</span> BMFileFilter <span style="color:#f92672">{</span>
 
-    @Override
-    public BMFileFilter getFileFilter() {
-        return FILE_FILTER;
-    }
+        <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">UmpireSeSeFileFilter</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+            <span style="color:#66d9ef">super</span><span style="color:#f92672">(</span>FileFilterUtils<span style="color:#f92672">.</span><span style="color:#a6e22e">suffixFileFilter</span><span style="color:#f92672">(</span>EXT<span style="color:#f92672">,</span> IOCase<span style="color:#f92672">.</span><span style="color:#a6e22e">INSENSITIVE</span><span style="color:#f92672">)</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+        <span style="color:#f92672">}</span>
 
-    public static class UmpireSeSeFileFilter extends BMFileFilter {
+        <span style="color:#a6e22e">@Override</span>
+        <span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">getShortDescription</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+            <span style="color:#66d9ef">return</span> EXT<span style="color:#f92672">;</span>
+        <span style="color:#f92672">}</span>
 
-        public UmpireSeSeFileFilter() {
-            super(FileFilterUtils.suffixFileFilter(EXT, IOCase.INSENSITIVE));
-        }
-
-        @Override
-        public String getShortDescription() {
-            return EXT;
-        }
-
-        @Override
-        public String getDescription() {
-            return DESCRIPTION;
-        }
-    }
-}
-</code></pre>
-
-<h3 id="filetyperesolverregistration">@FileTypeResolverRegistration</h3>
-
-<p>Now as promised we move on to <code>@FileTypeResolverRegistration</code>. This annotation is defined in <code>FileSupport Core (BatMass)</code> module. What it does is it registers an instance of <code>FileTypeResolver</code> in the &lsquo;layer&rsquo; file. If you&rsquo;ve read/watched basic info about the NetBeans platform linked to in the beginning of this page, you should know that a platform application has a kind of an XML file in it which stores most configuration information. You can edit this file manually, however it is much less error prone to automate the process, and that is done with annotations and annotation processors. After you&rsquo;ve annotate a class and try to build the module, the annotation processors are run first - they scan the source code for annotations that they (the processors) support and perform whatever actions are coded in them. With <code>@FileTypeResolverRegistration</code> annotation the <code>FileTypeResolverRegistrationProcessor</code> will read it and automagically create an entry in the &lsquo;layer&rsquo;. Also, there is not just a single layer file, each module can have its own layer and layers from all the modules comprising an application are merged before application starts.<br />
+        <span style="color:#a6e22e">@Override</span>
+        <span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">getDescription</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+            <span style="color:#66d9ef">return</span> DESCRIPTION<span style="color:#f92672">;</span>
+        <span style="color:#f92672">}</span>
+    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><h3 id="filetyperesolverregistration">@FileTypeResolverRegistration</h3>
+<p>Now as promised we move on to <code>@FileTypeResolverRegistration</code>. This annotation is defined in <code>FileSupport Core (BatMass)</code> module. What it does is it registers an instance of <code>FileTypeResolver</code> in the &lsquo;layer&rsquo; file. If you've read/watched basic info about the NetBeans platform linked to in the beginning of this page, you should know that a platform application has a kind of an XML file in it which stores most configuration information. You can edit this file manually, however it is much less error prone to automate the process, and that is done with annotations and annotation processors. After you've annotate a class and try to build the module, the annotation processors are run first - they scan the source code for annotations that they (the processors) support and perform whatever actions are coded in them. With <code>@FileTypeResolverRegistration</code> annotation the <code>FileTypeResolverRegistrationProcessor</code> will read it and automagically create an entry in the &lsquo;layer&rsquo;. Also, there is not just a single layer file, each module can have its own layer and layers from all the modules comprising an application are merged before application starts.<br>
 The good news is that the NetBeans IDE provides a GUI to check the contents of the layer. In the Project Explorer open <code>FileSupport (BatMass)</code> module, and expand the <em>Important Files</em> node in it, you will see the &lsquo;XML Layer&rsquo; node in there. If you expand it, there are two entries:</p>
-
 <ul>
 <li>&lt;this layer&gt; - this one contains the layer entries that this particular module has in its layer file</li>
-<li>&lt;this layer in context&gt; - this one shows the aggregated layer file for the whole application and the modifications/additions by the current module&rsquo;s layer are shown in <strong>bold</strong> font.</li>
+<li>&lt;this layer in context&gt; - this one shows the aggregated layer file for the whole application and the modifications/additions by the current module's layer are shown in <strong>bold</strong> font.</li>
 </ul>
-
-<p><img src="http://batmass.org/images/developing-first-plugin/locate-xml-layer-file.png" alt="Locate XML Layer file" /></p>
-
-<p>If you now take a look at <em>Important Files</em> for the module we&rsquo;re creating, you won&rsquo;t find the &lsquo;XML Layer&rsquo; entry there. Even though the annotation processor did its job, the entry only appears there after you create the &ldquo;manual&rdquo; version of the file, thankfully, adding the file is very easy: right click the module node in the Project Explorer, select <code>New -&gt; Other -&gt; Module Development -&gt; XML Layer</code>.</p>
-
-<p><img src="http://batmass.org/images/developing-first-plugin/create-layer-xml-file.png" alt="Create XML Layer file" /></p>
-
-<p>You should now have the <em>layer.xml</em> file in the root of your source packages and also the &lsquo;XML Layer&rsquo; node should have appeared under &lsquo;Important Files&rsquo;. If you&rsquo;ve built the module, you&rsquo;ll also see the instance of <code>UmpireSeTypeResolver</code> has been registered under <code>BatMass/FileTypeResolvers/features/umpire-se</code>.</p>
-
-<p><img src="http://batmass.org/images/developing-first-plugin/layer-file-created.png" alt="XML Layer file created" /></p>
-
+<p><img src="http://batmass.org/images/developing-first-plugin/locate-xml-layer-file.png" alt="Locate XML Layer file"></p>
+<p>If you now take a look at <em>Important Files</em> for the module we're creating, you won't find the &lsquo;XML Layer&rsquo; entry there. Even though the annotation processor did its job, the entry only appears there after you create the &ldquo;manual&rdquo; version of the file, thankfully, adding the file is very easy: right click the module node in the Project Explorer, select <code>New -&gt; Other -&gt; Module Development -&gt; XML Layer</code>.</p>
+<p><img src="http://batmass.org/images/developing-first-plugin/create-layer-xml-file.png" alt="Create XML Layer file"></p>
+<p>You should now have the <em>layer.xml</em> file in the root of your source packages and also the &lsquo;XML Layer&rsquo; node should have appeared under &lsquo;Important Files&rsquo;. If you've built the module, you'll also see the instance of <code>UmpireSeTypeResolver</code> has been registered under <code>BatMass/FileTypeResolvers/features/umpire-se</code>.</p>
+<p><img src="http://batmass.org/images/developing-first-plugin/layer-file-created.png" alt="XML Layer file created"></p>
 <h3 id="setting-up-the-node">Setting up the Node</h3>
+<p>We're not done yet, this step only provided enough data to the system to be able to import the file in a project, we'll also need to specify how the file should be rendered in the Project Explorer. For that we need to register an implementation of <code>FileNodeInfo</code> interface in the layer. There's an annotation for that as well, see <code>AgilentCefNodeInfo</code> as an example.</p>
+<p>This one is much simpler, I'll just copy-paste everything from the <code>AgilentCefNodeInfo</code> class and change names as appropriate:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@NodeInfoRegistration</span><span style="color:#f92672">(</span>
+        fileCategory <span style="color:#f92672">=</span> UmpireSeTypeResolver<span style="color:#f92672">.</span><span style="color:#a6e22e">CATEGORY</span><span style="color:#f92672">,</span>
+        fileType <span style="color:#f92672">=</span> UmpireSeTypeResolver<span style="color:#f92672">.</span><span style="color:#a6e22e">TYPE</span>
+<span style="color:#f92672">)</span>
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">UmpireSeNodeInfo</span> <span style="color:#66d9ef">extends</span> AbstractFileNodeInfo<span style="color:#f92672">{</span>
 
-<p>We&rsquo;re not done yet, this step only provided enough data to the system to be able to import the file in a project, we&rsquo;ll also need to specify how the file should be rendered in the Project Explorer. For that we need to register an implementation of <code>FileNodeInfo</code> interface in the layer. There&rsquo;s an annotation for that as well, see <code>AgilentCefNodeInfo</code> as an example.</p>
-
-<p>This one is much simpler, I&rsquo;ll just copy-paste everything from the <code>AgilentCefNodeInfo</code> class and change names as appropriate:</p>
-
-<pre><code class="language-java">@NodeInfoRegistration(
-        fileCategory = UmpireSeTypeResolver.CATEGORY,
-        fileType = UmpireSeTypeResolver.TYPE
-)
-public class UmpireSeNodeInfo extends AbstractFileNodeInfo{
-
-    @Override
-    public FileTypeResolver getFileTypeResolver() {
-        return UmpireSeTypeResolver.getInstance();
-    }
-}
-</code></pre>
-
-<p>There&rsquo;s not much going on here, we&rsquo;ll be using the <code>AbstractFileNodeInfo</code> class as base, which only leaves the implementation of <code>getFileTypeResolver()</code> to us. We&rsquo;ll simply return the singleton instance from our newly created type resolver, leaving the rest default.</p>
-
+    <span style="color:#a6e22e">@Override</span>
+    <span style="color:#66d9ef">public</span> FileTypeResolver <span style="color:#a6e22e">getFileTypeResolver</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+        <span style="color:#66d9ef">return</span> UmpireSeTypeResolver<span style="color:#f92672">.</span><span style="color:#a6e22e">getInstance</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><p>There's not much going on here, we'll be using the <code>AbstractFileNodeInfo</code> class as base, which only leaves the implementation of <code>getFileTypeResolver()</code> to us. We'll simply return the singleton instance from our newly created type resolver, leaving the rest default.</p>
 <h3 id="running-the-app-for-the-first-time">Running the app for the first time</h3>
-
-<p>You can now try running the application! Right click <em>BatMass</em> module suite in the Project Explorer and choose <em>Run</em>. It will build the application first and then run it. If you get tons of errors, you have likely not built the dependent projects. If so, locate the other 3 yellow modules (<em>BatMassExt</em>, <em>BatMassLibs</em> and <em>MSFTBX</em>) in the Project Explorer, right click and <em>Build</em> each of them. When <em>BatMass</em> starts, create a new Proteomics Project, right click <em>LC/MS Features</em> node in it, choose <em>Import LC/MS Features</em>. A file chooser should open and the File Types drop-down menu should contain an entry for the newly created data type.<br />
+<p>You can now try running the application! Right click <em>BatMass</em> module suite in the Project Explorer and choose <em>Run</em>. It will build the application first and then run it. If you get tons of errors, you have likely not built the dependent projects. If so, locate the other 3 yellow modules (<em>BatMassExt</em>, <em>BatMassLibs</em> and <em>MSFTBX</em>) in the Project Explorer, right click and <em>Build</em> each of them. When <em>BatMass</em> starts, create a new Proteomics Project, right click <em>LC/MS Features</em> node in it, choose <em>Import LC/MS Features</em>. A file chooser should open and the File Types drop-down menu should contain an entry for the newly created data type.<br>
 In this example case I mande a type resolver which recognized the files by their file-name suffix, specifically looking for files which end in &ldquo;_PeakCluster.csv&rdquo;. If you create a file with that name anywhere in your filesystem and select it, it should be added as a child of <em>LC/MS Features</em> node now.</p>
+<p>Even though the file has been imported into the project, not much can be done with it yet. We have neither exposed any system for parsing the file into meaningful data structures nor declared how the file can be viewed. However, if you right click the imported file, you'll see that the <em>View</em> sub-menu contains two actions: <em>Table</em> and <em>Outline</em>. How did that happen?</p>
+<p>Those two entries are <em>Actions</em> and <em>Actions</em> are registered for nodes in the project based on <strong>fileCategory</strong> and <strong>fileType</strong> which we used for the type resolver. They are registered using annotations as well. If you go back to <code>UmpireSeTypeResolver</code> you'll see that:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">// Here&#39;s the registration annotation
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">@FileTypeResolverRegistration</span><span style="color:#f92672">(</span>
+        fileCategory <span style="color:#f92672">=</span> UmpireSeTypeResolver<span style="color:#f92672">.</span><span style="color:#a6e22e">CATEGORY</span><span style="color:#f92672">,</span>
+        fileType <span style="color:#f92672">=</span> UmpireSeTypeResolver<span style="color:#f92672">.</span><span style="color:#a6e22e">TYPE</span>
+<span style="color:#f92672">)</span>
 
-<p>Even though the file has been imported into the project, not much can be done with it yet. We have neither exposed any system for parsing the file into meaningful data structures nor declared how the file can be viewed. However, if you right click the imported file, you&rsquo;ll see that the <em>View</em> sub-menu contains two actions: <em>Table</em> and <em>Outline</em>. How did that happen?</p>
-
-<p>Those two entries are <em>Actions</em> and <em>Actions</em> are registered for nodes in the project based on <strong>fileCategory</strong> and <strong>fileType</strong> which we used for the type resolver. They are registered using annotations as well. If you go back to <code>UmpireSeTypeResolver</code> you&rsquo;ll see that:</p>
-
-<pre><code class="language-java">// Here's the registration annotation
-@FileTypeResolverRegistration(
-        fileCategory = UmpireSeTypeResolver.CATEGORY,
-        fileType = UmpireSeTypeResolver.TYPE
-)
-
-// And here are the corresponding variables
-public static final String CATEGORY = &quot;features&quot;;
-public static final String TYPE = &quot;umpire-se&quot;;
-</code></pre>
-
-<p>So now you see that we have registered our new file-type under category &ldquo;features&rdquo; with type &ldquo;umpire-se&rdquo;. It so happens that some other module in <em>BatMass</em> has already registered an two actions for the &ldquo;features&rdquo; category, that&rsquo;s why we see those two available. If you read the last sentence carefully, you&rsquo;ve probably noticed that I said the actions were registered for the <strong>category</strong>, however with the type-system in <em>BatMass</em> you can register actions for categories, for concrete file-types or even for categories only for certain types of projects. The targets of action registration only depend on the path in the layer where they&rsquo;re registered.</p>
-
-<p>You&rsquo;ll also notice that the <em>View</em> actions are greyed-out, that&rsquo;s because those actions expect the node to expose some resources, like file-parser or table-model-provider for tabular views. So far our node exposes nothing as we haven&rsquo;t implemented any capabilities.</p>
-
+<span style="color:#75715e">// And here are the corresponding variables
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> String CATEGORY <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;features&#34;</span><span style="color:#f92672">;</span>
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> String TYPE <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;umpire-se&#34;</span><span style="color:#f92672">;</span>
+</code></pre></div><p>So now you see that we have registered our new file-type under category &ldquo;features&rdquo; with type &ldquo;umpire-se&rdquo;. It so happens that some other module in <em>BatMass</em> has already registered an two actions for the &ldquo;features&rdquo; category, that's why we see those two available. If you read the last sentence carefully, you've probably noticed that I said the actions were registered for the <strong>category</strong>, however with the type-system in <em>BatMass</em> you can register actions for categories, for concrete file-types or even for categories only for certain types of projects. The targets of action registration only depend on the path in the layer where they're registered.</p>
+<p>You'll also notice that the <em>View</em> actions are greyed-out, that's because those actions expect the node to expose some resources, like file-parser or table-model-provider for tabular views. So far our node exposes nothing as we haven't implemented any capabilities.</p>
 <h2 id="adding-capabilities-to-the-node">Adding capabilities to the node</h2>
-
-<p>So far our new node is pretty useless. We&rsquo;ve seen those 2 actions appear, they are provided by a separate module <code>GUI (BatMass)</code> which contains everything GUI related as its name suggests. Take a look at the <code>umich.ms.batmass.gui.nodes.actions</code> package. Here live the actions that you can invoke from context menus of nodes in the Project Explorer. We&rsquo;re interested in class <code>OpenFeature2DTable</code> from <code>umich.ms.batmass.gui.nodes.actions.features</code> package. It&rsquo;s declared as:</p>
-
-<pre><code class="language-java">public class OpenFeature2DTable extends AbstractContextAwareAction&lt;FeatureTableModelData&gt; {}
-</code></pre>
-
-<p>So this is a <code>ContextAwareAction</code> which operates on <code>FeatureTableModelData</code>. That means that it expects to find an instance of <code>FeatureTableModelData</code> in the global Lookup (if you don&rsquo;t know what a lookup is in the context of platform applications, read <a href="https://dzone.com/articles/netbeans-lookups-explained">this</a>). When we select our node for the imported file so far it doesn&rsquo;t expose this particular feature. <em>BatMass</em> defines a single way to add things to a node&rsquo;s lookup - via registering an implementation of <code>CapabilityProvider</code> interface for a node using <code>@NodeCapabilityRegistration</code> annotation. This interface has a single method <code>addCapabilitiesToLookup(InstanceContent, FileDescriptor)</code> - when the method is invoked you are given the <code>InstanceContent</code> that powers this node&rsquo;s lookup (again, if you don&rsquo;t know what I&rsquo;m talking about, read <a href="https://dzone.com/articles/netbeans-lookups-explained">the link I&rsquo;ve suggested above</a>) and a <code>FileDescriptor</code>, which is the <em>BatMass</em> way of representing a link to a file in the filesystem.</p>
-
+<p>So far our new node is pretty useless. We've seen those 2 actions appear, they are provided by a separate module <code>GUI (BatMass)</code> which contains everything GUI related as its name suggests. Take a look at the <code>umich.ms.batmass.gui.nodes.actions</code> package. Here live the actions that you can invoke from context menus of nodes in the Project Explorer. We're interested in class <code>OpenFeature2DTable</code> from <code>umich.ms.batmass.gui.nodes.actions.features</code> package. It's declared as:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">OpenFeature2DTable</span> <span style="color:#66d9ef">extends</span> AbstractContextAwareAction<span style="color:#f92672">&lt;</span>FeatureTableModelData<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span><span style="color:#f92672">}</span>
+</code></pre></div><p>So this is a <code>ContextAwareAction</code> which operates on <code>FeatureTableModelData</code>. That means that it expects to find an instance of <code>FeatureTableModelData</code> in the global Lookup (if you don't know what a lookup is in the context of platform applications, read <a href="https://dzone.com/articles/netbeans-lookups-explained">this</a>). When we select our node for the imported file so far it doesn't expose this particular feature. <em>BatMass</em> defines a single way to add things to a node's lookup - via registering an implementation of <code>CapabilityProvider</code> interface for a node using <code>@NodeCapabilityRegistration</code> annotation. This interface has a single method <code>addCapabilitiesToLookup(InstanceContent, FileDescriptor)</code> - when the method is invoked you are given the <code>InstanceContent</code> that powers this node's lookup (again, if you don't know what I'm talking about, read <a href="https://dzone.com/articles/netbeans-lookups-explained">the link I've suggested above</a>) and a <code>FileDescriptor</code>, which is the <em>BatMass</em> way of representing a link to a file in the filesystem.</p>
 <p>You can find an example to copy-paste from in <code>FileSupport (BatMass)</code> module, package <code>umich.ms.batmass.filesupport.files.types.agilent.cef.providers</code>, class <code>AgilentCefDataProvider</code>.</p>
+<p>So go ahead, create your own <code>UmpireSeDataProvider extends AbstractCapabilityProvider</code>. <code>AbstractCapabilityProvider</code> simplifies things for you by providing a default implementation of getting the UID. Press <kbd>Alt+Enter</kbd> twice on the line declaring the class, the first time you'll import the missing class, the second time you'll choose &ldquo;Implement all abstract methods&rdquo;. When the method is created for you, &ldquo;InstanceContent&rdquo; will be underlined, that's because it is defined in the <em>Lookup API</em> module, which we did not include as a dependency yet. Go ahead, press <kbd>Alt+Enter</kbd> once again and choose &ldquo;Search module dependency for InstanceContent&rdquo;.<br>
+Add the <code>@NodeCapabilityRegistration</code> annotation to the class, using &ldquo;fileCategory&rdquo; and &ldquo;fileType&rdquo; from <code>UmpireSeTypeResolver</code>. Code completion works in the annotations as well, so you can type &ldquo;@NodeCapabilityRegistration()&quot;, place the caret between the parentheses and press <kbd>Ctrl+Space</kbd> to bring up a list of available properties for the annotation. We'll only use &ldquo;fileCategory&rdquo; and &ldquo;fileType&rdquo; this time, mine so far looks like this:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@NodeCapabilityRegistration</span><span style="color:#f92672">(</span>
+        fileCategory <span style="color:#f92672">=</span> UmpireSeTypeResolver<span style="color:#f92672">.</span><span style="color:#a6e22e">CATEGORY</span><span style="color:#f92672">,</span>
+        fileType <span style="color:#f92672">=</span> UmpireSeTypeResolver<span style="color:#f92672">.</span><span style="color:#a6e22e">TYPE</span><span style="color:#f92672">)</span>
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">UmpireSeDataProvider</span> <span style="color:#66d9ef">extends</span> AbstractCapabilityProvider<span style="color:#f92672">{</span>
 
-<p>So go ahead, create your own <code>UmpireSeDataProvider extends AbstractCapabilityProvider</code>. <code>AbstractCapabilityProvider</code> simplifies things for you by providing a default implementation of getting the UID. Press <kbd>Alt+Enter</kbd> twice on the line declaring the class, the first time you&rsquo;ll import the missing class, the second time you&rsquo;ll choose &ldquo;Implement all abstract methods&rdquo;. When the method is created for you, &ldquo;InstanceContent&rdquo; will be underlined, that&rsquo;s because it is defined in the <em>Lookup API</em> module, which we did not include as a dependency yet. Go ahead, press <kbd>Alt+Enter</kbd> once again and choose &ldquo;Search module dependency for InstanceContent&rdquo;.<br />
-Add the <code>@NodeCapabilityRegistration</code> annotation to the class, using &ldquo;fileCategory&rdquo; and &ldquo;fileType&rdquo; from <code>UmpireSeTypeResolver</code>. Code completion works in the annotations as well, so you can type &ldquo;@NodeCapabilityRegistration()&rdquo;, place the caret between the parentheses and press <kbd>Ctrl+Space</kbd> to bring up a list of available properties for the annotation. We&rsquo;ll only use &ldquo;fileCategory&rdquo; and &ldquo;fileType&rdquo; this time, mine so far looks like this:</p>
+    <span style="color:#a6e22e">@Override</span>
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">addCapabilitiesToLookup</span><span style="color:#f92672">(</span>InstanceContent ic<span style="color:#f92672">,</span> FileDescriptor desc<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
 
-<pre><code class="language-java">@NodeCapabilityRegistration(
-        fileCategory = UmpireSeTypeResolver.CATEGORY,
-        fileType = UmpireSeTypeResolver.TYPE)
-public class UmpireSeDataProvider extends AbstractCapabilityProvider{
-
-    @Override
-    public void addCapabilitiesToLookup(InstanceContent ic, FileDescriptor desc) {
-
-    }
-}
-</code></pre>
-
-<p>But we have nothing to add to the lookup yet. Things here get a little hairier because we don&rsquo;t want to parse the file immediately as it has been imported, this should only be done when viewing data is requested and then several views might share the data and then it also needs to be unloaded from the memory when a viewer is closed, etc etc etc.</p>
-
+    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><p>But we have nothing to add to the lookup yet. Things here get a little hairier because we don't want to parse the file immediately as it has been imported, this should only be done when viewing data is requested and then several views might share the data and then it also needs to be unloaded from the memory when a viewer is closed, etc etc etc.</p>
 <h2 id="making-our-data-recognizable-by-table-and-map2d-viewers">Making our data recognizable by table and Map2D viewers</h2>
-
-<p>The Map2D still won&rsquo;t know how to draw all those features, even though we&rsquo;ve created a table model because it won&rsquo;t know which columns are what. So we need another wrapper around <code>UmpireSeIsoCluster</code> class that models just one line from the csv file that we&rsquo;re parsing. It does know how to render instances of <code>ILCMSFeature2D&lt;T&gt;</code> though. There&rsquo;s a helper abstract class <code>AbstractLCMSFeature2D&lt;T extends ILCMSTrace&gt;</code> which is a model of an isotopic cluster. It&rsquo;s a simple container, which holds <code>ILCMSTrace</code>s, each trace is just one m/z trace in time. There are no restrictions on implementations, you are free to provide arbitrary paths for traces, however this is a lot of work, so by default <code>AbstractLCMSFeature2D</code> implements all m/z traces as simple bounding boxes (m/z, RT).</p>
-
+<p>The Map2D still won't know how to draw all those features, even though we've created a table model because it won't know which columns are what. So we need another wrapper around <code>UmpireSeIsoCluster</code> class that models just one line from the csv file that we're parsing. It does know how to render instances of <code>ILCMSFeature2D&lt;T&gt;</code> though. There's a helper abstract class <code>AbstractLCMSFeature2D&lt;T extends ILCMSTrace&gt;</code> which is a model of an isotopic cluster. It's a simple container, which holds <code>ILCMSTrace</code>s, each trace is just one m/z trace in time. There are no restrictions on implementations, you are free to provide arbitrary paths for traces, however this is a lot of work, so by default <code>AbstractLCMSFeature2D</code> implements all m/z traces as simple bounding boxes (m/z, RT).</p>
 <h3 id="wrapping-our-model-pojos">Wrapping our model POJOs</h3>
+<p>So we'll go ahead and create the following wrapper class in <code>umich.ms.batmass.diaumpire.data</code>:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">UmpireSeFeature</span> <span style="color:#66d9ef">extends</span> AbstractLCMSFeature2D<span style="color:#f92672">&lt;</span>AbstractLCMSTrace<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span><span style="color:#f92672">}</span>
+</code></pre></div><p>As always, just copy-paste the contents from <code>AgilentCefFeature</code> and modify as needed to fix all the errors and changing all instances of <code>AgilentCompound</code> to <code>UmpireSeIsoCluster</code>.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">UmpireSeFeature</span> <span style="color:#66d9ef">extends</span> AbstractLCMSFeature2D<span style="color:#f92672">&lt;</span>AbstractLCMSTrace<span style="color:#f92672">&gt;</span><span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">protected</span> UmpireSeIsoCluster cluster<span style="color:#f92672">;</span>
 
-<p>So we&rsquo;ll go ahead and create the following wrapper class in <code>umich.ms.batmass.diaumpire.data</code>:</p>
+    <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">UmpireSeFeature</span><span style="color:#f92672">(</span>AbstractLCMSTrace<span style="color:#f92672">[</span><span style="color:#f92672">]</span> traces<span style="color:#f92672">,</span> <span style="color:#66d9ef">int</span> charge<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+        <span style="color:#66d9ef">super</span><span style="color:#f92672">(</span>traces<span style="color:#f92672">,</span> charge<span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+    <span style="color:#f92672">}</span>
 
-<pre><code class="language-java">class UmpireSeFeature extends AbstractLCMSFeature2D&lt;AbstractLCMSTrace&gt; {}
-</code></pre>
+    <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">UmpireSeFeature</span><span style="color:#f92672">(</span>AbstractLCMSTrace<span style="color:#f92672">[</span><span style="color:#f92672">]</span> traces<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+        <span style="color:#66d9ef">super</span><span style="color:#f92672">(</span>traces<span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+    <span style="color:#f92672">}</span>
 
-<p>As always, just copy-paste the contents from <code>AgilentCefFeature</code> and modify as needed to fix all the errors and changing all instances of <code>AgilentCompound</code> to <code>UmpireSeIsoCluster</code>.</p>
+    <span style="color:#66d9ef">public</span> UmpireSeIsoCluster <span style="color:#a6e22e">getCompund</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+        <span style="color:#66d9ef">return</span> cluster<span style="color:#f92672">;</span>
+    <span style="color:#f92672">}</span>
 
-<pre><code class="language-java">public class UmpireSeFeature extends AbstractLCMSFeature2D&lt;AbstractLCMSTrace&gt;{
-    protected UmpireSeIsoCluster cluster;
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">setCompund</span><span style="color:#f92672">(</span>UmpireSeIsoCluster cluster<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">cluster</span> <span style="color:#f92672">=</span> cluster<span style="color:#f92672">;</span>
+    <span style="color:#f92672">}</span>
 
-    public UmpireSeFeature(AbstractLCMSTrace[] traces, int charge) {
-        super(traces, charge);
-    }
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> UmpireSeFeature <span style="color:#a6e22e">create</span><span style="color:#f92672">(</span>UmpireSeIsoCluster c<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+        <span style="color:#66d9ef">int</span> numTraces <span style="color:#f92672">=</span> c<span style="color:#f92672">.</span><span style="color:#a6e22e">getNumPeaks</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
 
-    public UmpireSeFeature(AbstractLCMSTrace[] traces) {
-        super(traces);
-    }
+        AbstractLCMSTrace<span style="color:#f92672">[</span><span style="color:#f92672">]</span> tr <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> AbstractLCMSTrace<span style="color:#f92672">[</span>numTraces<span style="color:#f92672">]</span><span style="color:#f92672">;</span>
+        <span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> 0<span style="color:#f92672">;</span> i <span style="color:#f92672">&lt;</span> numTraces<span style="color:#f92672">;</span> i<span style="color:#f92672">+</span><span style="color:#f92672">+</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+            tr<span style="color:#f92672">[</span>i<span style="color:#f92672">]</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> AbstractLCMSTrace<span style="color:#f92672">(</span>c<span style="color:#f92672">.</span><span style="color:#a6e22e">getMz</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">[</span>i<span style="color:#f92672">]</span><span style="color:#f92672">,</span> c<span style="color:#f92672">.</span><span style="color:#a6e22e">getRtLo</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">,</span> c<span style="color:#f92672">.</span><span style="color:#a6e22e">getRtHi</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+        <span style="color:#f92672">}</span>
 
-    public UmpireSeIsoCluster getCompund() {
-        return cluster;
-    }
+        <span style="color:#66d9ef">int</span> z <span style="color:#f92672">=</span> c<span style="color:#f92672">.</span><span style="color:#a6e22e">getCharge</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
 
-    public void setCompund(UmpireSeIsoCluster cluster) {
-        this.cluster = cluster;
-    }
+        UmpireSeFeature acf <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> UmpireSeFeature<span style="color:#f92672">(</span>tr<span style="color:#f92672">,</span> z<span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+        acf<span style="color:#f92672">.</span><span style="color:#a6e22e">setCompund</span><span style="color:#f92672">(</span>c<span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+        <span style="color:#66d9ef">return</span> acf<span style="color:#f92672">;</span>
+    <span style="color:#f92672">}</span>
 
-    public static UmpireSeFeature create(UmpireSeIsoCluster c) {
-        int numTraces = c.getNumPeaks();
+    <span style="color:#a6e22e">@Override</span>
+    <span style="color:#66d9ef">public</span> Color <span style="color:#a6e22e">getColor</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+        <span style="color:#66d9ef">return</span> cluster<span style="color:#f92672">.</span><span style="color:#a6e22e">getNumPeaks</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span> <span style="color:#f92672">&gt;</span> 1 <span style="color:#f92672">?</span> Color<span style="color:#f92672">.</span><span style="color:#a6e22e">MAGENTA</span> <span style="color:#f92672">:</span> Color<span style="color:#f92672">.</span><span style="color:#a6e22e">RED</span><span style="color:#f92672">;</span>
+    <span style="color:#f92672">}</span>
 
-        AbstractLCMSTrace[] tr = new AbstractLCMSTrace[numTraces];
-        for (int i = 0; i &lt; numTraces; i++) {
-            tr[i] = new AbstractLCMSTrace(c.getMz()[i], c.getRtLo(), c.getRtHi());
-        }
+    <span style="color:#75715e">/**
+</span><span style="color:#75715e">     * Overriding this method, because we don&#39;t store shapes/bounds for LCMS Traces
+</span><span style="color:#75715e">     * in Umpire Features.
+</span><span style="color:#75715e">     * @return
+</span><span style="color:#75715e">     */</span>
+    <span style="color:#a6e22e">@Override</span>
+    <span style="color:#66d9ef">protected</span> Rectangle2D<span style="color:#f92672">.</span><span style="color:#a6e22e">Double</span> <span style="color:#a6e22e">createBoundsFromTraces</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+        <span style="color:#66d9ef">int</span> traceNumLo<span style="color:#f92672">,</span> traceNumHi<span style="color:#f92672">;</span>
+        traceNumLo <span style="color:#f92672">=</span> 0<span style="color:#f92672">;</span> <span style="color:#75715e">// 0-th trace is required to be there
+</span><span style="color:#75715e"></span>        traceNumHi <span style="color:#f92672">=</span> traces<span style="color:#f92672">.</span><span style="color:#a6e22e">length</span><span style="color:#f92672">-</span>1<span style="color:#f92672">;</span>
 
-        int z = c.getCharge();
+        <span style="color:#66d9ef">double</span> mzLo <span style="color:#f92672">=</span> traces<span style="color:#f92672">[</span>traceNumLo<span style="color:#f92672">]</span><span style="color:#f92672">.</span><span style="color:#a6e22e">getMz</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span> <span style="color:#f92672">-</span> traces<span style="color:#f92672">[</span>traceNumLo<span style="color:#f92672">]</span><span style="color:#f92672">.</span><span style="color:#a6e22e">getMzSpread</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+        <span style="color:#66d9ef">double</span> mzHi <span style="color:#f92672">=</span> traces<span style="color:#f92672">[</span>traceNumHi<span style="color:#f92672">]</span><span style="color:#f92672">.</span><span style="color:#a6e22e">getMz</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span> <span style="color:#f92672">+</span> traces<span style="color:#f92672">[</span>traceNumHi<span style="color:#f92672">]</span><span style="color:#f92672">.</span><span style="color:#a6e22e">getMzSpread</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+        <span style="color:#66d9ef">double</span> rtLo <span style="color:#f92672">=</span> Double<span style="color:#f92672">.</span><span style="color:#a6e22e">POSITIVE_INFINITY</span><span style="color:#f92672">;</span>
+        <span style="color:#66d9ef">double</span> rtHi <span style="color:#f92672">=</span> Double<span style="color:#f92672">.</span><span style="color:#a6e22e">NEGATIVE_INFINITY</span><span style="color:#f92672">;</span>
+        <span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> 0<span style="color:#f92672">;</span> i <span style="color:#f92672">&lt;</span> traces<span style="color:#f92672">.</span><span style="color:#a6e22e">length</span><span style="color:#f92672">;</span> i<span style="color:#f92672">+</span><span style="color:#f92672">+</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+            AbstractLCMSTrace trace <span style="color:#f92672">=</span> traces<span style="color:#f92672">[</span>i<span style="color:#f92672">]</span><span style="color:#f92672">;</span>
+            <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>trace<span style="color:#f92672">.</span><span style="color:#a6e22e">getRtLo</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span> <span style="color:#f92672">&lt;</span> rtLo<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+                rtLo <span style="color:#f92672">=</span> trace<span style="color:#f92672">.</span><span style="color:#a6e22e">getRtLo</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+            <span style="color:#f92672">}</span>
+            <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>trace<span style="color:#f92672">.</span><span style="color:#a6e22e">getRtHi</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span> <span style="color:#f92672">&gt;</span> rtHi<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+                rtHi <span style="color:#f92672">=</span> trace<span style="color:#f92672">.</span><span style="color:#a6e22e">getRtHi</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+            <span style="color:#f92672">}</span>
+        <span style="color:#f92672">}</span>
 
-        UmpireSeFeature acf = new UmpireSeFeature(tr, z);
-        acf.setCompund(c);
-        return acf;
-    }
+        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> Rectangle2D<span style="color:#f92672">.</span><span style="color:#a6e22e">Double</span><span style="color:#f92672">(</span>mzLo<span style="color:#f92672">,</span> rtHi<span style="color:#f92672">,</span> mzHi <span style="color:#f92672">-</span> mzLo<span style="color:#f92672">,</span> rtHi <span style="color:#f92672">-</span> rtLo<span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><h3 id="creating-the-table-model">Creating the table model</h3>
+<p>We will now create the table model, as you would for any JTable. We'll use <code>AbstractFeatureTableModel</code> as the base class, as it provides an implementation of mechanisms for mapping the data from the table to a view on 2D map, however, it all depends on what data your viewer needs to display the data correctly. Add a dependency on <code>GUI Core (BatMass)</code> module, you should be comfortable figuring out the way to do this yourself by now.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">UmpireSeTableModel</span> <span style="color:#66d9ef">extends</span> AbstractFeatureTableModel <span style="color:#f92672">{</span>
+    List<span style="color:#f92672">&lt;</span>UmpireSeIsoCluster<span style="color:#f92672">&gt;</span> features<span style="color:#f92672">;</span>
 
-    @Override
-    public Color getColor() {
-        return cluster.getNumPeaks() &gt; 1 ? Color.MAGENTA : Color.RED;
-    }
+    <span style="color:#66d9ef">protected</span> String<span style="color:#f92672">[</span><span style="color:#f92672">]</span> colNames <span style="color:#f92672">=</span> <span style="color:#f92672">{</span>
+        <span style="color:#75715e">/* 0 */</span> <span style="color:#e6db74">&#34;Mono m/z&#34;</span><span style="color:#f92672">,</span>
+        <span style="color:#75715e">/* 1 */</span> <span style="color:#e6db74">&#34;Charge&#34;</span><span style="color:#f92672">,</span>
+        <span style="color:#75715e">/* 2 */</span> <span style="color:#e6db74">&#34;RT lo&#34;</span><span style="color:#f92672">,</span>
+        <span style="color:#75715e">/* 3 */</span> <span style="color:#e6db74">&#34;RT hi&#34;</span><span style="color:#f92672">,</span>
+        <span style="color:#75715e">/* 4 */</span> <span style="color:#e6db74">&#34;Scan lo&#34;</span><span style="color:#f92672">,</span>
+        <span style="color:#75715e">/* 5 */</span> <span style="color:#e6db74">&#34;Scan hi&#34;</span><span style="color:#f92672">,</span>
+        <span style="color:#75715e">/* 6 */</span> <span style="color:#e6db74">&#34;Total intensity&#34;</span><span style="color:#f92672">,</span>
+        <span style="color:#75715e">/* 7 */</span> <span style="color:#e6db74">&#34;Max intensity&#34;</span><span style="color:#f92672">,</span>
+    <span style="color:#f92672">}</span><span style="color:#f92672">;</span>
+    <span style="color:#66d9ef">protected</span> Class<span style="color:#f92672">[</span><span style="color:#f92672">]</span> colTypes <span style="color:#f92672">=</span> <span style="color:#f92672">{</span>
+        <span style="color:#75715e">/* 0 */</span> Double<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">,</span>
+        <span style="color:#75715e">/* 1 */</span> Integer<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">,</span>
+        <span style="color:#75715e">/* 2 */</span> Double<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">,</span>
+        <span style="color:#75715e">/* 3 */</span> Double<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">,</span>
+        <span style="color:#75715e">/* 4 */</span> Integer<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">,</span>
+        <span style="color:#75715e">/* 5 */</span> Integer<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">,</span>
+        <span style="color:#75715e">/* 6 */</span> Double<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">,</span>
+        <span style="color:#75715e">/* 7 */</span> Double<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">,</span>
+    <span style="color:#f92672">}</span><span style="color:#f92672">;</span>
 
-    /**
-     * Overriding this method, because we don't store shapes/bounds for LCMS Traces
-     * in Umpire Features.
-     * @return
-     */
-    @Override
-    protected Rectangle2D.Double createBoundsFromTraces() {
-        int traceNumLo, traceNumHi;
-        traceNumLo = 0; // 0-th trace is required to be there
-        traceNumHi = traces.length-1;
+    <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">UmpireSeTableModel</span><span style="color:#f92672">(</span>List<span style="color:#f92672">&lt;</span>UmpireSeIsoCluster<span style="color:#f92672">&gt;</span> features<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">features</span> <span style="color:#f92672">=</span> features<span style="color:#f92672">;</span>
+    <span style="color:#f92672">}</span>
 
-        double mzLo = traces[traceNumLo].getMz() - traces[traceNumLo].getMzSpread();
-        double mzHi = traces[traceNumHi].getMz() + traces[traceNumHi].getMzSpread();
-        double rtLo = Double.POSITIVE_INFINITY;
-        double rtHi = Double.NEGATIVE_INFINITY;
-        for (int i = 0; i &lt; traces.length; i++) {
-            AbstractLCMSTrace trace = traces[i];
-            if (trace.getRtLo() &lt; rtLo) {
-                rtLo = trace.getRtLo();
-            }
-            if (trace.getRtHi() &gt; rtHi) {
-                rtHi = trace.getRtHi();
-            }
-        }
+    <span style="color:#a6e22e">@Override</span>
+    <span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">getColumnName</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> column<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+        <span style="color:#66d9ef">return</span> colNames<span style="color:#f92672">[</span>column<span style="color:#f92672">]</span><span style="color:#f92672">;</span>
+    <span style="color:#f92672">}</span>
 
-        return new Rectangle2D.Double(mzLo, rtHi, mzHi - mzLo, rtHi - rtLo);
-    }
-}
-</code></pre>
+    <span style="color:#a6e22e">@Override</span>
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">getRowCount</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+        <span style="color:#66d9ef">return</span> features<span style="color:#f92672">.</span><span style="color:#a6e22e">size</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+    <span style="color:#f92672">}</span>
 
-<h3 id="creating-the-table-model">Creating the table model</h3>
+    <span style="color:#a6e22e">@Override</span>
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">getColumnCount</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+        <span style="color:#66d9ef">return</span> colNames<span style="color:#f92672">.</span><span style="color:#a6e22e">length</span><span style="color:#f92672">;</span>
+    <span style="color:#f92672">}</span>
 
-<p>We will now create the table model, as you would for any JTable. We&rsquo;ll use <code>AbstractFeatureTableModel</code> as the base class, as it provides an implementation of mechanisms for mapping the data from the table to a view on 2D map, however, it all depends on what data your viewer needs to display the data correctly. Add a dependency on <code>GUI Core (BatMass)</code> module, you should be comfortable figuring out the way to do this yourself by now.</p>
+    <span style="color:#a6e22e">@Override</span>
+    <span style="color:#66d9ef">public</span> Object <span style="color:#a6e22e">getValueAt</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> rowIndex<span style="color:#f92672">,</span> <span style="color:#66d9ef">int</span> columnIndex<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+        UmpireSeFeature f <span style="color:#f92672">=</span> features<span style="color:#f92672">.</span><span style="color:#a6e22e">get</span><span style="color:#f92672">(</span>rowIndex<span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+        UmpireSeIsoCluster c <span style="color:#f92672">=</span> f<span style="color:#f92672">.</span><span style="color:#a6e22e">getCluster</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
 
-<pre><code class="language-java">public class UmpireSeTableModel extends AbstractFeatureTableModel {
-    List&lt;UmpireSeIsoCluster&gt; features;
+        <span style="color:#66d9ef">switch</span> <span style="color:#f92672">(</span>columnIndex<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+            <span style="color:#66d9ef">case</span> 0<span style="color:#f92672">:</span>
+                <span style="color:#66d9ef">return</span> c<span style="color:#f92672">.</span><span style="color:#a6e22e">getMz</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">[</span>0<span style="color:#f92672">]</span><span style="color:#f92672">;</span>
+            <span style="color:#66d9ef">case</span> 1<span style="color:#f92672">:</span>
+                <span style="color:#66d9ef">return</span> c<span style="color:#f92672">.</span><span style="color:#a6e22e">getCharge</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+            <span style="color:#66d9ef">case</span> 2<span style="color:#f92672">:</span>
+                <span style="color:#66d9ef">return</span> c<span style="color:#f92672">.</span><span style="color:#a6e22e">getRtLo</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+            <span style="color:#66d9ef">case</span> 3<span style="color:#f92672">:</span>
+                <span style="color:#66d9ef">return</span> c<span style="color:#f92672">.</span><span style="color:#a6e22e">getRtHi</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+            <span style="color:#66d9ef">case</span> 4<span style="color:#f92672">:</span>
+                <span style="color:#66d9ef">return</span> c<span style="color:#f92672">.</span><span style="color:#a6e22e">getScanNumLo</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+            <span style="color:#66d9ef">case</span> 5<span style="color:#f92672">:</span>
+                <span style="color:#66d9ef">return</span> c<span style="color:#f92672">.</span><span style="color:#a6e22e">getScanNumHi</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+            <span style="color:#66d9ef">case</span> 6<span style="color:#f92672">:</span>
+                <span style="color:#66d9ef">return</span> c<span style="color:#f92672">.</span><span style="color:#a6e22e">getPeakArea</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+            <span style="color:#66d9ef">case</span> 7<span style="color:#f92672">:</span>
+                <span style="color:#66d9ef">return</span> c<span style="color:#f92672">.</span><span style="color:#a6e22e">getPeakHeight</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+        <span style="color:#f92672">}</span>
+        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span>
+    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><p>If we implement that <code>rowToRegion(int)</code> method, then double-clicking the row will automatically bring us to the region that we calculate in that method in 2D map (if one is linked to the table viewer). Here's a sample implementation:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Override</span>
+<span style="color:#66d9ef">public</span> MzRtRegion <span style="color:#a6e22e">rowToRegion</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> row<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>row <span style="color:#f92672">&lt;</span> 0 <span style="color:#f92672">|</span><span style="color:#f92672">|</span> row <span style="color:#f92672">&gt;</span><span style="color:#f92672">=</span> features<span style="color:#f92672">.</span><span style="color:#a6e22e">size</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">)</span>
+        <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> IllegalStateException<span style="color:#f92672">(</span>String<span style="color:#f92672">.</span><span style="color:#a6e22e">format</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Conversion from illegal row index was requested, no such row index: [%s]&#34;</span><span style="color:#f92672">,</span> row<span style="color:#f92672">)</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+    UmpireSeFeature f <span style="color:#f92672">=</span> features<span style="color:#f92672">.</span><span style="color:#a6e22e">get</span><span style="color:#f92672">(</span>row<span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+    UmpireSeIsoCluster c <span style="color:#f92672">=</span> f<span style="color:#f92672">.</span><span style="color:#a6e22e">getCluster</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>f <span style="color:#f92672">=</span><span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+        <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> IllegalStateException<span style="color:#f92672">(</span>String<span style="color:#f92672">.</span><span style="color:#a6e22e">format</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Should not happen, row index was ok, but the feature at this id was null.&#34;</span><span style="color:#f92672">)</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+    <span style="color:#f92672">}</span>
 
-    protected String[] colNames = {
-        /* 0 */ &quot;Mono m/z&quot;,
-        /* 1 */ &quot;Charge&quot;,
-        /* 2 */ &quot;RT lo&quot;,
-        /* 3 */ &quot;RT hi&quot;,
-        /* 4 */ &quot;Scan lo&quot;,
-        /* 5 */ &quot;Scan hi&quot;,
-        /* 6 */ &quot;Total intensity&quot;,
-        /* 7 */ &quot;Max intensity&quot;,
-    };
-    protected Class[] colTypes = {
-        /* 0 */ Double.class,
-        /* 1 */ Integer.class,
-        /* 2 */ Double.class,
-        /* 3 */ Double.class,
-        /* 4 */ Integer.class,
-        /* 5 */ Integer.class,
-        /* 6 */ Double.class,
-        /* 7 */ Double.class,
-    };
+    <span style="color:#75715e">// find the boundaries
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">double</span> mzLo <span style="color:#f92672">=</span> Double<span style="color:#f92672">.</span><span style="color:#a6e22e">POSITIVE_INFINITY</span><span style="color:#f92672">;</span>
+    <span style="color:#66d9ef">double</span> mzHi <span style="color:#f92672">=</span> Double<span style="color:#f92672">.</span><span style="color:#a6e22e">NEGATIVE_INFINITY</span><span style="color:#f92672">;</span>
+    <span style="color:#66d9ef">double</span><span style="color:#f92672">[</span><span style="color:#f92672">]</span> masses <span style="color:#f92672">=</span> c<span style="color:#f92672">.</span><span style="color:#a6e22e">getMz</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+    <span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> 0<span style="color:#f92672">;</span> i <span style="color:#f92672">&lt;</span> c<span style="color:#f92672">.</span><span style="color:#a6e22e">getNumPeaks</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span> i<span style="color:#f92672">+</span><span style="color:#f92672">+</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+        <span style="color:#66d9ef">double</span> m <span style="color:#f92672">=</span> masses<span style="color:#f92672">[</span>i<span style="color:#f92672">]</span><span style="color:#f92672">;</span>
+        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>m <span style="color:#f92672">&lt;</span> mzLo<span style="color:#f92672">)</span>
+            mzLo <span style="color:#f92672">=</span> m<span style="color:#f92672">;</span>
+        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>m <span style="color:#f92672">&gt;</span> mzHi<span style="color:#f92672">)</span>
+            mzHi <span style="color:#f92672">=</span> m<span style="color:#f92672">;</span>
+    <span style="color:#f92672">}</span>
+    <span style="color:#66d9ef">double</span> rtLo <span style="color:#f92672">=</span> c<span style="color:#f92672">.</span><span style="color:#a6e22e">getRtLo</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+    <span style="color:#66d9ef">double</span> rtHi <span style="color:#f92672">=</span> c<span style="color:#f92672">.</span><span style="color:#a6e22e">getRtHi</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
 
-    public UmpireSeTableModel(List&lt;UmpireSeIsoCluster&gt; features) {
-        this.features = features;
-    }
-
-    @Override
-    public String getColumnName(int column) {
-        return colNames[column];
-    }
-
-    @Override
-    public int getRowCount() {
-        return features.size();
-    }
-
-    @Override
-    public int getColumnCount() {
-        return colNames.length;
-    }
-
-    @Override
-    public Object getValueAt(int rowIndex, int columnIndex) {
-        UmpireSeFeature f = features.get(rowIndex);
-        UmpireSeIsoCluster c = f.getCluster();
-
-        switch (columnIndex) {
-            case 0:
-                return c.getMz()[0];
-            case 1:
-                return c.getCharge();
-            case 2:
-                return c.getRtLo();
-            case 3:
-                return c.getRtHi();
-            case 4:
-                return c.getScanNumLo();
-            case 5:
-                return c.getScanNumHi();
-            case 6:
-                return c.getPeakArea();
-            case 7:
-                return c.getPeakHeight();
-        }
-        return null;
-    }
-}
-</code></pre>
-
-<p>If we implement that <code>rowToRegion(int)</code> method, then double-clicking the row will automatically bring us to the region that we calculate in that method in 2D map (if one is linked to the table viewer). Here&rsquo;s a sample implementation:</p>
-
-<pre><code class="language-java">@Override
-public MzRtRegion rowToRegion(int row) {
-    if (row &lt; 0 || row &gt;= features.size())
-        throw new IllegalStateException(String.format(&quot;Conversion from illegal row index was requested, no such row index: [%s]&quot;, row));
-    UmpireSeFeature f = features.get(row);
-    UmpireSeIsoCluster c = f.getCluster();
-    if (f == null) {
-        throw new IllegalStateException(String.format(&quot;Should not happen, row index was ok, but the feature at this id was null.&quot;));
-    }
-
-    // find the boundaries
-    double mzLo = Double.POSITIVE_INFINITY;
-    double mzHi = Double.NEGATIVE_INFINITY;
-    double[] masses = c.getMz();
-    for (int i = 0; i &lt; c.getNumPeaks(); i++) {
-        double m = masses[i];
-        if (m &lt; mzLo)
-            mzLo = m;
-        if (m &gt; mzHi)
-            mzHi = m;
-    }
-    double rtLo = c.getRtLo();
-    double rtHi = c.getRtHi();
-
-    // add half a dalton to the sides and 30 seconds each way in RT direction
-    return new MzRtRegion(mzLo-0.5, mzHi+0.5, rtLo-0.5, rtHi+0.5);
-}
-</code></pre>
-
-<h3 id="enabling-automated-memory-handling">Enabling automated memory handling</h3>
-
+    <span style="color:#75715e">// add half a dalton to the sides and 30 seconds each way in RT direction
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> MzRtRegion<span style="color:#f92672">(</span>mzLo<span style="color:#f92672">-</span>0<span style="color:#f92672">.</span><span style="color:#a6e22e">5</span><span style="color:#f92672">,</span> mzHi<span style="color:#f92672">+</span>0<span style="color:#f92672">.</span><span style="color:#a6e22e">5</span><span style="color:#f92672">,</span> rtLo<span style="color:#f92672">-</span>0<span style="color:#f92672">.</span><span style="color:#a6e22e">5</span><span style="color:#f92672">,</span> rtHi<span style="color:#f92672">+</span>0<span style="color:#f92672">.</span><span style="color:#a6e22e">5</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><h3 id="enabling-automated-memory-handling">Enabling automated memory handling</h3>
 <p>Ufff&hellip; Everything will be wrapped into <code>FeatureData2D</code> which is a <code>DataContainer</code>&hellip; This API is really over-engineered and only serves to provide a level of type safety. So just copy-paste everything from <code>AgilentCefTableModelData</code> into a new class <code>UmpireSeFeatureTableModelData</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">UmpireSeFeatureTableModelData</span> <span style="color:#66d9ef">extends</span> FeatureTableModelData<span style="color:#f92672">&lt;</span>UmpireSeFeature<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
 
-<pre><code class="language-java">public class UmpireSeFeatureTableModelData extends FeatureTableModelData&lt;UmpireSeFeature&gt; {
+    <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">UmpireSeFeatureTableModelData</span><span style="color:#f92672">(</span>DataSource<span style="color:#f92672">&lt;</span>Features<span style="color:#f92672">&lt;</span>UmpireSeFeature<span style="color:#f92672">&gt;</span><span style="color:#f92672">&gt;</span> source<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+        <span style="color:#66d9ef">super</span><span style="color:#f92672">(</span>source<span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+    <span style="color:#f92672">}</span>
 
-    public UmpireSeFeatureTableModelData(DataSource&lt;Features&lt;UmpireSeFeature&gt;&gt; source) {
-        super(source);
-    }
+    <span style="color:#a6e22e">@Override</span>
+    <span style="color:#66d9ef">public</span> TableModel <span style="color:#a6e22e">create</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+        Features<span style="color:#f92672">&lt;</span>UmpireSeFeature<span style="color:#f92672">&gt;</span> data <span style="color:#f92672">=</span> getData<span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>data <span style="color:#f92672">=</span><span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+            <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> IllegalStateException<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;You must have loaded the data from the data source before calling create().&#34;</span>
+                    <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;Use .load(Object user) on this object first.&#34;</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+        <span style="color:#f92672">}</span>
+        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> UmpireSeTableModel<span style="color:#f92672">(</span>data<span style="color:#f92672">.</span><span style="color:#a6e22e">getMs1</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">.</span><span style="color:#a6e22e">getList</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+    <span style="color:#f92672">}</span>
 
-    @Override
-    public TableModel create() {
-        Features&lt;UmpireSeFeature&gt; data = getData();
-        if (data == null) {
-            throw new IllegalStateException(&quot;You must have loaded the data from the data source before calling create().&quot;
-                    + &quot;Use .load(Object user) on this object first.&quot;);
-        }
-        return new UmpireSeTableModel(data.getMs1().getList());
-    }
+<span style="color:#f92672">}</span>
+</code></pre></div><h3 id="going-back-and-actually-putting-something-into-the-lookup-of-our-node">Going back and actually putting something into the Lookup of our node</h3>
+<p>When we created <code>UmpireSeDataProvider</code> we left <code>addCapabilitiesToLookup()</code> method empty. Let's fix this by copy-pasting code from <code>AgilentCefDataProvider</code>:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@NodeCapabilityRegistration</span><span style="color:#f92672">(</span>
+        fileCategory <span style="color:#f92672">=</span> UmpireSeTypeResolver<span style="color:#f92672">.</span><span style="color:#a6e22e">CATEGORY</span><span style="color:#f92672">,</span>
+        fileType <span style="color:#f92672">=</span> UmpireSeTypeResolver<span style="color:#f92672">.</span><span style="color:#a6e22e">TYPE</span><span style="color:#f92672">)</span>
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">UmpireSeDataProvider</span> <span style="color:#66d9ef">extends</span> AbstractCapabilityProvider<span style="color:#f92672">{</span>
 
-}
-</code></pre>
+    <span style="color:#a6e22e">@Override</span>
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">addCapabilitiesToLookup</span><span style="color:#f92672">(</span>InstanceContent ic<span style="color:#f92672">,</span> FileDescriptor desc<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+        URI uri <span style="color:#f92672">=</span> Utilities<span style="color:#f92672">.</span><span style="color:#a6e22e">toURI</span><span style="color:#f92672">(</span>desc<span style="color:#f92672">.</span><span style="color:#a6e22e">getPath</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">.</span><span style="color:#a6e22e">toFile</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
 
-<h3 id="going-back-and-actually-putting-something-into-the-lookup-of-our-node">Going back and actually putting something into the Lookup of our node</h3>
+        AgilentCefFeaturesDataSource source <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> AgilentCefFeaturesDataSource<span style="color:#f92672">(</span>uri<span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+        AgilentCefTableModelData data <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> AgilentCefTableModelData<span style="color:#f92672">(</span>source<span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+        ic<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span>data<span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><p>Ok, the last piece of the puzzle is missing - that <code>AgilentCefFeaturesDataSource</code>, which we don't have for our data yet. This is the last class that we'll create - <code>UmpireSeFeaturesDataSource</code> and as always, copy-paste the contents modifying it.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">UmpireSeFeaturesDataSource</span> <span style="color:#66d9ef">extends</span> DefaultDataSource<span style="color:#f92672">&lt;</span>Features<span style="color:#f92672">&lt;</span>UmpireSeFeature<span style="color:#f92672">&gt;</span><span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
 
-<p>When we created <code>UmpireSeDataProvider</code> we left <code>addCapabilitiesToLookup()</code> method empty. Let&rsquo;s fix this by copy-pasting code from <code>AgilentCefDataProvider</code>:</p>
+    <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">UmpireSeFeaturesDataSource</span><span style="color:#f92672">(</span>URI origin<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+        <span style="color:#66d9ef">super</span><span style="color:#f92672">(</span>origin<span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+    <span style="color:#f92672">}</span>
 
-<pre><code class="language-java">@NodeCapabilityRegistration(
-        fileCategory = UmpireSeTypeResolver.CATEGORY,
-        fileType = UmpireSeTypeResolver.TYPE)
-public class UmpireSeDataProvider extends AbstractCapabilityProvider{
+    <span style="color:#a6e22e">@Override</span>
+    <span style="color:#66d9ef">public</span> Features<span style="color:#f92672">&lt;</span>UmpireSeFeature<span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">load</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> DataLoadingException <span style="color:#f92672">{</span>
+        Features<span style="color:#f92672">&lt;</span>UmpireSeFeature<span style="color:#f92672">&gt;</span> features <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Features<span style="color:#f92672">&lt;</span><span style="color:#f92672">&gt;</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+        <span style="color:#66d9ef">try</span>  <span style="color:#f92672">{</span>
+            Path path <span style="color:#f92672">=</span> Paths<span style="color:#f92672">.</span><span style="color:#a6e22e">get</span><span style="color:#f92672">(</span>uri<span style="color:#f92672">)</span><span style="color:#f92672">.</span><span style="color:#a6e22e">toAbsolutePath</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+            UmpireSeIsoClusters clusters <span style="color:#f92672">=</span> UmpireSeIsoClusters<span style="color:#f92672">.</span><span style="color:#a6e22e">create</span><span style="color:#f92672">(</span>path<span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+            <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>clusters<span style="color:#f92672">.</span><span style="color:#a6e22e">getClusters</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">.</span><span style="color:#a6e22e">isEmpty</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">)</span>
+                <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> DataLoadingException<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;The size of the list of features after parsing Umpire file was zero.&#34;</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>            
+            <span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span>UmpireSeIsoCluster c <span style="color:#f92672">:</span> clusters<span style="color:#f92672">.</span><span style="color:#a6e22e">getClusters</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+                UmpireSeFeature feature <span style="color:#f92672">=</span> UmpireSeFeature<span style="color:#f92672">.</span><span style="color:#a6e22e">create</span><span style="color:#f92672">(</span>c<span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+                features<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span>feature<span style="color:#f92672">,</span> 1<span style="color:#f92672">,</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+            <span style="color:#f92672">}</span>
+            <span style="color:#66d9ef">return</span> features<span style="color:#f92672">;</span>
+        <span style="color:#f92672">}</span> <span style="color:#66d9ef">catch</span> <span style="color:#f92672">(</span>IOException ex<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+            <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> DataLoadingException<span style="color:#f92672">(</span>ex<span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+        <span style="color:#f92672">}</span>
+    <span style="color:#f92672">}</span>
 
-    @Override
-    public void addCapabilitiesToLookup(InstanceContent ic, FileDescriptor desc) {
-        URI uri = Utilities.toURI(desc.getPath().toFile());
-
-        AgilentCefFeaturesDataSource source = new AgilentCefFeaturesDataSource(uri);
-        AgilentCefTableModelData data = new AgilentCefTableModelData(source);
-        ic.add(data);
-    }
-}
-</code></pre>
-
-<p>Ok, the last piece of the puzzle is missing - that <code>AgilentCefFeaturesDataSource</code>, which we don&rsquo;t have for our data yet. This is the last class that we&rsquo;ll create - <code>UmpireSeFeaturesDataSource</code> and as always, copy-paste the contents modifying it.</p>
-
-<pre><code class="language-java">public class UmpireSeFeaturesDataSource extends DefaultDataSource&lt;Features&lt;UmpireSeFeature&gt;&gt; {
-
-    public UmpireSeFeaturesDataSource(URI origin) {
-        super(origin);
-    }
-
-    @Override
-    public Features&lt;UmpireSeFeature&gt; load() throws DataLoadingException {
-        Features&lt;UmpireSeFeature&gt; features = new Features&lt;&gt;();
-        try  {
-            Path path = Paths.get(uri).toAbsolutePath();
-            UmpireSeIsoClusters clusters = UmpireSeIsoClusters.create(path);
-            if (clusters.getClusters().isEmpty())
-                throw new DataLoadingException(&quot;The size of the list of features after parsing Umpire file was zero.&quot;);            
-            for (UmpireSeIsoCluster c : clusters.getClusters()) {
-                UmpireSeFeature feature = UmpireSeFeature.create(c);
-                features.add(feature, 1, null);
-            }
-            return features;
-        } catch (IOException ex) {
-            throw new DataLoadingException(ex);
-        }
-    }
-
-}
-</code></pre>
-
-<p>You&rsquo;ll get an error for that <code>features.add(feature, 1, null);</code> because it uses a class defined in <code>MSFileToolbox Module</code> module, add a dependency on that.</p>
-
+<span style="color:#f92672">}</span>
+</code></pre></div><p>You'll get an error for that <code>features.add(feature, 1, null);</code> because it uses a class defined in <code>MSFileToolbox Module</code> module, add a dependency on that.</p>
 <p>Now we can fix the <code>UmpireSeDataProvider</code>:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@NodeCapabilityRegistration</span><span style="color:#f92672">(</span>
+        fileCategory <span style="color:#f92672">=</span> UmpireSeTypeResolver<span style="color:#f92672">.</span><span style="color:#a6e22e">CATEGORY</span><span style="color:#f92672">,</span>
+        fileType <span style="color:#f92672">=</span> UmpireSeTypeResolver<span style="color:#f92672">.</span><span style="color:#a6e22e">TYPE</span><span style="color:#f92672">)</span>
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">UmpireSeDataProvider</span> <span style="color:#66d9ef">extends</span> AbstractCapabilityProvider<span style="color:#f92672">{</span>
 
-<pre><code class="language-java">@NodeCapabilityRegistration(
-        fileCategory = UmpireSeTypeResolver.CATEGORY,
-        fileType = UmpireSeTypeResolver.TYPE)
-public class UmpireSeDataProvider extends AbstractCapabilityProvider{
+    <span style="color:#a6e22e">@Override</span>
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">addCapabilitiesToLookup</span><span style="color:#f92672">(</span>InstanceContent ic<span style="color:#f92672">,</span> FileDescriptor desc<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+        URI uri <span style="color:#f92672">=</span> Utilities<span style="color:#f92672">.</span><span style="color:#a6e22e">toURI</span><span style="color:#f92672">(</span>desc<span style="color:#f92672">.</span><span style="color:#a6e22e">getPath</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">.</span><span style="color:#a6e22e">toFile</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
 
-    @Override
-    public void addCapabilitiesToLookup(InstanceContent ic, FileDescriptor desc) {
-        URI uri = Utilities.toURI(desc.getPath().toFile());
-
-        UmpireSeFeaturesDataSource source = new UmpireSeFeaturesDataSource(uri);
-        UmpireSeFeatureTableModelData data = new UmpireSeFeatureTableModelData(source);
-        ic.add(data);
-    }
-}
-</code></pre>
-
-<p>There should be no errors now, you should be able to right click the <code>DIA Umpire SE Features</code> module that we were developing and click <em>Build</em> then <em>Run</em> the <em>BatMass</em> module to test it out.</p>
-
+        UmpireSeFeaturesDataSource source <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> UmpireSeFeaturesDataSource<span style="color:#f92672">(</span>uri<span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+        UmpireSeFeatureTableModelData data <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> UmpireSeFeatureTableModelData<span style="color:#f92672">(</span>source<span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+        ic<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span>data<span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><p>There should be no errors now, you should be able to right click the <code>DIA Umpire SE Features</code> module that we were developing and click <em>Build</em> then <em>Run</em> the <em>BatMass</em> module to test it out.</p>
 <p>Start the application, import some DIA-Umpire Singnal Extraction results into the <code>LC/MS Features</code> node, import the corresponding mzXML file into <code>LC/MS Files</code> node. With a right click on the <code>..._PeakCluster.csv</code> file you should now have the option to open it in a table viewer and if you select <strong>BOTH</strong> the mzXML file and the csv file, then right click any of those, there will be an option for overlay in Map2D.</p>
 
 
 			<aside class="copyright" role="note">
 				
-				&copy; 2018 Dmitry Avtonomov. Released under the Apache 2.0 license. &ndash;
+				&copy; 2020 Dmitry Avtonomov. Released under the Apache 2.0 license. &ndash;
 				
 			</aside>
 
@@ -1083,7 +974,7 @@ public class UmpireSeDataProvider extends AbstractCapabilityProvider{
 <nav class="pagination" aria-label="Footer">
   <div class="previous">
   
-      <a href="http://batmass.org/tutorial/setting-up-development-environment/" title="Setting up development environment">
+      <a href="http://batmass.org/license/" title="License">
         <span class="direction">
           Previous
         </span>
@@ -1093,7 +984,7 @@ public class UmpireSeDataProvider extends AbstractCapabilityProvider{
           </div>
           <div class="stretch">
             <div class="title">
-              Setting up development environment
+              License
             </div>
           </div>
         </div>
@@ -1103,14 +994,14 @@ public class UmpireSeDataProvider extends AbstractCapabilityProvider{
 
   <div class="next">
   
-      <a href="http://batmass.org/license/" title="License">
+      <a href="http://batmass.org/tutorial/setting-up-development-environment/" title="Setting up development environment">
         <span class="direction">
           Next
         </span>
         <div class="page">
           <div class="stretch">
             <div class="title">
-              License
+              Setting up development environment
             </div>
           </div>
           <div class="button button-next" role="button" aria-label="Next">

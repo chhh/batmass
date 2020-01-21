@@ -9,7 +9,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1">
     <title>Data access library (LC/MS files and simple Peptide ID examples) - BatMass</title>
-    <meta name="generator" content="Hugo 0.40.3" />
+    <meta name="generator" content="Hugo 0.62.2" />
 
     
     <meta name="description" content="Mass spectrometry data visualization">
@@ -229,9 +229,9 @@
 
 
 
-<a  title="MSFTBX: Data Access Library" href="http://batmass.org/data-access-lib/">
+<a  title="Data Access Library: MSFTBX" href="http://batmass.org/data-access-lib/">
 	
-	MSFTBX: Data Access Library
+	Data Access Library: MSFTBX
 </a>
 
 
@@ -461,239 +461,216 @@
 
 			<h1>Data access library (LC/MS files and simple Peptide ID examples) </h1>
 
-			
-
-<p>In this guide we will quickly go through using the standalone java library for accessing some common mass spectrometry data formats. This is the same library that powers <em>BatMass</em>.</p>
-
+			<p>In this guide we will quickly go through using the standalone java library for accessing some common mass spectrometry data formats. This is the same library that powers <em>BatMass</em>.</p>
 <p>All the classes responsible for parsing files live in <code>umich.ms.fileio.filetypes</code> package, each in its own subpackage, e.g. <code>umich.ms.fileio.filetypes.pepxml</code> for PepXML files. Most of those sub-packages contain a separate package <code>example</code> with working examples.</p>
-
-<p>The source code for the library lives in <a href="https://github.com/chhh/msftbx">MSFTBX repository on GitHub</a>. Start by cloning:<br />
+<p>The source code for the library lives in <a href="https://github.com/chhh/msftbx">MSFTBX repository on GitHub</a>. Start by cloning:<br>
 <code>git clone https://github.com/chhh/MSFTBX.git</code>
 and explore</p>
-
-<h2 id="parsing-lc-ms-data-mzml-mzxml-files">Parsing LC/MS data (mzML/mzXML files)</h2>
-
-<p>Unfortunately, it&rsquo;s near impossible to easily access raw mass spec data from the original vendor file formats using java. You can convert most data from proprietary formats (<em>.RAW</em> files for Thermo, <em>.d</em> directories for Agilent, etc.) using <code>msconvert</code> program from <a href="http://proteowizard.sourceforge.net/">ProteoWizard</a>.</p>
-
+<h2 id="parsing-lcms-data-mzmlmzxml-files">Parsing LC/MS data (mzML/mzXML files)</h2>
+<p>Unfortunately, it's near impossible to easily access raw mass spec data from the original vendor file formats using java. You can convert most data from proprietary formats (<em>.RAW</em> files for Thermo, <em>.d</em> directories for Agilent, etc.) using <code>msconvert</code> program from <a href="http://proteowizard.sourceforge.net/">ProteoWizard</a>.</p>
 <p>The API is separated into two parts. First you create a data source from your file. The data source can be used by itself, if you just want to iterate over spectra by yourself. It can also be attached to a special data structure, which handles data loading, management, indexing and garbage collection.</p>
-
 <p>mzML and mzXML share the same common base interface <code>umich.ms.fileio.filetypes.LCMSDataSource</code>, you can use that if you want to write code that can work seamlessly with both file formats.
 We will start by creating a data source and just reading spectra one by one, which is <strong>very ineffective</strong>.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[</span><span style="color:#f92672">]</span> args<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> FileParsingException <span style="color:#f92672">{</span>
 
-<pre><code class="language-java">public static void main(String[] args) throws FileParsingException {
+  <span style="color:#75715e">// Creating data source
+</span><span style="color:#75715e"></span>  Path path <span style="color:#f92672">=</span> Paths<span style="color:#f92672">.</span><span style="color:#a6e22e">get</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;some-path-to.mzXML&#34;</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+  path <span style="color:#f92672">=</span> Paths<span style="color:#f92672">.</span><span style="color:#a6e22e">get</span><span style="color:#f92672">(</span>args<span style="color:#f92672">[</span>0<span style="color:#f92672">]</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+  MZXMLFile source <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> MZXMLFile<span style="color:#f92672">(</span>path<span style="color:#f92672">.</span><span style="color:#a6e22e">toString</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
 
-  // Creating data source
-  Path path = Paths.get(&quot;some-path-to.mzXML&quot;);
-  path = Paths.get(args[0]);
-  MZXMLFile source = new MZXMLFile(path.toString());
+  <span style="color:#75715e">// Notice that we use fetchIndex() instead of getIndex().
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// fetchIndex() will either get a cached copy or parse it from
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// disk, if no cache is available. The index will be cached after parsing.
+</span><span style="color:#75715e"></span>  MZXMLIndex index <span style="color:#f92672">=</span> source<span style="color:#f92672">.</span><span style="color:#a6e22e">fetchIndex</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
 
-  // Notice that we use fetchIndex() instead of getIndex().
-  // fetchIndex() will either get a cached copy or parse it from
-  // disk, if no cache is available. The index will be cached after parsing.
-  MZXMLIndex index = source.fetchIndex();
+  <span style="color:#75715e">// The index gives you the scan numbers, on the lowest level you can parse
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// the file using those numbers. We need the raw scan numbers (the numbers
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// as they&#39;re used in the file). The internal scan numbering scheme always
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// renumbers all scans starting from 1 and increasing by 1 consecutively.
+</span><span style="color:#75715e"></span>
+  <span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span>Integer scanNumRaw <span style="color:#f92672">:</span> index<span style="color:#f92672">.</span><span style="color:#a6e22e">getMapByRawNum</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">.</span><span style="color:#a6e22e">keySet</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+      <span style="color:#75715e">// The second parameter asks the parser to parse the spectrum along
+</span><span style="color:#75715e"></span>      <span style="color:#75715e">// with meta-info about the scan itself
+</span><span style="color:#75715e"></span>      IScan scan <span style="color:#f92672">=</span> source<span style="color:#f92672">.</span><span style="color:#a6e22e">parseScan</span><span style="color:#f92672">(</span>scanNumRaw<span style="color:#f92672">,</span> <span style="color:#66d9ef">true</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
 
-  // The index gives you the scan numbers, on the lowest level you can parse
-  // the file using those numbers. We need the raw scan numbers (the numbers
-  // as they're used in the file). The internal scan numbering scheme always
-  // renumbers all scans starting from 1 and increasing by 1 consecutively.
+      <span style="color:#75715e">// Do something with the scan.
+</span><span style="color:#75715e"></span>      <span style="color:#75715e">// Note that some features, like scan.getChildScans() will not work in
+</span><span style="color:#75715e"></span>      <span style="color:#75715e">// this case, as there is not enough information to build those
+</span><span style="color:#75715e"></span>      <span style="color:#75715e">// relationships.
+</span><span style="color:#75715e"></span>
+      System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>scan<span style="color:#f92672">.</span><span style="color:#a6e22e">toString</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+  <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><p>It is a lot more effective to load data in chunks, rather than manually keeping track of what's been loadad and what needs unloading, we will instead use the <code>ScanCollectionDefault</code> data structure to that for us.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[</span><span style="color:#f92672">]</span> args<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> FileParsingException <span style="color:#f92672">{</span>
 
-  for (Integer scanNumRaw : index.getMapByRawNum().keySet()) {
-      // The second parameter asks the parser to parse the spectrum along
-      // with meta-info about the scan itself
-      IScan scan = source.parseScan(scanNumRaw, true);
+  <span style="color:#75715e">// Creating data source
+</span><span style="color:#75715e"></span>  Path path <span style="color:#f92672">=</span> Paths<span style="color:#f92672">.</span><span style="color:#a6e22e">get</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;some-path-to.mzXML&#34;</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+  path <span style="color:#f92672">=</span> Paths<span style="color:#f92672">.</span><span style="color:#a6e22e">get</span><span style="color:#f92672">(</span>args<span style="color:#f92672">[</span>0<span style="color:#f92672">]</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+  MZXMLFile source <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> MZXMLFile<span style="color:#f92672">(</span>path<span style="color:#f92672">.</span><span style="color:#a6e22e">toString</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
 
-      // Do something with the scan.
-      // Note that some features, like scan.getChildScans() will not work in
-      // this case, as there is not enough information to build those
-      // relationships.
+  <span style="color:#75715e">// This is a data structure used to store scans and to navigate around the run
+</span><span style="color:#75715e"></span>  ScanCollectionDefault scans <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ScanCollectionDefault<span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+  <span style="color:#75715e">// Softly reference spectral data, make it reclaimable by GC
+</span><span style="color:#75715e"></span>  scans<span style="color:#f92672">.</span><span style="color:#a6e22e">setDefaultStorageStrategy</span><span style="color:#f92672">(</span>StorageStrategy<span style="color:#f92672">.</span><span style="color:#a6e22e">SOFT</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+  <span style="color:#75715e">// Set it to automatically re-parse spectra from the file if spectra were not
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// yet parsed or were reclaimed to make auto-loading work you&#39;ll need to use
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// IScan#fetchSpectrum() method instead of IScan#getSpectrum()
+</span><span style="color:#75715e"></span>  scans<span style="color:#f92672">.</span><span style="color:#a6e22e">isAutoloadSpectra</span><span style="color:#f92672">(</span><span style="color:#66d9ef">true</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span> <span style="color:#75715e">// this is actually the default
+</span><span style="color:#75715e"></span>
+  <span style="color:#75715e">// Set our mzXML file as the data source for this scan collection
+</span><span style="color:#75715e"></span>  scans<span style="color:#f92672">.</span><span style="color:#a6e22e">setDataSource</span><span style="color:#f92672">(</span>source<span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+  <span style="color:#75715e">// Set number of threads for multi-threaded parsing.
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// null means use as many cores as reported by Runtime.getRuntime().availableProcessors()
+</span><span style="color:#75715e"></span>  source<span style="color:#f92672">.</span><span style="color:#a6e22e">setNumThreadsForParsing</span><span style="color:#f92672">(</span><span style="color:#66d9ef">null</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span> <span style="color:#75715e">// this is actually the default
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// load the meta-data about the whole run, with forced parsing of MS1 spectra
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// as we have enabled auto-loading, then if we ever invoke IScan#fetchSpectrum()
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// on an MS2 spectrum, for which the spectrum has not been parsed, it will be
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// obtained from disk automatically. And because of Soft referencing, the GC
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// will be able to reclaim it.
+</span><span style="color:#75715e"></span>  scans<span style="color:#f92672">.</span><span style="color:#a6e22e">loadData</span><span style="color:#f92672">(</span>LCMSDataSubset<span style="color:#f92672">.</span><span style="color:#a6e22e">MS1_WITH_SPECTRA</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
 
-      System.out.println(scan.toString());
-  }
-}
-</code></pre>
+  <span style="color:#75715e">// let&#39;s traverse the data-structure
+</span><span style="color:#75715e"></span>  TreeMap<span style="color:#f92672">&lt;</span>Integer<span style="color:#f92672">,</span> IScan<span style="color:#f92672">&gt;</span> num2scanMap <span style="color:#f92672">=</span> scans<span style="color:#f92672">.</span><span style="color:#a6e22e">getMapNum2scan</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+  <span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span>IScan scan <span style="color:#f92672">:</span> num2scanMap<span style="color:#f92672">.</span><span style="color:#a6e22e">values</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+    ISpectrum spectrum <span style="color:#f92672">=</span> scan<span style="color:#f92672">.</span><span style="color:#a6e22e">getSpectrum</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>spectrum <span style="color:#f92672">=</span><span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+      System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">printf</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;%s does NOT have a parsed spectrum\n&#34;</span><span style="color:#f92672">,</span> scan<span style="color:#f92672">.</span><span style="color:#a6e22e">toString</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+    <span style="color:#f92672">}</span> <span style="color:#66d9ef">else</span> <span style="color:#f92672">{</span>
+      System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">printf</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;%s has a parsed spectrum, it contains %d data points\n&#34;</span><span style="color:#f92672">,</span>
+                        scan<span style="color:#f92672">.</span><span style="color:#a6e22e">toString</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">,</span> spectrum<span style="color:#f92672">.</span><span style="color:#a6e22e">getMZs</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">.</span><span style="color:#a6e22e">length</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+    <span style="color:#f92672">}</span>
+  <span style="color:#f92672">}</span>
 
-<p>It is a lot more effective to load data in chunks, rather than manually keeping track of what&rsquo;s been loadad and what needs unloading, we will instead use the <code>ScanCollectionDefault</code> data structure to that for us.</p>
+<span style="color:#f92672">}</span>
+</code></pre></div><p>Notice how much faster the parsing has been and that only MS1 scans reported the number of points in the spectrum.</p>
+<p>Here's a more complex example, loading spectra for custom ranges (scan number range and MS level combination) and adding better memory management for long-running applications.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[</span><span style="color:#f92672">]</span> args<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> FileParsingException <span style="color:#f92672">{</span>
+  <span style="color:#75715e">// Creating data source
+</span><span style="color:#75715e"></span>  Path path <span style="color:#f92672">=</span> Paths<span style="color:#f92672">.</span><span style="color:#a6e22e">get</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;some-path-to.mzXML&#34;</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+  path <span style="color:#f92672">=</span> Paths<span style="color:#f92672">.</span><span style="color:#a6e22e">get</span><span style="color:#f92672">(</span>args<span style="color:#f92672">[</span>0<span style="color:#f92672">]</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+  MZXMLFile source <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> MZXMLFile<span style="color:#f92672">(</span>path<span style="color:#f92672">.</span><span style="color:#a6e22e">toString</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
 
-<pre><code class="language-java">public static void main(String[] args) throws FileParsingException {
-
-  // Creating data source
-  Path path = Paths.get(&quot;some-path-to.mzXML&quot;);
-  path = Paths.get(args[0]);
-  MZXMLFile source = new MZXMLFile(path.toString());
-
-  // This is a data structure used to store scans and to navigate around the run
-  ScanCollectionDefault scans = new ScanCollectionDefault();
-  // Softly reference spectral data, make it reclaimable by GC
-  scans.setDefaultStorageStrategy(StorageStrategy.SOFT);
-  // Set it to automatically re-parse spectra from the file if spectra were not
-  // yet parsed or were reclaimed to make auto-loading work you'll need to use
-  // IScan#fetchSpectrum() method instead of IScan#getSpectrum()
-  scans.isAutoloadSpectra(true); // this is actually the default
-
-  // Set our mzXML file as the data source for this scan collection
-  scans.setDataSource(source);
-  // Set number of threads for multi-threaded parsing.
-  // null means use as many cores as reported by Runtime.getRuntime().availableProcessors()
-  source.setNumThreadsForParsing(null); // this is actually the default
-  // load the meta-data about the whole run, with forced parsing of MS1 spectra
-  // as we have enabled auto-loading, then if we ever invoke IScan#fetchSpectrum()
-  // on an MS2 spectrum, for which the spectrum has not been parsed, it will be
-  // obtained from disk automatically. And because of Soft referencing, the GC
-  // will be able to reclaim it.
-  scans.loadData(LCMSDataSubset.MS1_WITH_SPECTRA);
-
-  // let's traverse the data-structure
-  TreeMap&lt;Integer, IScan&gt; num2scanMap = scans.getMapNum2scan();
-  for (IScan scan : num2scanMap.values()) {
-    ISpectrum spectrum = scan.getSpectrum();
-    if (spectrum == null) {
-      System.out.printf(&quot;%s does NOT have a parsed spectrum\n&quot;, scan.toString());
-    } else {
-      System.out.printf(&quot;%s has a parsed spectrum, it contains %d data points\n&quot;,
-                        scan.toString(), spectrum.getMZs().length);
-    }
-  }
-
-}
-</code></pre>
-
-<p>Notice how much faster the parsing has been and that only MS1 scans reported the number of points in the spectrum.</p>
-
-<p>Here&rsquo;s a more complex example, loading spectra for custom ranges (scan number range and MS level combination) and adding better memory management for long-running applications.</p>
-
-<pre><code class="language-java">public static void main(String[] args) throws FileParsingException {
-  // Creating data source
-  Path path = Paths.get(&quot;some-path-to.mzXML&quot;);
-  path = Paths.get(args[0]);
-  MZXMLFile source = new MZXMLFile(path.toString());
-
-  // Get the index (fetchXXX() methods will parse data from the file if it has not
-  // yet been parsed) and cache it in the object for reuse.
-  // You'll only need the index if you want to convert between internal scan numbers
-  // and raw scan numbers in the file. Some files might have non-consecutive scan
-  // numbers, for example, but internally they'll be renumbered to start from
-  // 1 and increment by one for each next scan.
-  MZXMLIndex idx = source.fetchIndex();
-  // info about the run
-  LCMSRunInfo runInfo = source.fetchRunInfo();
+  <span style="color:#75715e">// Get the index (fetchXXX() methods will parse data from the file if it has not
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// yet been parsed) and cache it in the object for reuse.
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// You&#39;ll only need the index if you want to convert between internal scan numbers
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// and raw scan numbers in the file. Some files might have non-consecutive scan
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// numbers, for example, but internally they&#39;ll be renumbered to start from
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// 1 and increment by one for each next scan.
+</span><span style="color:#75715e"></span>  MZXMLIndex idx <span style="color:#f92672">=</span> source<span style="color:#f92672">.</span><span style="color:#a6e22e">fetchIndex</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+  <span style="color:#75715e">// info about the run
+</span><span style="color:#75715e"></span>  LCMSRunInfo runInfo <span style="color:#f92672">=</span> source<span style="color:#f92672">.</span><span style="color:#a6e22e">fetchRunInfo</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
 
 
-  // To parse a single scan from the file (or a range of scans) we first create a
-  // predicate matching the scan to be parsed.
-  // For example, parse scans from 1 to 3 at MS level 2.
-  Set&lt;Integer&gt; msLevel = Collections.singleton(2);
-  LCMSDataSubset subset = new LCMSDataSubset(1, 3, msLevel, null);
-  List&lt;IScan&gt; parsedScans = source.parse(subset);
+  <span style="color:#75715e">// To parse a single scan from the file (or a range of scans) we first create a
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// predicate matching the scan to be parsed.
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// For example, parse scans from 1 to 3 at MS level 2.
+</span><span style="color:#75715e"></span>  Set<span style="color:#f92672">&lt;</span>Integer<span style="color:#f92672">&gt;</span> msLevel <span style="color:#f92672">=</span> Collections<span style="color:#f92672">.</span><span style="color:#a6e22e">singleton</span><span style="color:#f92672">(</span>2<span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+  LCMSDataSubset subset <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> LCMSDataSubset<span style="color:#f92672">(</span>1<span style="color:#f92672">,</span> 3<span style="color:#f92672">,</span> msLevel<span style="color:#f92672">,</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+  List<span style="color:#f92672">&lt;</span>IScan<span style="color:#f92672">&gt;</span> parsedScans <span style="color:#f92672">=</span> source<span style="color:#f92672">.</span><span style="color:#a6e22e">parse</span><span style="color:#f92672">(</span>subset<span style="color:#f92672">)</span><span style="color:#f92672">;</span>
 
-  // If you want higher level access to data, create an LCMSData object
-  LCMSData data = new LCMSData(source);
-  // load the whole structure of the run, and parse all spectra for MS1 scans
-  data.load(LCMSDataSubset.WHOLE_RUN);
-  data.releaseMemory();
+  <span style="color:#75715e">// If you want higher level access to data, create an LCMSData object
+</span><span style="color:#75715e"></span>  LCMSData data <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> LCMSData<span style="color:#f92672">(</span>source<span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+  <span style="color:#75715e">// load the whole structure of the run, and parse all spectra for MS1 scans
+</span><span style="color:#75715e"></span>  data<span style="color:#f92672">.</span><span style="color:#a6e22e">load</span><span style="color:#f92672">(</span>LCMSDataSubset<span style="color:#f92672">.</span><span style="color:#a6e22e">WHOLE_RUN</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+  data<span style="color:#f92672">.</span><span style="color:#a6e22e">releaseMemory</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
 
-  // or load the whole structure, but only get m/z-intensity info at MS level 2
-  data.load(new LCMSDataSubset(null, null, msLevel, null));
-  data.releaseMemory();
-  // alternatively, use this shortcut
-  data.load(LCMSDataSubset.MS2_WITH_SPECTRA);
-  data.releaseMemory();
+  <span style="color:#75715e">// or load the whole structure, but only get m/z-intensity info at MS level 2
+</span><span style="color:#75715e"></span>  data<span style="color:#f92672">.</span><span style="color:#a6e22e">load</span><span style="color:#f92672">(</span><span style="color:#66d9ef">new</span> LCMSDataSubset<span style="color:#f92672">(</span><span style="color:#66d9ef">null</span><span style="color:#f92672">,</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">,</span> msLevel<span style="color:#f92672">,</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+  data<span style="color:#f92672">.</span><span style="color:#a6e22e">releaseMemory</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+  <span style="color:#75715e">// alternatively, use this shortcut
+</span><span style="color:#75715e"></span>  data<span style="color:#f92672">.</span><span style="color:#a6e22e">load</span><span style="color:#f92672">(</span>LCMSDataSubset<span style="color:#f92672">.</span><span style="color:#a6e22e">MS2_WITH_SPECTRA</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+  data<span style="color:#f92672">.</span><span style="color:#a6e22e">releaseMemory</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
 
-  // If you need memory management, you can also pass an instance of an object,
-  // which will be considered the owner of prased data. When this object is
-  // garbage collected, this will be detected automatically  and corresponding
-  // spectra released.
-  Object dataUser = new Object();
-  data.load(LCMSDataSubset.WHOLE_RUN, dataUser);
-  System.out.printf(&quot;The data is loaded and used by [%s] object.\n&quot;,
-                    System.identityHashCode(dataUser));
-  // at this point dataUser might be garbage collected as it's not referenced anymore,
-  // and the data might get unloaded automatically
-  dataUser = null; // just to be sure that we don't have a strong reference
+  <span style="color:#75715e">// If you need memory management, you can also pass an instance of an object,
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// which will be considered the owner of prased data. When this object is
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// garbage collected, this will be detected automatically  and corresponding
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// spectra released.
+</span><span style="color:#75715e"></span>  Object dataUser <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Object<span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+  data<span style="color:#f92672">.</span><span style="color:#a6e22e">load</span><span style="color:#f92672">(</span>LCMSDataSubset<span style="color:#f92672">.</span><span style="color:#a6e22e">WHOLE_RUN</span><span style="color:#f92672">,</span> dataUser<span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+  System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">printf</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;The data is loaded and used by [%s] object.\n&#34;</span><span style="color:#f92672">,</span>
+                    System<span style="color:#f92672">.</span><span style="color:#a6e22e">identityHashCode</span><span style="color:#f92672">(</span>dataUser<span style="color:#f92672">)</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+  <span style="color:#75715e">// at this point dataUser might be garbage collected as it&#39;s not referenced anymore,
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// and the data might get unloaded automatically
+</span><span style="color:#75715e"></span>  dataUser <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span> <span style="color:#75715e">// just to be sure that we don&#39;t have a strong reference
+</span><span style="color:#75715e"></span>
+  <span style="color:#75715e">// If you don&#39;t want to fiddle around with memory management at all, but still
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// want it to play nicely there&#39;s one more feature - auto-loading of spectra.
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// You can parse the whole structure of the file and keep it in memory (it&#39;s
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// rather small), and just magically get the spectra whenever you need them.
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// Also set referenceing type to soft, so that garbage collector could reclaim
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// unused spectra.
+</span><span style="color:#75715e"></span>  data<span style="color:#f92672">.</span><span style="color:#a6e22e">load</span><span style="color:#f92672">(</span>LCMSDataSubset<span style="color:#f92672">.</span><span style="color:#a6e22e">STRUCTURE_ONLY</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
 
-  // If you don't want to fiddle around with memory management at all, but still
-  // want it to play nicely there's one more feature - auto-loading of spectra.
-  // You can parse the whole structure of the file and keep it in memory (it's
-  // rather small), and just magically get the spectra whenever you need them.
-  // Also set referenceing type to soft, so that garbage collector could reclaim
-  // unused spectra.
-  data.load(LCMSDataSubset.STRUCTURE_ONLY);
+  IScanCollection scans <span style="color:#f92672">=</span> data<span style="color:#f92672">.</span><span style="color:#a6e22e">getScans</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+  scans<span style="color:#f92672">.</span><span style="color:#a6e22e">isAutoloadSpectra</span><span style="color:#f92672">(</span><span style="color:#66d9ef">true</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span> <span style="color:#75715e">// set automatic spectra loading
+</span><span style="color:#75715e"></span>  scans<span style="color:#f92672">.</span><span style="color:#a6e22e">setDefaultStorageStrategy</span><span style="color:#f92672">(</span>StorageStrategy<span style="color:#f92672">.</span><span style="color:#a6e22e">SOFT</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span> <span style="color:#75715e">// mz-intensity data will be softly referenced
+</span><span style="color:#75715e"></span>  TreeMap<span style="color:#f92672">&lt;</span>Integer<span style="color:#f92672">,</span> ScanIndex<span style="color:#f92672">&gt;</span> msLevel2index <span style="color:#f92672">=</span> scans<span style="color:#f92672">.</span><span style="color:#a6e22e">getMapMsLevel2index</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+  ScanIndex ms2idx <span style="color:#f92672">=</span> msLevel2index<span style="color:#f92672">.</span><span style="color:#a6e22e">get</span><span style="color:#f92672">(</span>2<span style="color:#f92672">)</span><span style="color:#f92672">;</span> <span style="color:#75715e">// get the index at MS level 2
+</span><span style="color:#75715e"></span>
+  <span style="color:#75715e">// we&#39;ll iterate by scan numbers
+</span><span style="color:#75715e"></span>  TreeMap<span style="color:#f92672">&lt;</span>Integer<span style="color:#f92672">,</span> IScan<span style="color:#f92672">&gt;</span> num2scan <span style="color:#f92672">=</span> ms2idx<span style="color:#f92672">.</span><span style="color:#a6e22e">getNum2scan</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+  Set<span style="color:#f92672">&lt;</span>Map<span style="color:#f92672">.</span><span style="color:#a6e22e">Entry</span><span style="color:#f92672">&lt;</span>Integer<span style="color:#f92672">,</span> IScan<span style="color:#f92672">&gt;</span><span style="color:#f92672">&gt;</span> scanEntries <span style="color:#f92672">=</span> num2scan<span style="color:#f92672">.</span><span style="color:#a6e22e">entrySet</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+  <span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span>Map<span style="color:#f92672">.</span><span style="color:#a6e22e">Entry</span><span style="color:#f92672">&lt;</span>Integer<span style="color:#f92672">,</span> IScan<span style="color:#f92672">&gt;</span> scanEntry <span style="color:#f92672">:</span> scanEntries<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+    Integer scanNum <span style="color:#f92672">=</span> scanEntry<span style="color:#f92672">.</span><span style="color:#a6e22e">getKey</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+    IScan scan <span style="color:#f92672">=</span> scanEntry<span style="color:#f92672">.</span><span style="color:#a6e22e">getValue</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
 
-  IScanCollection scans = data.getScans();
-  scans.isAutoloadSpectra(true); // set automatic spectra loading
-  scans.setDefaultStorageStrategy(StorageStrategy.SOFT); // mz-intensity data will be softly referenced
-  TreeMap&lt;Integer, ScanIndex&gt; msLevel2index = scans.getMapMsLevel2index();
-  ScanIndex ms2idx = msLevel2index.get(2); // get the index at MS level 2
+    <span style="color:#75715e">// note that we use fetchXXX() method here, because we&#39;ve only parsed the structure
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">// of the file, which includes scan meta-data, but not the spectra themselves
+</span><span style="color:#75715e"></span>    ISpectrum spectrum <span style="color:#f92672">=</span> scan<span style="color:#f92672">.</span><span style="color:#a6e22e">fetchSpectrum</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+    <span style="color:#66d9ef">int</span> scanNumInternal <span style="color:#f92672">=</span> scan<span style="color:#f92672">.</span><span style="color:#a6e22e">getNum</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span> <span style="color:#75715e">// internal scan number (1 based)
+</span><span style="color:#75715e"></span>    IndexElement idxElem <span style="color:#f92672">=</span> idx<span style="color:#f92672">.</span><span style="color:#a6e22e">getByNum</span><span style="color:#f92672">(</span>scanNumInternal<span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+    <span style="color:#66d9ef">int</span> scanNumRaw <span style="color:#f92672">=</span> idxElem<span style="color:#f92672">.</span><span style="color:#a6e22e">getRawNumber</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+    <span style="color:#66d9ef">int</span> numPoints <span style="color:#f92672">=</span> spectrum<span style="color:#f92672">.</span><span style="color:#a6e22e">getMZs</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">.</span><span style="color:#a6e22e">length</span><span style="color:#f92672">;</span>
+    System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">printf</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Scan #%d (raw #%d) contained %d data points\n&#34;</span><span style="color:#f92672">,</span>
+                      scanNumInternal<span style="color:#f92672">,</span> scanNumRaw<span style="color:#f92672">,</span> numPoints<span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+  <span style="color:#f92672">}</span>
 
-  // we'll iterate by scan numbers
-  TreeMap&lt;Integer, IScan&gt; num2scan = ms2idx.getNum2scan();
-  Set&lt;Map.Entry&lt;Integer, IScan&gt;&gt; scanEntries = num2scan.entrySet();
-  for (Map.Entry&lt;Integer, IScan&gt; scanEntry : scanEntries) {
-    Integer scanNum = scanEntry.getKey();
-    IScan scan = scanEntry.getValue();
+  <span style="color:#75715e">// You can use the ScanCollection API to navigate around the LCMS run.
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// E.g., get the number fo the first scan at ms lelvel 2
+</span><span style="color:#75715e"></span>  Integer firstMS2ScanNum <span style="color:#f92672">=</span> scans<span style="color:#f92672">.</span><span style="color:#a6e22e">getMapMsLevel2index</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">.</span><span style="color:#a6e22e">get</span><span style="color:#f92672">(</span>2<span style="color:#f92672">)</span><span style="color:#f92672">.</span><span style="color:#a6e22e">getNum2scan</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">.</span><span style="color:#a6e22e">firstKey</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+  IScan scan <span style="color:#f92672">=</span> scans<span style="color:#f92672">.</span><span style="color:#a6e22e">getScanByNum</span><span style="color:#f92672">(</span>firstMS2ScanNum<span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+  <span style="color:#75715e">// Now get the next scan at the same MS level
+</span><span style="color:#75715e"></span>  scan <span style="color:#f92672">=</span> scans<span style="color:#f92672">.</span><span style="color:#a6e22e">getNextScanAtSameMsLevel</span><span style="color:#f92672">(</span>scan<span style="color:#f92672">)</span><span style="color:#f92672">;</span>
 
-    // note that we use fetchXXX() method here, because we've only parsed the structure
-    // of the file, which includes scan meta-data, but not the spectra themselves
-    ISpectrum spectrum = scan.fetchSpectrum();
-    int scanNumInternal = scan.getNum(); // internal scan number (1 based)
-    IndexElement idxElem = idx.getByNum(scanNumInternal);
-    int scanNumRaw = idxElem.getRawNumber();
-    int numPoints = spectrum.getMZs().length;
-    System.out.printf(&quot;Scan #%d (raw #%d) contained %d data points\n&quot;,
-                      scanNumInternal, scanNumRaw, numPoints);
-  }
+  <span style="color:#75715e">// Because we did parsing of the whole structure, an important method was called
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// automagically for us: ScanCollectionHelper.finalizeScanCollection(scans),
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// which sets up parent child relations between scans even if that information was
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">//  not in the scan meta-data. You can also call this method yourself if it you
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// only parse a portion of the file
+</span><span style="color:#75715e"></span>  String parentScanRef <span style="color:#f92672">=</span> scan<span style="color:#f92672">.</span><span style="color:#a6e22e">getPrecursor</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">.</span><span style="color:#a6e22e">getParentScanRefRaw</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+  System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">printf</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Scan #%d (MS%d) is a child scan of {%s}\n&#34;</span><span style="color:#f92672">,</span>
+                    scan<span style="color:#f92672">.</span><span style="color:#a6e22e">getNum</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">,</span> scan<span style="color:#f92672">.</span><span style="color:#a6e22e">getMsLevel</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">,</span> parentScanRef<span style="color:#f92672">)</span><span style="color:#f92672">;</span>
 
-  // You can use the ScanCollection API to navigate around the LCMS run.
-  // E.g., get the number fo the first scan at ms lelvel 2
-  Integer firstMS2ScanNum = scans.getMapMsLevel2index().get(2).getNum2scan().firstKey();
-  IScan scan = scans.getScanByNum(firstMS2ScanNum);
-  // Now get the next scan at the same MS level
-  scan = scans.getNextScanAtSameMsLevel(scan);
-
-  // Because we did parsing of the whole structure, an important method was called
-  // automagically for us: ScanCollectionHelper.finalizeScanCollection(scans),
-  // which sets up parent child relations between scans even if that information was
-  //  not in the scan meta-data. You can also call this method yourself if it you
-  // only parse a portion of the file
-  String parentScanRef = scan.getPrecursor().getParentScanRefRaw();
-  System.out.printf(&quot;Scan #%d (MS%d) is a child scan of {%s}\n&quot;,
-                    scan.getNum(), scan.getMsLevel(), parentScanRef);
-
-  data.releaseMemory();
-}
-</code></pre>
-
-<p>I hope the comments in the code are enough to get you started.</p>
-
+  data<span style="color:#f92672">.</span><span style="color:#a6e22e">releaseMemory</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><p>I hope the comments in the code are enough to get you started.</p>
 <h2 id="parsing-identification-files-pepxml-protxml-mzidentml">Parsing identification files (PepXML, ProtXML, MzIdentML)</h2>
-
 <p>The library gives low level access to those file formats. There is no unifying API here, as the formats are very different. These parsers are not hand optimized for efficiency, so they might consume quite a bit more memory than they should, but they also are error resilient.</p>
-
 <p>Working with these files is simpler, you call the parser and get a single data-structure, that follows the schemas of corresponding XMLs.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">
+Path path <span style="color:#f92672">=</span> Paths<span style="color:#f92672">.</span><span style="color:#a6e22e">get</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;some-path-to.pep.xml&#34;</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
 
-<pre><code class="language-java">
-Path path = Paths.get(&quot;some-path-to.pep.xml&quot;);
-
-// a single call to parse the whole file
-MsmsPipelineAnalysis msmsPipelineAnalysis = PepXmlParser.parse(path);
+<span style="color:#75715e">// a single call to parse the whole file
+</span><span style="color:#75715e"></span>MsmsPipelineAnalysis msmsPipelineAnalysis <span style="color:#f92672">=</span> PepXmlParser<span style="color:#f92672">.</span><span style="color:#a6e22e">parse</span><span style="color:#f92672">(</span>path<span style="color:#f92672">)</span><span style="color:#f92672">;</span>
 
 
-List&lt;MsmsRunSummary&gt; msmsRunSummaries = msmsPipelineAnalysis.getMsmsRunSummary();
-for (MsmsRunSummary msmsRunSummary : msmsRunSummaries) {
-    List&lt;SpectrumQuery&gt; spectrumQueries = msmsRunSummary.getSpectrumQuery();
-    System.out.printf(&quot;Spectrum queries from MS/MS run summary: %s\n&quot;,
-                      msmsRunSummary.getBaseName());
-    for (SpectrumQuery sq : spectrumQueries) {
-        System.out.printf(&quot;Spec ID: [%s], RT: [%.2f], precursor neutral mass: [%.3f]\n&quot;,
-                          sq.getSpectrum(), sq.getRetentionTimeSec(), sq.getPrecursorNeutralMass());
-    }
-    System.out.printf(&quot;Done with MS/MS run summary: %s\n&quot;, msmsRunSummary.getBaseName());
-}
-</code></pre>
-
+List<span style="color:#f92672">&lt;</span>MsmsRunSummary<span style="color:#f92672">&gt;</span> msmsRunSummaries <span style="color:#f92672">=</span> msmsPipelineAnalysis<span style="color:#f92672">.</span><span style="color:#a6e22e">getMsmsRunSummary</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+<span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span>MsmsRunSummary msmsRunSummary <span style="color:#f92672">:</span> msmsRunSummaries<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+    List<span style="color:#f92672">&lt;</span>SpectrumQuery<span style="color:#f92672">&gt;</span> spectrumQueries <span style="color:#f92672">=</span> msmsRunSummary<span style="color:#f92672">.</span><span style="color:#a6e22e">getSpectrumQuery</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+    System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">printf</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Spectrum queries from MS/MS run summary: %s\n&#34;</span><span style="color:#f92672">,</span>
+                      msmsRunSummary<span style="color:#f92672">.</span><span style="color:#a6e22e">getBaseName</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+    <span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span>SpectrumQuery sq <span style="color:#f92672">:</span> spectrumQueries<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">printf</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Spec ID: [%s], RT: [%.2f], precursor neutral mass: [%.3f]\n&#34;</span><span style="color:#f92672">,</span>
+                          sq<span style="color:#f92672">.</span><span style="color:#a6e22e">getSpectrum</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">,</span> sq<span style="color:#f92672">.</span><span style="color:#a6e22e">getRetentionTimeSec</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">,</span> sq<span style="color:#f92672">.</span><span style="color:#a6e22e">getPrecursorNeutralMass</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+    <span style="color:#f92672">}</span>
+    System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">printf</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Done with MS/MS run summary: %s\n&#34;</span><span style="color:#f92672">,</span> msmsRunSummary<span style="color:#f92672">.</span><span style="color:#a6e22e">getBaseName</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+<span style="color:#f92672">}</span>
+</code></pre></div>
 
 			<aside class="copyright" role="note">
 				
-				&copy; 2018 Dmitry Avtonomov. Released under the Apache 2.0 license. &ndash;
+				&copy; 2020 Dmitry Avtonomov. Released under the Apache 2.0 license. &ndash;
 				
 			</aside>
 
@@ -703,7 +680,7 @@ for (MsmsRunSummary msmsRunSummary : msmsRunSummaries) {
 <nav class="pagination" aria-label="Footer">
   <div class="previous">
   
-      <a href="http://batmass.org/contacts/" title="Contact information">
+      <a href="http://batmass.org/tutorial/parsing-pep-ids/" title="Parsing pep.xml files">
         <span class="direction">
           Previous
         </span>
@@ -713,7 +690,7 @@ for (MsmsRunSummary msmsRunSummary : msmsRunSummaries) {
           </div>
           <div class="stretch">
             <div class="title">
-              Contact information
+              Parsing pep.xml files
             </div>
           </div>
         </div>
@@ -723,14 +700,14 @@ for (MsmsRunSummary msmsRunSummary : msmsRunSummaries) {
 
   <div class="next">
   
-      <a href="http://batmass.org/tutorial/parsing-pep-ids/" title="Parsing pep.xml files">
+      <a href="http://batmass.org/contacts/" title="Contact information">
         <span class="direction">
           Next
         </span>
         <div class="page">
           <div class="stretch">
             <div class="title">
-              Parsing pep.xml files
+              Contact information
             </div>
           </div>
           <div class="button button-next" role="button" aria-label="Next">

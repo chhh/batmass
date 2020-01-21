@@ -1,6 +1,6 @@
 ---
 weight: 31
-title: "MSFTBX: Mass-Spec File Toolbox, the data access library"
+title: "Data access library: MSFTBX - Mass-Spec File Toolbox"
 ---
 
 The data access library is at the core of _BatMass_, but is a separate standalone project. It can be used in regular Java programs (read as a _jar_ library) and NetBeans platform applications via the included NetBeans Module wrapper.
