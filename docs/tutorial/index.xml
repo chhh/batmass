@@ -2,65 +2,65 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Tutorials on BatMass</title>
-    <link>http://batmass.org/tutorial/</link>
+    <link>https://batmass.org/tutorial/</link>
     <description>Recent content in Tutorials on BatMass</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     
-	<atom:link href="http://batmass.org/tutorial/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://batmass.org/tutorial/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Data access library (LC/MS files and simple Peptide ID examples)</title>
-      <link>http://batmass.org/tutorial/data-access-layer/</link>
+      <link>https://batmass.org/tutorial/data-access-layer/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>http://batmass.org/tutorial/data-access-layer/</guid>
+      <guid>https://batmass.org/tutorial/data-access-layer/</guid>
       <description>The data access library provides a relatively rich API to mzML/mzXML files (MS level, polarity, precursor isolation window, instrument data, etc.) and a few other file formats common to the proteomics field, such as PepXML, ProtXML and MzIdentML. In this tutorial will step through parsing some data, using the library as a jar in a simple console window application.</description>
     </item>
     
     <item>
       <title>Parsing pep.xml files</title>
-      <link>http://batmass.org/tutorial/parsing-pep-ids/</link>
+      <link>https://batmass.org/tutorial/parsing-pep-ids/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>http://batmass.org/tutorial/parsing-pep-ids/</guid>
+      <guid>https://batmass.org/tutorial/parsing-pep-ids/</guid>
       <description>The data access library provides parsers for file formats common to the proteomics field, such as PepXML, ProtXML and MzIdentML. In this tutorial I&#39;ll show you how to parse a PepXML file.</description>
     </item>
     
     <item>
       <title>Overlay peptide IDs on 2D map</title>
-      <link>http://batmass.org/tutorial/overlay-peptide-ids-on-map2d/</link>
+      <link>https://batmass.org/tutorial/overlay-peptide-ids-on-map2d/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>http://batmass.org/tutorial/overlay-peptide-ids-on-map2d/</guid>
+      <guid>https://batmass.org/tutorial/overlay-peptide-ids-on-map2d/</guid>
       <description>Overlaying contents of pepxml files on a 2D map.</description>
     </item>
     
     <item>
       <title>Display custom data on 2D map</title>
-      <link>http://batmass.org/tutorial/custom-drawing/</link>
+      <link>https://batmass.org/tutorial/custom-drawing/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>http://batmass.org/tutorial/custom-drawing/</guid>
+      <guid>https://batmass.org/tutorial/custom-drawing/</guid>
       <description>How to display your custom data on Map2D without any coding. You&#39;ll need to provide a simple file format.</description>
     </item>
     
     <item>
       <title>Setting up development environment</title>
-      <link>http://batmass.org/tutorial/setting-up-development-environment/</link>
+      <link>https://batmass.org/tutorial/setting-up-development-environment/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>http://batmass.org/tutorial/setting-up-development-environment/</guid>
+      <guid>https://batmass.org/tutorial/setting-up-development-environment/</guid>
       <description>This guide will quickly step you through setting up the environment for developing new functionality for BatMass. All the downloads, setting up the IDE and up to building BatMass from scratch.</description>
     </item>
     
     <item>
       <title>Developing the first plugin</title>
-      <link>http://batmass.org/tutorial/developing-first-plugin/</link>
+      <link>https://batmass.org/tutorial/developing-first-plugin/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>http://batmass.org/tutorial/developing-first-plugin/</guid>
+      <guid>https://batmass.org/tutorial/developing-first-plugin/</guid>
       <description>We will step through developing one complete plugin, which will add support for a new type of files holding LC/MS feature information, which will be viewable as a table and can be overlaid on top of Map 2D view.</description>
     </item>
     
