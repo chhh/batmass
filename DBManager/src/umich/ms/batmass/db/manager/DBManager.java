@@ -32,7 +32,7 @@ import umich.ms.batmass.nbputils.OutputWndPrinter;
  *
  * @author Dmitry Avtonomov
  */
-@ServiceProvider(service = DBManager.class)
+//@ServiceProvider(service = DBManager.class)
 public class DBManager {
 
     protected static volatile DBManager dbm;
