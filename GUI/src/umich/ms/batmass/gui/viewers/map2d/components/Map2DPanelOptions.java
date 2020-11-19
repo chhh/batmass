@@ -21,6 +21,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Objects;
 import org.apache.commons.beanutils.BeanUtils;
 import org.openide.util.Exceptions;
+import umich.ms.batmass.gui.viewers.map2d.noise.AbMzRtTransformNoop;
+import umich.ms.batmass.gui.viewers.map2d.noise.DenoiseIsoSpacing;
 import umich.ms.util.DoubleRange;
 
 /**
@@ -44,8 +46,8 @@ public class Map2DPanelOptions {
     public static final String PROP_MSNOVERLAY = "msnOverlay";
     
     public static class Denoise {
-        public static final String NONE = "None";
-        public static final String ISO_SPACING = "IsoSpacing";
+        public static final String NONE = AbMzRtTransformNoop.NAME;
+        public static final String ISO_SPACING = DenoiseIsoSpacing.NAME;
         public static final String MEX_HAT = "MexHat";
         public static final String ANOTHER = "Another";
     }

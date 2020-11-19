@@ -29,6 +29,9 @@ import org.apache.commons.configuration.ConfigurationException;
 import org.openide.util.Exceptions;
 import umich.ms.batmass.gui.core.api.data.MzRtRegion;
 import umich.ms.batmass.gui.core.api.util.ArrayUtils;
+import umich.ms.batmass.gui.viewers.map2d.noise.AbMzRtTransformNoop;
+import umich.ms.batmass.gui.viewers.map2d.noise.DenoiseIsoSpacing;
+import umich.ms.batmass.gui.viewers.map2d.noise.IAbMzRtTransform;
 import umich.ms.batmass.gui.viewers.map2d.options.Map2DOptions;
 import umich.ms.batmass.nbputils.OutputWndPrinter;
 import umich.ms.datatypes.scan.IScan;
@@ -215,11 +218,8 @@ public final class BaseMap2D {
         this.maxValInFullRow = new double[height];
 
         IScan scan;
-        TreeMap<Integer, IScan> mapNum2scan = scans.getMapNum2scan();
-        IScan[] scansToAverage = new IScan[4];
         ISpectrum spectrum;
         Integer mzIdxLo, mzIdxHi;
-        int x, y;
         boolean hasProfile = true;
         double[] masses, intensities;
         filledRowIds = new int[scansByRtSpanAtMsLevel.size()];
@@ -234,7 +234,17 @@ public final class BaseMap2D {
                     String.format("BaseMap2D: Denoise type [%s]", denoiseType));
         }
         
-        
+        IAbMzRtTransform denoiser;
+        switch (denoiseType) {
+            case AbMzRtTransformNoop.NAME:
+                denoiser = new AbMzRtTransformNoop();
+                break;
+            case DenoiseIsoSpacing.NAME:
+                denoiser = DenoiseIsoSpacing.from(scansByRtSpanAtMsLevel);
+                break;
+            default:
+                denoiser = new AbMzRtTransformNoop();
+        }
         
         for (Map.Entry<Integer, IScan> num2scan : scansByRtSpanAtMsLevel.entrySet()) {
             scan = num2scan.getValue();
@@ -251,7 +261,7 @@ public final class BaseMap2D {
                 continue;
             }
             
-            y = extrapolateRtToY(scan.getRt());
+            int y = extrapolateRtToY(scan.getRt());
             filledRowIds[idx] = y;
             idx++;
             if (y > this.map.length - 1) {
@@ -280,20 +290,20 @@ public final class BaseMap2D {
                 OutputWndPrinter.printErr("DEBUG",
                         String.format("BaseMap2D: (mzIdxHi < 0 || mzIdxHi > masses.length-1) for scan #%d", scan.getNum()));
             }
-            
-            
-            double intensityCut = findDenoiseThreshold(masses, intensities);
-            
-            
+            if (applyDenoise)
+                denoiser.configure(scan);
             
             double maxInt = spectrum.getMaxInt();
             for (int i = mzIdxLo; i <= mzIdxHi; i++) {
 
-                x = extrapolateMzToX(masses[i]);
+                int x = extrapolateMzToX(masses[i]);
                 addPeakRaw(x, y, intensities[i]);
                 
-                if (applyDenoise && intensities[i] < intensityCut) {
-                    continue;
+                double ab = intensities[i];
+                if (applyDenoise) {
+                    ab = denoiser.apply(masses[i], ab);
+                    if (ab <= 0)
+                        continue;
                 }
                 if (x > this.map[0].length-1) {
                     OutputWndPrinter.printErr("DEBUG",
@@ -378,7 +388,7 @@ public final class BaseMap2D {
 //                }
 
 //                addPeak(x, y, curIntensity);
-                addPeak(x, y, intensities[i]);
+                addPeak(x, y, ab);
                 maxValInFullRow[y] = maxInt;
             }
 
@@ -651,72 +661,6 @@ public final class BaseMap2D {
         } else {
             map[y][x] += intensity;
         }
-    }
-    
-    private double findDenoiseThreshold(double[] mz, double[] ints) {
-        double background = Double.NaN;
-        if (mz.length < 10) {
-            return background;
-        }
-        double quantile = 0.5;      
-//        double[] copyOfInts = Arrays.copyOf(ints, ints.length);
-//        Arrays.sort(copyOfInts);
-//        double lower = copyOfInts[0];
-//        double upper = copyOfInts[(int) (copyOfInts.length * quantile)];
-        double[] calcedQuantile = ArrayUtils.calcQuantileValue(ints, quantile);
-        double lower = calcedQuantile[0];
-        double upper = calcedQuantile[1];
-        double interval = (upper - lower) / 20d;
-
-        int count1, count2, count3, count4, noise;
-        double ratio = 1.2d;
-
-        for (double bk = lower; bk < upper; bk += interval) {
-            count1 = 0;
-            count2 = 0;
-            count3 = 0;
-            count4 = 0;
-            noise = 0;
-            background = bk;
-            
-            int len = mz.length;
-            double dist;
-            for (int idxLo = 0; idxLo < len-1; idxLo++) {
-                if (ints[idxLo] < background) {
-                    continue;
-                }
-                for (int idxHi = idxLo + 1; idxLo < len; idxLo++) {
-                    if (idxHi < background) {
-                        continue;
-                    }
-                    dist = mz[idxHi] - mz[idxLo];
-                    if (dist < 0.23 || dist > 1.05 ) {
-                        noise++;
-                        break;
-                    }
-                    
-                    if (ints[idxLo] > ints[idxHi]) {
-                        if (       dist > 0.24 && dist < 0.26) {
-                            count1++;
-                            break;
-                        } else if (dist > 0.30 && dist < 0.36) {
-                            count2++;
-                            break;
-                        } else if (dist > 0.45 && dist < 0.55) {
-                            count3++;
-                            break;
-                        } else if (dist > 0.95 && dist < 1.05) {
-                            count4++;
-                            break;
-                        }
-                    } 
-                }
-            }
-            if (noise < (count1 + count2 + count3 + count4) * ratio) {
-                break;
-            }
-        }
-        return background;
     }
 
     public double[][] getMap() {
