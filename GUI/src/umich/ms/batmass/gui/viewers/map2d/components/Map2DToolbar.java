@@ -77,8 +77,8 @@ public class Map2DToolbar extends BMToolBar implements PropertyChangeListener {
     
     protected JComboBox<DoubleRange> cmbMzRange;
     protected DefaultComboBoxModel<DoubleRange> mzRangesModel;
-    
-    protected JCheckBox checkBoxDenoise;
+
+    protected JComboBox<String> comboDenoise;    
     protected JFormattedTextField fmtIntensityCutoff;
 
     protected JButton btnUpdate;
@@ -99,11 +99,8 @@ public class Map2DToolbar extends BMToolBar implements PropertyChangeListener {
     private HomeMapAction homeAction;
 
     protected static final int toolbarBtnHSpacing = 3;
-    private final JRadioButton radioDenoiseMexHat;
-    private final JRadioButton radioDenoiseAnother;
-    private final ButtonGroup btnGroupDenoiseChoice;
-    private final JRadioButton radioDenoiseIsoSpacing;
-
+   
+    
     /**
      * Creates a new toolbar with all the controls disabled.
      * @param linkSupport 
@@ -174,29 +171,23 @@ public class Map2DToolbar extends BMToolBar implements PropertyChangeListener {
         add(btnMsNDisplay);
         add(Box.createHorizontalStrut(toolbarBtnHSpacing));
         
-        checkBoxDenoise = new JCheckBox();
-        checkBoxDenoise.setSelected(false);
-        String checkBoxDenoiseTooltip = "Denoising based on checking isotopic peaks";
-        checkBoxDenoise.setToolTipText(checkBoxDenoiseTooltip);
-        JLabel lblDenoise = new JLabel("Denoise");
-        lblDenoise.setToolTipText(checkBoxDenoiseTooltip);
-        add(checkBoxDenoise);
-        add(Box.createHorizontalStrut(toolbarBtnHSpacing));
+        
+        
+        
+        DefaultComboBoxModel<String> modelComboDenoise = new DefaultComboBoxModel<>(new String[] {
+            Map2DPanelOptions.Denoise.NONE,
+            Map2DPanelOptions.Denoise.ISO_SPACING,
+            Map2DPanelOptions.Denoise.MEX_HAT,
+            Map2DPanelOptions.Denoise.ANOTHER,
+        });
+        comboDenoise = new JComboBox<String>(modelComboDenoise);
+        final String tipDenoise = "Apply denoising to map";
+        final JLabel lblDenoise = new JLabel("Denoise");
+        
+        comboDenoise.setToolTipText(tipDenoise);
+        lblDenoise.setToolTipText(tipDenoise);
         add(lblDenoise);
-        add(Box.createHorizontalStrut(toolbarBtnHSpacing));
-        
-        
-        btnGroupDenoiseChoice = new ButtonGroup();
-        radioDenoiseIsoSpacing = new JRadioButton("IsoSpacing");
-        radioDenoiseMexHat = new JRadioButton("MexHat");
-        radioDenoiseAnother = new JRadioButton("Another one");
-        btnGroupDenoiseChoice.add(radioDenoiseIsoSpacing);
-        btnGroupDenoiseChoice.add(radioDenoiseMexHat);
-        btnGroupDenoiseChoice.add(radioDenoiseAnother);
-        radioDenoiseMexHat.setSelected(true);
-        add(radioDenoiseIsoSpacing);
-        add(radioDenoiseMexHat);
-        add(radioDenoiseAnother);
+        add(comboDenoise);
         add(Box.createHorizontalStrut(toolbarBtnHSpacing));
         
         String fmtIntensityCutoffTooltip = "Apply hard cutoff at the specified intensity level.";
@@ -377,22 +368,11 @@ public class Map2DToolbar extends BMToolBar implements PropertyChangeListener {
             }
         });
         
-        // Do Denoise checkbox
-        checkBoxDenoise.setSelected(!Map2DPanelOptions.Denoise.NONE.equals(options.getDoDenoise()));
-        checkBoxDenoise.addItemListener((ItemEvent e) -> {
-            boolean isSelected = checkBoxDenoise.isSelected();
-            if (!isSelected) {
-                options.setDoDenoise(Map2DPanelOptions.Denoise.NONE);
-            } else {
-                if (radioDenoiseMexHat.isSelected())
-                    options.setDoDenoise(Map2DPanelOptions.Denoise.MEX_HAT);
-                else if (radioDenoiseIsoSpacing.isSelected())
-                    options.setDoDenoise(Map2DPanelOptions.Denoise.ISO_SPACING);
-                else if (radioDenoiseAnother.isSelected())
-                    options.setDoDenoise(Map2DPanelOptions.Denoise.ANOTHER);
-            }
+        // Denoise combo box
+        comboDenoise.addItemListener((e) -> {
+            options.setDoDenoise((String)comboDenoise.getSelectedItem());
         });
-        checkBoxDenoise.setEnabled(true);
+        comboDenoise.setEnabled(true);
         
         // Cutoff value
         fmtIntensityCutoff.setValue(options.getCutoff());
