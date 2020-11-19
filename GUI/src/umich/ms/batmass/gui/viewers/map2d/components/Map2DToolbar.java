@@ -30,6 +30,7 @@ import java.util.TreeMap;
 import javax.swing.Action;
 import javax.swing.ActionMap;
 import javax.swing.Box;
+import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -37,6 +38,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
+import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
 import javax.swing.SwingConstants;
@@ -96,6 +98,10 @@ public class Map2DToolbar extends BMToolBar implements PropertyChangeListener {
     private HomeMapAction homeAction;
 
     protected static final int toolbarBtnHSpacing = 3;
+    private final JRadioButton radioDenoiseMexHat;
+    private final JRadioButton radioDenoiseAnother;
+    private final ButtonGroup btnGroupDenoiseChoice;
+    private final JRadioButton radioDenoiseIsoSpacing;
 
     /**
      * Creates a new toolbar with all the controls disabled.
@@ -176,6 +182,20 @@ public class Map2DToolbar extends BMToolBar implements PropertyChangeListener {
         add(checkBoxDenoise);
         add(Box.createHorizontalStrut(toolbarBtnHSpacing));
         add(lblDenoise);
+        add(Box.createHorizontalStrut(toolbarBtnHSpacing));
+        
+        
+        btnGroupDenoiseChoice = new ButtonGroup();
+        radioDenoiseIsoSpacing = new JRadioButton("IsoSpacing");
+        radioDenoiseMexHat = new JRadioButton("MexHat");
+        radioDenoiseAnother = new JRadioButton("Another one");
+        btnGroupDenoiseChoice.add(radioDenoiseIsoSpacing);
+        btnGroupDenoiseChoice.add(radioDenoiseMexHat);
+        btnGroupDenoiseChoice.add(radioDenoiseAnother);
+        radioDenoiseMexHat.setSelected(true);
+        add(radioDenoiseIsoSpacing);
+        add(radioDenoiseMexHat);
+        add(radioDenoiseAnother);
         add(Box.createHorizontalStrut(toolbarBtnHSpacing));
         
         String fmtIntensityCutoffTooltip = "Apply hard cutoff at the specified intensity level.";
