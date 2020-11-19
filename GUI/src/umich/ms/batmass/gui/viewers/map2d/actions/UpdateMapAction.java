@@ -39,6 +39,7 @@ import static umich.ms.batmass.gui.viewers.map2d.actions.GoToAction.ACCELERATOR;
 import umich.ms.batmass.gui.viewers.map2d.components.Map2DComponent;
 import umich.ms.batmass.gui.viewers.map2d.components.Map2DPanel;
 import umich.ms.batmass.gui.viewers.map2d.components.Map2DPanelOptions;
+import umich.ms.batmass.gui.viewers.map2d.components.Map2DZoomLevel;
 import umich.ms.batmass.nbputils.SwingHelper;
 import umich.ms.batmass.nbputils.actions.ActionUtils;
 import umich.ms.datatypes.LCMSDataSubset;
@@ -92,6 +93,7 @@ public class UpdateMapAction extends AbstractAction {
             return;
         }
         final Map2DPanel mapPanel = mapComponent.getMap2DPanel();
+        final Map2DZoomLevel zoomLevelLast = mapPanel.getZoomLevels().getLast();
         if (mapPanel == null) {
             throw new IllegalStateException("Update action could not get a map panel"
                     + " from the map component");
@@ -106,15 +108,13 @@ public class UpdateMapAction extends AbstractAction {
             return;
         }
 
-        final Runnable postDataLoaded = new Runnable() {
-            @Override
-            public void run() {
-                mapPanel.setOptions(optionsNew);
-                mapPanel.resetZoomLevels();
-                mapPanel.setDefaultViewport(null);
-                mapPanel.initMap();
-                mapPanel.zoomOut(true, null, true, true);
-            }
+        final Runnable postDataLoaded = () -> {
+            mapPanel.setOptions(optionsNew);
+            mapPanel.resetZoomLevels();
+            mapPanel.setDefaultViewport(null);
+            mapPanel.initMap();
+            mapPanel.zoomOut(true, null, true, true);
+            mapPanel.zoom(zoomLevelLast.getAxes().getMapDimensions());
         };
         DiffNode msLevelChange = diff.getChild("msLevel");
         DiffNode mzRangeChange = diff.getChild("mzRange");
@@ -137,24 +137,20 @@ public class UpdateMapAction extends AbstractAction {
             String progressHandleName = "Updating currently loaded spectra";
             final ProgressHandle ph = ProgressHandle.createHandle(progressHandleName);
             final Runnable loadData;
-            loadData = new Runnable() {
-                @Override
-                public void run() {
-                    
-                    try {
-                        // unload old data
-                        Set<LCMSDataSubset> excludeFutureLoadedSubset = Collections.singleton(subsetToLoad);
-                        mapComponent.unlaodFromAll(excludeFutureLoadedSubset);
-                        // load new data
-                        mapComponent.loadIntoAll(subsetToLoad);
-                    } catch (FileParsingException ex) {
-                        Exceptions.printStackTrace(ex);
-                    } finally {
-                        ph.finish();
-                    }
-
-                    SwingHelper.invokeOnEDT(postDataLoaded);
+            loadData = () -> {
+                try {
+                    // unload old data
+                    Set<LCMSDataSubset> excludeFutureLoadedSubset = Collections.singleton(subsetToLoad);
+                    mapComponent.unlaodFromAll(excludeFutureLoadedSubset);
+                    // load new data
+                    mapComponent.loadIntoAll(subsetToLoad);
+                } catch (FileParsingException ex) {
+                    Exceptions.printStackTrace(ex);
+                } finally {
+                    ph.finish();
                 }
+                
+                SwingHelper.invokeOnEDT(postDataLoaded);
             };
             BaseProgressUtils.runOffEventThreadWithProgressDialog(loadData, dialogTitle, ph, false, 0, 300);
             ph.start();
