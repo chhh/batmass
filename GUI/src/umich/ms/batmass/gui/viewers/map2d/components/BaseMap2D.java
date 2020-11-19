@@ -75,7 +75,7 @@ public final class BaseMap2D {
     
     private Interval1D<Double> precursorMzRange;
     private int msLevel;
-    private boolean doDenoise = false;
+    private String doDenoise = Map2DPanelOptions.Denoise.NONE;
 
     private final MzRtRegion mapDimensions;
 
@@ -224,7 +224,18 @@ public final class BaseMap2D {
         double[] masses, intensities;
         filledRowIds = new int[scansByRtSpanAtMsLevel.size()];
         int idx = 0;
-        double denoisingTimeCounter = 0;
+        
+        final String denoiseType = isDoDenoise();
+        final boolean applyDenoise = !Map2DPanelOptions.Denoise.NONE.equals(denoiseType);
+        
+        // TODO: if applyDenoise - run through spectra and do the denoising processing
+        if (applyDenoise) {
+            OutputWndPrinter.printErr("WARN",
+                    String.format("BaseMap2D: Denoise type [%s]", denoiseType));
+        }
+        
+        
+        
         for (Map.Entry<Integer, IScan> num2scan : scansByRtSpanAtMsLevel.entrySet()) {
             scan = num2scan.getValue();
             if (doProfileModeGapFilling && !scan.isCentroided()) {
@@ -270,17 +281,10 @@ public final class BaseMap2D {
                         String.format("BaseMap2D: (mzIdxHi < 0 || mzIdxHi > masses.length-1) for scan #%d", scan.getNum()));
             }
             
-            double denoiseThreshold = Double.NaN;
-            boolean applyDenoise = isDoDenoise();
-            if (applyDenoise) {
-                long start = System.nanoTime();
-                denoiseThreshold = findDenoiseThreshold(masses, intensities);
-                double denoisingTime = (System.nanoTime() - start) / 1e6;
-                denoisingTimeCounter = denoisingTimeCounter + denoisingTime;
-                if (Double.isNaN(denoiseThreshold)) {
-                    applyDenoise = false;
-                }
-            }
+            
+            double intensityCut = findDenoiseThreshold(masses, intensities);
+            
+            
             
             double maxInt = spectrum.getMaxInt();
             for (int i = mzIdxLo; i <= mzIdxHi; i++) {
@@ -288,7 +292,7 @@ public final class BaseMap2D {
                 x = extrapolateMzToX(masses[i]);
                 addPeakRaw(x, y, intensities[i]);
                 
-                if (applyDenoise && intensities[i] < denoiseThreshold) {
+                if (applyDenoise && intensities[i] < intensityCut) {
                     continue;
                 }
                 if (x > this.map[0].length-1) {
@@ -376,10 +380,6 @@ public final class BaseMap2D {
 //                addPeak(x, y, curIntensity);
                 addPeak(x, y, intensities[i]);
                 maxValInFullRow[y] = maxInt;
-//                if (curIntensity > 1e6) {
-//                    addPeak(x, y, curIntensity);
-//                }
-
             }
 
             if (hasProfile && doProfileModeGapFilling) {
@@ -388,11 +388,6 @@ public final class BaseMap2D {
                     fillProfileGaps(0, y, pixelSizeMz);
                 }
             }
-        }
-        if (isDoDenoise()) {
-            OutputWndPrinter.printErr("DEBUG",
-                    String.format("Denoising took on average: %.2fms (%d scans)\n",
-                            (denoisingTimeCounter) / scansByRtSpanAtMsLevel.size(), scansByRtSpanAtMsLevel.size()));
         }
 
         if (hasProfile) { // profile mode spectrum
@@ -423,7 +418,6 @@ public final class BaseMap2D {
 
         // add a tiny bit to the total intensity, allows not to care about
         // edge values when mapping intensities to colors.
-        // Adding MIN_NORMAL, as totalIntensity shoule be a value > 1.0
         totalIntensityMax += 1e-8;
         return true;
     }
@@ -819,11 +813,11 @@ public final class BaseMap2D {
         return colorLevels;
     }
 
-    public boolean isDoDenoise() {
+    public String isDoDenoise() {
         return doDenoise;
     }
 
-    public void setDoDenoise(boolean doDenoise) {
+    public void setDoDenoise(String doDenoise) {
         this.doDenoise = doDenoise;
     }
 

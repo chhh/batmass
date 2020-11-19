@@ -64,7 +64,7 @@ public class Map2DZoomLevel {
      *          will be rendered.
      */
     public Map2DZoomLevel(int level, IScanCollection scans, MzRtRegion mapDimaensions, Rectangle screenBounds, 
-            int msLevel, Interval1D<Double> precursorMzRange, boolean doDenoise) {
+            int msLevel, Interval1D<Double> precursorMzRange, String doDenoise) {
         this.level = level;
         this.msLevel = msLevel;
         this.precursorMzRange = precursorMzRange;
@@ -72,7 +72,7 @@ public class Map2DZoomLevel {
     }
 
     private void initMapAxesColors(Rectangle screenBounds, MzRtRegion mapDimensions, IScanCollection scans, 
-            int msLevel, Interval1D<Double> precursorMzRange, boolean doDenoise) {
+            int msLevel, Interval1D<Double> precursorMzRange, String doDenoise) {
         this.width = screenBounds.width;
         this.height = screenBounds.height;
         axes = new Map2DAxes(mapDimensions, screenBounds);
@@ -101,7 +101,7 @@ public class Map2DZoomLevel {
      * @param scans
      */
     public void rebuildMapAxesColors(Rectangle screenBounds, IScanCollection scans, 
-            int msLevel, Interval1D<Double> precursorMzRange, boolean doDenoise) {
+            int msLevel, Interval1D<Double> precursorMzRange, String doDenoise) {
         this.msLevel = msLevel;
         this.precursorMzRange = precursorMzRange;
         MzRtRegion mapDims = new MzRtRegion(baseMap.getMzStart(), baseMap.getMzEnd(), baseMap.getRtStart(), baseMap.getRtEnd());
@@ -120,7 +120,7 @@ public class Map2DZoomLevel {
      * @param scans
      */
     public void rebuildMapAxesColors(Rectangle screenBounds, MzRtRegion mapDimensions, IScanCollection scans, 
-            int msLevel, Interval1D<Double> precursorMzRange, boolean doDenoise) {
+            int msLevel, Interval1D<Double> precursorMzRange, String doDenoise) {
         this.msLevel = msLevel;
         this.precursorMzRange = precursorMzRange;
         initMapAxesColors(screenBounds, mapDimensions, scans, msLevel, precursorMzRange, doDenoise);

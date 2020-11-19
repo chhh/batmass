@@ -36,19 +36,26 @@ public class Map2DPanelOptions {
     public static final String PROP_MSLEVEL = "msLevel";
     protected DoubleRange mzRange;
     public static final String PROP_MZRANGE = "mzRange";
-    protected Boolean doDenoise;
+    protected String denoise;
     public static final String PROP_DODENOISE = "doDenoise";
     protected double cutoff = 0.0;
     public static final String PROP_CUTOFF = "cutoff";
     protected Boolean ms2Overlay;
     public static final String PROP_MSNOVERLAY = "msnOverlay";
+    
+    public static class Denoise {
+        public static final String NONE = "None";
+        public static final String ISO_SPACING = "IsoSpacing";
+        public static final String MEX_HAT = "MexHat";
+        public static final String ANOTHER = "Another";
+    }
 
     private transient final PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
 
     public Map2DPanelOptions() {
         this.msLevel = null;
         this.mzRange = null;
-        this.doDenoise = false;
+        this.denoise = Denoise.NONE;
         this.cutoff = 0;
         this.ms2Overlay = false;
     }
@@ -132,8 +139,8 @@ public class Map2DPanelOptions {
      *
      * @return the value of isDoDenoise
      */
-    public Boolean getDoDenoise() {
-        return doDenoise;
+    public String getDoDenoise() {
+        return denoise;
     }
 
     /**
@@ -141,10 +148,10 @@ public class Map2DPanelOptions {
      *
      * @param doDenoise new value of doDenoise
      */
-    public void setDoDenoise(Boolean doDenoise) {
-        Boolean old = this.doDenoise;
-        this.doDenoise = doDenoise;
-        propertyChangeSupport.firePropertyChange(PROP_DODENOISE, old, this.doDenoise);
+    public void setDoDenoise(String denoise) {
+        String old = this.denoise;
+        this.denoise = denoise;
+        propertyChangeSupport.firePropertyChange(PROP_DODENOISE, old, this.denoise);
     }
 
     public Boolean getMs2Overlay() {
@@ -182,7 +189,7 @@ public class Map2DPanelOptions {
         int hash = 5;
         hash = 79 * hash + Objects.hashCode(this.msLevel);
         hash = 79 * hash + Objects.hashCode(this.mzRange);
-        hash = 79 * hash + Objects.hashCode(this.doDenoise);
+        hash = 79 * hash + Objects.hashCode(this.denoise);
         hash = 79 * hash + (int) (Double.doubleToLongBits(this.cutoff) ^ (Double.doubleToLongBits(this.cutoff) >>> 32));
         hash = 79 * hash + Objects.hashCode(this.ms2Overlay);
         return hash;
@@ -209,7 +216,7 @@ public class Map2DPanelOptions {
         if (!Objects.equals(this.mzRange, other.mzRange)) {
             return false;
         }
-        if (!Objects.equals(this.doDenoise, other.doDenoise)) {
+        if (!Objects.equals(this.denoise, other.denoise)) {
             return false;
         }
         if (!Objects.equals(this.ms2Overlay, other.ms2Overlay)) {

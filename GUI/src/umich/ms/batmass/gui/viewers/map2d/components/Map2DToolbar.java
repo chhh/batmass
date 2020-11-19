@@ -57,6 +57,7 @@ import umich.ms.batmass.gui.core.awt.ModifiedFlowLayout;
 import umich.ms.batmass.gui.viewers.map2d.actions.GoToAction;
 import umich.ms.batmass.gui.viewers.map2d.actions.HomeMapAction;
 import umich.ms.batmass.gui.viewers.map2d.actions.UpdateMapAction;
+import umich.ms.batmass.gui.viewers.map2d.options.Map2DOptions;
 import umich.ms.datatypes.LCMSData;
 import umich.ms.datatypes.scan.IScan;
 import umich.ms.datatypes.scancollection.IScanCollection;
@@ -377,11 +378,18 @@ public class Map2DToolbar extends BMToolBar implements PropertyChangeListener {
         });
         
         // Do Denoise checkbox
-        checkBoxDenoise.setSelected(options.getDoDenoise());
-        checkBoxDenoise.addItemListener(new ItemListener() {
-            @Override
-            public void itemStateChanged(ItemEvent e) {
-                options.setDoDenoise(checkBoxDenoise.isSelected());
+        checkBoxDenoise.setSelected(!Map2DPanelOptions.Denoise.NONE.equals(options.getDoDenoise()));
+        checkBoxDenoise.addItemListener((ItemEvent e) -> {
+            boolean isSelected = checkBoxDenoise.isSelected();
+            if (!isSelected) {
+                options.setDoDenoise(Map2DPanelOptions.Denoise.NONE);
+            } else {
+                if (radioDenoiseMexHat.isSelected())
+                    options.setDoDenoise(Map2DPanelOptions.Denoise.MEX_HAT);
+                else if (radioDenoiseIsoSpacing.isSelected())
+                    options.setDoDenoise(Map2DPanelOptions.Denoise.ISO_SPACING);
+                else if (radioDenoiseAnother.isSelected())
+                    options.setDoDenoise(Map2DPanelOptions.Denoise.ANOTHER);
             }
         });
         checkBoxDenoise.setEnabled(true);
@@ -420,7 +428,8 @@ public class Map2DToolbar extends BMToolBar implements PropertyChangeListener {
             } else {
                 comp.setFocusable(false);
             }
-            if (JLabel.class.isAssignableFrom(comp.getClass())) {
+            if (JLabel.class.isAssignableFrom(comp.getClass()) 
+                    || JRadioButton.class.isAssignableFrom(comp.getClass())) {
                 comp.setEnabled(true);
             }
         }

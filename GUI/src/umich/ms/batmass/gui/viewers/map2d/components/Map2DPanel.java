@@ -419,7 +419,7 @@ public class Map2DPanel extends JPanel {
             opts.setMzRange(OPT_DISPLAY_ALL_MZ_REGIONS);
         }
         
-        opts.setDoDenoise(false);
+        opts.setDoDenoise(Map2DPanelOptions.Denoise.NONE);
         setOptions(opts);
     }
 
