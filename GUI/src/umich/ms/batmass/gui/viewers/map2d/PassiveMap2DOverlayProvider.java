@@ -25,5 +25,5 @@ import com.github.davidmoten.rtree.geometry.Rectangle;
  */
 public interface PassiveMap2DOverlayProvider<T extends PassiveMap2DOverlay> extends Iterable<T> {
     RTree<T, Rectangle> getIndex();
-    String getId();
+    PassiveOverlayKey getKey();
 }

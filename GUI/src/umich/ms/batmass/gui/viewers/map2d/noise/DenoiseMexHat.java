@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.NavigableMap;
 import umich.ms.batmass.gui.viewers.map2d.BasePassiveMap2DOverlay;
 import umich.ms.batmass.gui.viewers.map2d.PassiveMap2DOverlayProvider;
+import umich.ms.batmass.gui.viewers.map2d.PassiveOverlayKey;
 import umich.ms.batmass.gui.viewers.map2d.noise.DenoiseMexHat.Data;
 import umich.ms.datatypes.scan.IScan;
 import umich.ms.datatypes.spectrum.ISpectrum;
@@ -32,6 +33,7 @@ import umich.ms.fileio.exceptions.FileParsingException;
 
 public class DenoiseMexHat implements IAbMzRtTransform, PassiveMap2DOverlayProvider<Data> {
     public static final String NAME = "MexHat";
+    public static final String CATEGORY = "Denoise";
     private final RTree<Data, Rectangle> rtree;
 
     public DenoiseMexHat(RTree<Data, Rectangle> rtree) {
@@ -79,8 +81,8 @@ public class DenoiseMexHat implements IAbMzRtTransform, PassiveMap2DOverlayProvi
     }
 
     @Override
-    public String getId() {
-        return NAME;
+    public PassiveOverlayKey getKey() {
+        return new PassiveOverlayKey(NAME, CATEGORY);
     }
     
     

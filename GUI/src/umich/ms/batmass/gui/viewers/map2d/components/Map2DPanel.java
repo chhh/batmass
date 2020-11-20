@@ -15,6 +15,7 @@
  */
 package umich.ms.batmass.gui.viewers.map2d.components;
 
+import umich.ms.batmass.gui.viewers.map2d.PassiveOverlayKey;
 import umich.ms.batmass.gui.viewers.map2d.norm.RangeNormalizer;
 import com.github.davidmoten.rtree.Entry;
 import com.github.davidmoten.rtree.RTree;
@@ -43,9 +44,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.NavigableMap;
+import java.util.Objects;
 import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import javax.swing.JPanel;
 import javax.swing.JToolTip;
 import javax.swing.SwingUtilities;
@@ -72,7 +75,8 @@ import umich.ms.batmass.gui.viewers.featuretable.messages.MsgFeatureClick;
 import umich.ms.batmass.gui.viewers.map2d.PassiveMap2DOverlay;
 import umich.ms.batmass.gui.viewers.map2d.PassiveMap2DOverlayProvider;
 import umich.ms.batmass.gui.viewers.map2d.events.ZoomEvent;
-import umich.ms.batmass.gui.viewers.map2d.messages.MsgStaticOverlay;
+import umich.ms.batmass.gui.viewers.map2d.messages.MsgPassiveOverlay;
+import umich.ms.batmass.gui.viewers.map2d.messages.MsgPassiveOverlayAction;
 import umich.ms.batmass.gui.viewers.map2d.messages.MsgZoom1D;
 import umich.ms.batmass.gui.viewers.map2d.messages.MsgZoom2D;
 import umich.ms.batmass.nbputils.OutputWndPrinter;
@@ -127,7 +131,7 @@ public class Map2DPanel extends JPanel {
     protected BusHandler busHandler;
     protected BusLocalHandler busLocalHandler;
     
-    LinkedHashMap<String, PassiveMap2DOverlayProvider<?>> passiveOverlays;
+    LinkedHashMap<PassiveOverlayKey, PassiveMap2DOverlayProvider<?>> passiveOverlays;
 
     // these fields might go to the Options panel
     private static final double zoomCoef = 1.4d;
@@ -358,11 +362,11 @@ public class Map2DPanel extends JPanel {
     }
 
     public void addPassiveOverlayProvider(PassiveMap2DOverlayProvider provider) {
-        passiveOverlays.put(provider.getId(), provider);
+        passiveOverlays.put(provider.getKey(), provider);
     }
     
     public boolean removePassiveOverlayProvider(PassiveMap2DOverlayProvider provider) {
-        PassiveMap2DOverlayProvider<?> removed = passiveOverlays.remove(provider.getId());
+        PassiveMap2DOverlayProvider<?> removed = passiveOverlays.remove(provider.getKey());
         return removed != null;
     }
 
@@ -612,7 +616,7 @@ public class Map2DPanel extends JPanel {
         
         // passive overlays
         OutputWndPrinter.printOut(TOPIC, "Painting passive overlays ====================");
-        for (Map.Entry<String, PassiveMap2DOverlayProvider<?>> e : passiveOverlays.entrySet()) {
+        for (Map.Entry<PassiveOverlayKey, PassiveMap2DOverlayProvider<?>> e : passiveOverlays.entrySet()) {
             PassiveMap2DOverlayProvider value = e.getValue();
             RTree<PassiveMap2DOverlay, com.github.davidmoten.rtree.geometry.Rectangle> tree = value.getIndex();
             MzRtRegion viewDims = curZoomLvl.getAxes().getMapDimensions();
@@ -1035,10 +1039,11 @@ public class Map2DPanel extends JPanel {
         }
     }
 
+
     public class BusLocalHandler extends AbstractBusPubSub {
 
         @Handler
-        public void onMsgStaticOverlay(MsgStaticOverlay m) {
+        public void onMsgStaticOverlay(MsgPassiveOverlay m) {
             OutputWndPrinter.printOut(TOPIC, "Got MsgStaticOverlay");
             switch (m.whatToDo) {
                 case ADD:
@@ -1052,6 +1057,24 @@ public class Map2DPanel extends JPanel {
             }
         }
         
+        @Handler
+        public void onMsgStaticOverlayAction(MsgPassiveOverlayAction m) {
+            OutputWndPrinter.printOut(TOPIC, "Got MsgPassiveOverlayAction");
+            switch (m.action) {
+                case CLEAR_CATEGORY:
+                    if (m.key.category == null) break;
+                    passiveOverlays.keySet().stream()
+                            .filter(k -> m.key.category.equals(k.category))
+                            .collect(Collectors.toList())
+                            .forEach(k -> passiveOverlays.remove(k));
+                    break;
+                case REMOVE:
+                    passiveOverlays.remove(m.key);
+                    break;
+                default:
+                    throw new AssertionError(m.action.name());
+            }
+        }
     }
 
     //////////////////////////////////////////////////////////////////////

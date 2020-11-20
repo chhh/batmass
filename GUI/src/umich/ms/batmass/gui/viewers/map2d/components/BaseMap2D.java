@@ -30,7 +30,9 @@ import org.apache.commons.configuration.ConfigurationException;
 import org.openide.util.Exceptions;
 import umich.ms.batmass.gui.core.api.data.MzRtRegion;
 import umich.ms.batmass.gui.core.api.util.ArrayUtils;
-import umich.ms.batmass.gui.viewers.map2d.messages.MsgStaticOverlay;
+import umich.ms.batmass.gui.viewers.map2d.PassiveOverlayKey;
+import umich.ms.batmass.gui.viewers.map2d.messages.MsgPassiveOverlay;
+import umich.ms.batmass.gui.viewers.map2d.messages.MsgPassiveOverlayAction;
 import umich.ms.batmass.gui.viewers.map2d.noise.AbMzRtTransformNoop;
 import umich.ms.batmass.gui.viewers.map2d.noise.DenoiseIsoSpacing;
 import umich.ms.batmass.gui.viewers.map2d.noise.DenoiseMexHat;
@@ -242,19 +244,19 @@ public final class BaseMap2D {
         
         IAbMzRtTransform denoiser;
         switch (denoiseType) {
-            case AbMzRtTransformNoop.NAME:
-                denoiser = new AbMzRtTransformNoop();
-                break;
             case DenoiseIsoSpacing.NAME:
                 denoiser = DenoiseIsoSpacing.from(scansByRtSpanAtMsLevel);
                 break;
             case DenoiseMexHat.NAME:
                 DenoiseMexHat mexHat = DenoiseMexHat.from(scansByRtSpanAtMsLevel);
                 denoiser = mexHat;
-                bus.post(new MsgStaticOverlay(MsgStaticOverlay.Action.ADD, mexHat)).now();
+                bus.post(new MsgPassiveOverlay(MsgPassiveOverlay.Action.ADD, mexHat)).now();
                 break;
             default:
                 denoiser = new AbMzRtTransformNoop();
+                MsgPassiveOverlayAction msg = new MsgPassiveOverlayAction(
+                        MsgPassiveOverlayAction.Action.CLEAR_CATEGORY, new PassiveOverlayKey("*", "Denoise"));
+                bus.post(msg).now();
         }
         
         for (Map.Entry<Integer, IScan> num2scan : scansByRtSpanAtMsLevel.entrySet()) {

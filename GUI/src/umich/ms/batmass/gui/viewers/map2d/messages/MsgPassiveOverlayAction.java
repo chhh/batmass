@@ -15,19 +15,19 @@
  */
 package umich.ms.batmass.gui.viewers.map2d.messages;
 
-import umich.ms.batmass.gui.viewers.map2d.PassiveMap2DOverlayProvider;
+import umich.ms.batmass.gui.viewers.map2d.PassiveOverlayKey;
 
 /**
  *
  * @author chhh
  */
-public class MsgStaticOverlay {
-    public final PassiveMap2DOverlayProvider<?> overlay;
-    public static enum Action {ADD, REMOVE}
-    public final Action whatToDo;
+public class MsgPassiveOverlayAction {
+    public enum Action {CLEAR_CATEGORY, REMOVE}
+    public final Action action;
+    public final PassiveOverlayKey key;
 
-    public MsgStaticOverlay(Action whatToDo, PassiveMap2DOverlayProvider<?> overlayProvider) {
-        this.whatToDo = whatToDo;
-        this.overlay = overlayProvider;
+    public MsgPassiveOverlayAction(Action action, PassiveOverlayKey key) {
+        this.action = action;
+        this.key = key;
     }
 }
