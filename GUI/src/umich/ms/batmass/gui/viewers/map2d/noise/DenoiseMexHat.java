@@ -51,9 +51,9 @@ public class DenoiseMexHat implements IAbMzRtTransform, PassiveMap2DOverlayProvi
             } catch (FileParsingException ex) {
                 continue; // bad, but this is just exploratory code
             }
-            
-            tree = tree.add(new Data(), Geometries.rectangle(600, 40, 650, 70));
         }
+        
+        tree = tree.add(new Data(), Geometries.rectangle(600, 40, 650, 70));
         
         return new DenoiseMexHat(tree);
     }

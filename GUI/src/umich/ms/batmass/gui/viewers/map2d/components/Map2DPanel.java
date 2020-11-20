@@ -37,6 +37,8 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -125,7 +127,7 @@ public class Map2DPanel extends JPanel {
     protected BusHandler busHandler;
     protected BusLocalHandler busLocalHandler;
     
-    LinkedList<PassiveMap2DOverlayProvider<?>> passiveOverlays;
+    LinkedHashMap<String, PassiveMap2DOverlayProvider<?>> passiveOverlays;
 
     // these fields might go to the Options panel
     private static final double zoomCoef = 1.4d;
@@ -187,7 +189,7 @@ public class Map2DPanel extends JPanel {
             }
         });
         
-        passiveOverlays = new LinkedList<>();
+        passiveOverlays = new LinkedHashMap<>();
     }
     
     private void initLocalBus() {
@@ -356,11 +358,12 @@ public class Map2DPanel extends JPanel {
     }
 
     public void addPassiveOverlayProvider(PassiveMap2DOverlayProvider provider) {
-        passiveOverlays.add(provider);
+        passiveOverlays.put(provider.getId(), provider);
     }
     
     public boolean removePassiveOverlayProvider(PassiveMap2DOverlayProvider provider) {
-        return passiveOverlays.remove(provider);
+        PassiveMap2DOverlayProvider<?> removed = passiveOverlays.remove(provider.getId());
+        return removed != null;
     }
 
     /**
@@ -608,8 +611,10 @@ public class Map2DPanel extends JPanel {
         }
         
         // passive overlays
-        for (PassiveMap2DOverlayProvider overlayProvider : passiveOverlays) {
-            RTree<PassiveMap2DOverlay, com.github.davidmoten.rtree.geometry.Rectangle> tree = overlayProvider.getIndex();
+        OutputWndPrinter.printOut(TOPIC, "Painting passive overlays ====================");
+        for (Map.Entry<String, PassiveMap2DOverlayProvider<?>> e : passiveOverlays.entrySet()) {
+            PassiveMap2DOverlayProvider value = e.getValue();
+            RTree<PassiveMap2DOverlay, com.github.davidmoten.rtree.geometry.Rectangle> tree = value.getIndex();
             MzRtRegion viewDims = curZoomLvl.getAxes().getMapDimensions();
             
             // search for passive overlays overlapping the viewport
@@ -617,14 +622,15 @@ public class Map2DPanel extends JPanel {
                     viewDims.getMzLo(), viewDims.getRtLo(),
                     viewDims.getMzSpan(), viewDims.getRtSpan());
             com.github.davidmoten.rtree.geometry.Rectangle rectTree = FeatureUtils.geometryAwtToRtree(rectAwt);
-            Observable<Entry<PassiveMap2DOverlay, com.github.davidmoten.rtree.geometry.Rectangle>> search = tree.search(rectTree);
-            
+            Observable<Entry<PassiveMap2DOverlay, com.github.davidmoten.rtree.geometry.Rectangle>> search = tree.search(rectTree);            
             
             final Graphics2D g = (Graphics2D) img.getGraphics();
-            
+            OutputWndPrinter.printOut(TOPIC, "  RTree size: " + tree.size() + " -------------");
             // render each passive overlay
             try {
                 tree.entries().forEach((treeEntry) -> {
+                    
+                    OutputWndPrinter.printOut(TOPIC, "    overlay bounding box: " + treeEntry.geometry().toString());
                     PassiveMap2DOverlay overlay = treeEntry.value();
                     com.github.davidmoten.rtree.geometry.Rectangle box = treeEntry.geometry();
 
