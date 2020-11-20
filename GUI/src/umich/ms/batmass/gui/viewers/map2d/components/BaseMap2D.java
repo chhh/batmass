@@ -24,13 +24,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.NavigableMap;
 import java.util.TreeMap;
+import net.engio.mbassy.bus.MBassador;
 import org.apache.commons.configuration.CompositeConfiguration;
 import org.apache.commons.configuration.ConfigurationException;
 import org.openide.util.Exceptions;
 import umich.ms.batmass.gui.core.api.data.MzRtRegion;
 import umich.ms.batmass.gui.core.api.util.ArrayUtils;
+import umich.ms.batmass.gui.viewers.map2d.messages.MsgStaticOverlay;
 import umich.ms.batmass.gui.viewers.map2d.noise.AbMzRtTransformNoop;
 import umich.ms.batmass.gui.viewers.map2d.noise.DenoiseIsoSpacing;
+import umich.ms.batmass.gui.viewers.map2d.noise.DenoiseMexHat;
 import umich.ms.batmass.gui.viewers.map2d.noise.IAbMzRtTransform;
 import umich.ms.batmass.gui.viewers.map2d.options.Map2DOptions;
 import umich.ms.batmass.nbputils.OutputWndPrinter;
@@ -81,6 +84,7 @@ public final class BaseMap2D {
     private String doDenoise = Map2DPanelOptions.Denoise.NONE;
 
     private final MzRtRegion mapDimensions;
+    private final MBassador<Object> bus;
 
     // these are set in options
     // TODO: These values specified here are useless, because anyway
@@ -116,15 +120,17 @@ public final class BaseMap2D {
      * @param mapDimensions m/z-rt region which this map will be displaying
      * @param msLevel
      * @param precursorMzRange if null, then all possible precursor ranges will be used
+     * @param bus Can be null, otherwise will be used for communication
      */
     public BaseMap2D(int availableWidth, int availableHeight, MzRtRegion mapDimensions, 
-            int msLevel, Interval1D<Double> precursorMzRange) {
+            int msLevel, Interval1D<Double> precursorMzRange, MBassador<Object> bus) {
         this.rtHi = mapDimensions.getRtHi();
         this.rtLo = mapDimensions.getRtLo();
         this.mzHi = mapDimensions.getMzHi();
         this.mzLo = mapDimensions.getMzLo();
         this.precursorMzRange = precursorMzRange != null ? precursorMzRange: Map2DPanel.OPT_DISPLAY_ALL_MZ_REGIONS;
         this.msLevel = msLevel;
+        this.bus = bus;
 
         if (rtHi < rtHi) {
             throw new IllegalArgumentException("RT-start must be <= RT-end");
@@ -241,6 +247,11 @@ public final class BaseMap2D {
                 break;
             case DenoiseIsoSpacing.NAME:
                 denoiser = DenoiseIsoSpacing.from(scansByRtSpanAtMsLevel);
+                break;
+            case DenoiseMexHat.NAME:
+                DenoiseMexHat mexHat = DenoiseMexHat.from(scansByRtSpanAtMsLevel);
+                denoiser = mexHat;
+                bus.post(new MsgStaticOverlay(MsgStaticOverlay.Action.ADD, mexHat)).now();
                 break;
             default:
                 denoiser = new AbMzRtTransformNoop();

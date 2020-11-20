@@ -22,6 +22,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import net.engio.mbassy.bus.MBassador;
 import org.apache.commons.configuration.CompositeConfiguration;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.math3.util.FastMath;
@@ -47,6 +48,7 @@ public class Map2DZoomLevel {
     private Map2DAxes axes;
     private int msLevel;
     private Interval1D<Double> precursorMzRange;
+    private MBassador<Object> bus;
 
     private int width;
     private int height;
@@ -57,27 +59,29 @@ public class Map2DZoomLevel {
     /**
      * Struct which stores BaseMap, ColorMap and a rendered Image for a specific
      * region of LC-MS, given the available rendering on-screen space.
-     * @param level pseudo zoom-level, actually not used for anything.
+     * @param zoomLevel pseudo zoom-level, actually not used for anything.
      * @param scans ScanCollection to init the BaseMap from.
      * @param mapDimaensions The portion of scans to display [mzLo-mzHi, rtLo-rtHi]
      * @param screenBounds available screen space in the JFrame where this map
      *          will be rendered.
      */
-    public Map2DZoomLevel(int level, IScanCollection scans, MzRtRegion mapDimaensions, Rectangle screenBounds, 
-            int msLevel, Interval1D<Double> precursorMzRange, String doDenoise) {
-        this.level = level;
+    public Map2DZoomLevel(int zoomLevel, IScanCollection scans, MzRtRegion mapDimaensions, Rectangle screenBounds, 
+            int msLevel, Interval1D<Double> precursorMzRange, String doDenoise, MBassador<Object> bus) {
+        this.level = zoomLevel;
         this.msLevel = msLevel;
         this.precursorMzRange = precursorMzRange;
-        initMapAxesColors(screenBounds, mapDimaensions, scans, msLevel, precursorMzRange, doDenoise);
+        this.bus = bus;
+        initMapAxesColors(screenBounds, mapDimaensions, scans, msLevel, precursorMzRange, doDenoise, bus);
     }
 
-    private void initMapAxesColors(Rectangle screenBounds, MzRtRegion mapDimensions, IScanCollection scans, 
-            int msLevel, Interval1D<Double> precursorMzRange, String doDenoise) {
+    private void initMapAxesColors(Rectangle screenBounds, MzRtRegion mapDimensions, 
+            IScanCollection scans, int msLevel, Interval1D<Double> precursorMzRange, 
+            String doDenoise, MBassador<Object> bus) {
         this.width = screenBounds.width;
         this.height = screenBounds.height;
         axes = new Map2DAxes(mapDimensions, screenBounds);
         Rectangle ref = axes.getMapReferenceFrame();
-        baseMap = new BaseMap2D(ref.width, ref.height, mapDimensions, msLevel, precursorMzRange);
+        baseMap = new BaseMap2D(ref.width, ref.height, mapDimensions, msLevel, precursorMzRange, bus);
         baseMap.setDoDenoise(doDenoise);
         isMapFilledSuccess = baseMap.fillMapFromScans(scans);
         double minNonZero = baseMap.getTotalIntensityMinNonZero();
@@ -89,7 +93,6 @@ public class Map2DZoomLevel {
                 getColorPalette(),
                 intensityNormalizer.getScaled(baseMap.getTotalIntensityMinNonZero()),
                 intensityNormalizer.getScaled(max));
-        int a = 1;
     }
     
     /**
@@ -105,7 +108,7 @@ public class Map2DZoomLevel {
         this.msLevel = msLevel;
         this.precursorMzRange = precursorMzRange;
         MzRtRegion mapDims = new MzRtRegion(baseMap.getMzStart(), baseMap.getMzEnd(), baseMap.getRtStart(), baseMap.getRtEnd());
-        initMapAxesColors(screenBounds, mapDims, scans, msLevel, precursorMzRange, doDenoise);
+        initMapAxesColors(screenBounds, mapDims, scans, msLevel, precursorMzRange, doDenoise, bus);
         img = null;
     }
 
@@ -123,7 +126,7 @@ public class Map2DZoomLevel {
             int msLevel, Interval1D<Double> precursorMzRange, String doDenoise) {
         this.msLevel = msLevel;
         this.precursorMzRange = precursorMzRange;
-        initMapAxesColors(screenBounds, mapDimensions, scans, msLevel, precursorMzRange, doDenoise);
+        initMapAxesColors(screenBounds, mapDimensions, scans, msLevel, precursorMzRange, doDenoise, bus);
         img = null;
     }
     

@@ -43,7 +43,7 @@ public class DnDViewerLinker implements DnDButton.Link {
 
     @Override
     public void link(Lookup.Provider lkpProviderOurs, Lookup.Provider lkpProviderTheirs) {
-                
+        
         MBassador busOurs = lkpProviderOurs.getLookup().lookup(MBassador.class);
         MBassador busTheirs = lkpProviderTheirs.getLookup().lookup(MBassador.class);
         if (busOurs != null && busTheirs != null) {
@@ -89,8 +89,6 @@ public class DnDViewerLinker implements DnDButton.Link {
         // now we have both InstanceContents
         icOurs.add(bus);
         icTheirs.add(bus);
-
-        int a = 1;
     }
 
 }

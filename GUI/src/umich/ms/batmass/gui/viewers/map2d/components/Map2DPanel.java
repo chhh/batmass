@@ -18,6 +18,7 @@ package umich.ms.batmass.gui.viewers.map2d.components;
 import umich.ms.batmass.gui.viewers.map2d.norm.RangeNormalizer;
 import com.github.davidmoten.rtree.Entry;
 import com.github.davidmoten.rtree.RTree;
+import rx.Observable;
 import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Container;
@@ -41,15 +42,25 @@ import java.util.List;
 import java.util.Map;
 import java.util.NavigableMap;
 import java.util.TreeMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JPanel;
 import javax.swing.JToolTip;
 import javax.swing.SwingUtilities;
 import javax.swing.ToolTipManager;
 import javax.swing.event.EventListenerList;
 import net.engio.mbassy.bus.MBassador;
+import net.engio.mbassy.bus.common.Properties;
+import net.engio.mbassy.bus.config.BusConfiguration;
+import net.engio.mbassy.bus.config.Feature;
+import net.engio.mbassy.bus.config.IBusConfiguration;
+import net.engio.mbassy.bus.error.IPublicationErrorHandler;
+import net.engio.mbassy.bus.error.PublicationError;
 import net.engio.mbassy.listener.Handler;
 import umich.ms.batmass.data.core.lcms.features.Features;
 import umich.ms.batmass.data.core.lcms.features.ILCMSFeature2D;
+import umich.ms.batmass.data.core.lcms.features.api.FeatureUtils;
+import umich.ms.batmass.gui.core.api.comm.dnd.DnDViewerLinker;
 import umich.ms.batmass.gui.core.api.comm.eventbus.AbstractBusPubSub;
 import umich.ms.batmass.gui.core.api.data.MzRtPoint;
 import umich.ms.batmass.gui.core.api.data.MzRtRegion;
@@ -59,6 +70,7 @@ import umich.ms.batmass.gui.viewers.featuretable.messages.MsgFeatureClick;
 import umich.ms.batmass.gui.viewers.map2d.PassiveMap2DOverlay;
 import umich.ms.batmass.gui.viewers.map2d.PassiveMap2DOverlayProvider;
 import umich.ms.batmass.gui.viewers.map2d.events.ZoomEvent;
+import umich.ms.batmass.gui.viewers.map2d.messages.MsgStaticOverlay;
 import umich.ms.batmass.gui.viewers.map2d.messages.MsgZoom1D;
 import umich.ms.batmass.gui.viewers.map2d.messages.MsgZoom2D;
 import umich.ms.batmass.nbputils.OutputWndPrinter;
@@ -76,10 +88,12 @@ import umich.ms.util.IntervalST;
  * @author Dmitry Avtonomov
  */
 public class Map2DPanel extends JPanel {
+    private static final Logger LOG = Logger.getLogger(Map2DPanel.class.getName());
 
     public final static DoubleRange OPT_DISPLAY_ALL_MZ_REGIONS =
             new DoubleRange(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
 
+    private static final String TOPIC = Map2DPanel.class.getSimpleName();
     protected IScanCollection scans;
     private Features<ILCMSFeature2D<?>> features;
     /**
@@ -109,8 +123,9 @@ public class Map2DPanel extends JPanel {
     protected Map2DPanelOptions displayedOptions;
     // handling events/messages
     protected BusHandler busHandler;
+    protected BusLocalHandler busLocalHandler;
     
-    LinkedList<PassiveMap2DOverlayProvider> passiveOverlays;
+    LinkedList<PassiveMap2DOverlayProvider<?>> passiveOverlays;
 
     // these fields might go to the Options panel
     private static final double zoomCoef = 1.4d;
@@ -118,6 +133,7 @@ public class Map2DPanel extends JPanel {
     protected static int MIN_ALLOWED_COMPONENT_PIXEL_SIZE = 10;
     protected static double MASS_PROTON = 1.007276466879;
     protected static double MASS_NEUTRON = 1.00866491588;
+    private MBassador<Object> busLocal;
                                           
 
     public Map2DPanel() {
@@ -133,7 +149,8 @@ public class Map2DPanel extends JPanel {
     private void constructorInit() {
         Map2DPanelOptions opts = new Map2DPanelOptions();
         displayedOptions = opts;
-
+        initLocalBus();
+        
         zoomLevels = new LinkedList<>();
         infoDisplayer = new Map2DInfoDisplayerDefault();
 
@@ -171,6 +188,25 @@ public class Map2DPanel extends JPanel {
         });
         
         passiveOverlays = new LinkedList<>();
+    }
+    
+    private void initLocalBus() {
+        IBusConfiguration busConf = new BusConfiguration()
+                .addFeature(Feature.SyncPubSub.Default())
+                .addFeature(Feature.AsynchronousHandlerInvocation.Default())
+                .addFeature(Feature.AsynchronousMessageDispatch.Default())
+                .setProperty(Properties.Handler.PublicationError, new IPublicationErrorHandler() {
+                    @Override
+                    public void handleError(final PublicationError error) {
+                        LOG.log(Level.SEVERE, "Mbassador pub/sub error: " + error.getMessage(), error.getCause());
+                        OutputWndPrinter.printErr("Map2D", error.getMessage());
+                    }
+                });
+        // TODO: sub ourselves to the bus
+        MBassador<Object> bus = new MBassador<>(busConf);
+        busLocal = bus;
+        busLocalHandler = new BusLocalHandler();
+        busLocal.subscribe(busLocalHandler);
     }
 
     public BusHandler getBusHandler() {
@@ -355,7 +391,7 @@ public class Map2DPanel extends JPanel {
         if (curZoomLvl == null) {
             MzRtRegion mapDims = defaultViewport;
             curZoomLvl = new Map2DZoomLevel(0, scans, mapDims, screenBounds,
-                    getOptions().getMsLevel(), getOptions().getMzRange(), getOptions().getDoDenoise());
+                    getOptions().getMsLevel(), getOptions().getMzRange(), getOptions().getDoDenoise(), busLocal);
             zoomLevels.add(curZoomLvl);
             curZoomLevel = curZoomLvl;
         }
@@ -550,29 +586,69 @@ public class Map2DPanel extends JPanel {
             
             
             // draw the featrues
-            Graphics2D g = (Graphics2D) img.getGraphics();
-            ILCMSFeature2D<?> feature;
-            com.github.davidmoten.rtree.geometry.Rectangle box;
-            for (Entry<ILCMSFeature2D<?>, com.github.davidmoten.rtree.geometry.Rectangle> entry : q) {
-                feature = entry.value();
-                box = entry.geometry();
-                
-                Rectangle featureRect = baseMap.convertMzRtBoxToPixelCoords(box.x1(), box.x2(), box.y1(), box.y2(), 0d);
-                g.setColor(feature.getColor());
-                
-                float opacity = feature.getOpacity() == null ? 0.1f : feature.getOpacity();
-                
-                g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, opacity));
-                g.fill(featureRect);
-                g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP));
-                g.draw(featureRect);
+            final Graphics2D g = (Graphics2D) img.getGraphics();
+            try {
+                for (Entry<ILCMSFeature2D<?>, com.github.davidmoten.rtree.geometry.Rectangle> entry : q) {
+                    ILCMSFeature2D<?> feature = entry.value();
+                    com.github.davidmoten.rtree.geometry.Rectangle box = entry.geometry();
+
+                    Rectangle featureRect = baseMap.convertMzRtBoxToPixelCoords(box.x1(), box.x2(), box.y1(), box.y2(), 0d);
+                    g.setColor(feature.getColor());
+
+                    float opacity = feature.getOpacity() == null ? 0.1f : feature.getOpacity();
+
+                    g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, opacity));
+                    g.fill(featureRect);
+                    g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP));
+                    g.draw(featureRect);
+                }
+            } finally {
+                g.dispose();
             }
-            g.dispose();
         }
         
         // passive overlays
         for (PassiveMap2DOverlayProvider overlayProvider : passiveOverlays) {
-            RTree<PassiveMap2DOverlay, com.github.davidmoten.rtree.geometry.Rectangle> index = overlayProvider.getIndex();
+            RTree<PassiveMap2DOverlay, com.github.davidmoten.rtree.geometry.Rectangle> tree = overlayProvider.getIndex();
+            MzRtRegion viewDims = curZoomLvl.getAxes().getMapDimensions();
+            
+            // search for passive overlays overlapping the viewport
+            Rectangle2D.Double rectAwt = new Rectangle2D.Double(
+                    viewDims.getMzLo(), viewDims.getRtLo(),
+                    viewDims.getMzSpan(), viewDims.getRtSpan());
+            com.github.davidmoten.rtree.geometry.Rectangle rectTree = FeatureUtils.geometryAwtToRtree(rectAwt);
+            Observable<Entry<PassiveMap2DOverlay, com.github.davidmoten.rtree.geometry.Rectangle>> search = tree.search(rectTree);
+            
+            
+            final Graphics2D g = (Graphics2D) img.getGraphics();
+            
+            // render each passive overlay
+            try {
+                tree.entries().forEach((treeEntry) -> {
+                    PassiveMap2DOverlay overlay = treeEntry.value();
+                    com.github.davidmoten.rtree.geometry.Rectangle box = treeEntry.geometry();
+
+
+                    Shape overlayShape = overlay.getShape();
+                    if (overlayShape == null) {
+                        overlayShape = baseMap.convertMzRtBoxToPixelCoords(
+                                box.x1(), box.x2(), box.y1(), box.y2(), 0d);
+                    }
+
+                    // fill inside of an overlay
+                    g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, overlay.getFillAlpha()));
+                    g.setColor(overlay.getFillColor());
+                    g.fill(overlayShape);
+
+                    // draw the border of an overlay
+                    g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, overlay.getBorderAlpha()));
+                    g.setColor(overlay.getBorderColor());
+                    g.draw(overlayShape);
+
+                });
+            } finally {
+                g.dispose();
+            }
         }
         
         // TODO: move MSn overlay to the passive overlays list
@@ -792,7 +868,7 @@ public class Map2DPanel extends JPanel {
         //  - the second level (1) would be the current viewport
         int zoomLvl = curZoomLvl.getLevel() + 1 > 0 ? 1 : 0;
         curZoomLvl = new Map2DZoomLevel(zoomLvl, scans, mzRtInterval, screenBounds,
-                getOptions().getMsLevel(), getOptions().getMzRange(), getOptions().getDoDenoise());
+                getOptions().getMsLevel(), getOptions().getMzRange(), getOptions().getDoDenoise(), busLocal);
         if (!curZoomLvl.isMapFilledSuccess()) {
             OutputWndPrinter.printOut("Map2D", String.format("\tZoom cancelled, zoomed map could not be filled"));
             return;
@@ -839,7 +915,7 @@ public class Map2DPanel extends JPanel {
             ColorMap origColorMap = zoomLevels.getFirst().getColorMap();
             if (!curColorMap.equals(origColorMap)) {
                 curZoomLevel = new Map2DZoomLevel(0, scans, defaultViewport, ScreenUtils.getScreenBounds(this), 
-                        getOptions().getMsLevel(), getOptions().getMzRange(), getOptions().getDoDenoise());
+                        getOptions().getMsLevel(), getOptions().getMzRange(), getOptions().getDoDenoise(), busLocal);
             } else {
                 curZoomLevel = zoomLevels.getFirst();
             }
@@ -951,6 +1027,25 @@ public class Map2DPanel extends JPanel {
             this.isX = isX;
             this.isY = isY;
         }
+    }
+
+    public class BusLocalHandler extends AbstractBusPubSub {
+
+        @Handler
+        public void onMsgStaticOverlay(MsgStaticOverlay m) {
+            OutputWndPrinter.printOut(TOPIC, "Got MsgStaticOverlay");
+            switch (m.whatToDo) {
+                case ADD:
+                    Map2DPanel.this.addPassiveOverlayProvider(m.overlay);
+                    break;
+                case REMOVE:
+                    Map2DPanel.this.removePassiveOverlayProvider(m.overlay);
+                    break;
+                default:
+                    throw new AssertionError(m.whatToDo.name());
+            }
+        }
+        
     }
 
     //////////////////////////////////////////////////////////////////////
@@ -1394,7 +1489,7 @@ public class Map2DPanel extends JPanel {
     public class BusHandler extends AbstractBusPubSub implements Map2DZoomEventListener {
         private Map2DPanel map = Map2DPanel.this;
         private volatile boolean isRespondingToRecievedZoomEvent = false;
-
+        
         @Handler
         public void eventbusHandleZoom2DEvent(MsgZoom2D m) {
             // we're also receiving our own events, which this Map published to the bus
