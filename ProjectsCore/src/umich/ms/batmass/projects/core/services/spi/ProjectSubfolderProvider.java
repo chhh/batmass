@@ -31,7 +31,7 @@ public abstract class ProjectSubfolderProvider {
         if (!(project instanceof BMProject)) {
             throw new IllegalStateException("You can't register a FolderProvider on a Project which is not a sub-class of BMProject");
         }
-        this.project = new WeakReference<>((BMProject)project);
+        this.project = new WeakReference<BMProject>((BMProject)project);
     }
 
     /**

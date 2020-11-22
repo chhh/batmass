@@ -35,7 +35,7 @@ public class BMProjectDeleteOperation implements DeleteOperationImplementation {
 
     @Override
     public List<FileObject> getMetadataFiles() {
-        List<FileObject> files = new ArrayList<>();
+        List<FileObject> files = new ArrayList<FileObject>();
         FileObject[] children = project.getProjectDirectory().getChildren();
         for (FileObject fileObject : children) {
             addFile(project.getProjectDirectory(), fileObject.getNameExt(), files);
@@ -51,7 +51,7 @@ public class BMProjectDeleteOperation implements DeleteOperationImplementation {
 
     @Override
     public List<FileObject> getDataFiles() {
-        return new ArrayList<>();
+        return new ArrayList<FileObject>();
     }
     @Override
     public void notifyDeleting() throws IOException {

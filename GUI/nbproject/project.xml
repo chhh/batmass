@@ -243,6 +243,14 @@
                     </run-dependency>
                 </dependency>
                 <dependency>
+                    <code-name-base>umich.ms.batmass.libs.eventbus</code-name-base>
+                    <build-prerequisite/>
+                    <compile-dependency/>
+                    <run-dependency>
+                        <specification-version>1.0</specification-version>
+                    </run-dependency>
+                </dependency>
+                <dependency>
                     <code-name-base>umich.ms.batmass.libs.guava</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>
@@ -307,6 +315,14 @@
                     </run-dependency>
                 </dependency>
                 <dependency>
+                    <code-name-base>umich.ms.batmass.libs.rxswing</code-name-base>
+                    <build-prerequisite/>
+                    <compile-dependency/>
+                    <run-dependency>
+                        <specification-version>1.0</specification-version>
+                    </run-dependency>
+                </dependency>
+                <dependency>
                     <code-name-base>umich.ms.batmass.libs.slf4j.jul</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>
@@ -348,7 +364,6 @@
                 <package>umich.ms.batmass.gui.nodes.actions.projectsubfolders</package>
                 <package>umich.ms.batmass.gui.viewers.chromatogram</package>
                 <package>umich.ms.batmass.gui.viewers.chromatogram.components</package>
-                <package>umich.ms.batmass.gui.viewers.data</package>
                 <package>umich.ms.batmass.gui.viewers.featuretable</package>
                 <package>umich.ms.batmass.gui.viewers.featuretable.components</package>
                 <package>umich.ms.batmass.gui.viewers.featuretable.messages</package>
@@ -357,6 +372,7 @@
                 <package>umich.ms.batmass.gui.viewers.map2d.components</package>
                 <package>umich.ms.batmass.gui.viewers.map2d.events</package>
                 <package>umich.ms.batmass.gui.viewers.map2d.messages</package>
+                <package>umich.ms.batmass.gui.viewers.map2d.noise</package>
                 <package>umich.ms.batmass.gui.viewers.map2d.options</package>
                 <package>umich.ms.batmass.gui.viewers.map2d.util</package>
                 <package>umich.ms.batmass.gui.viewers.outline</package>
@@ -364,10 +380,8 @@
                 <package>umich.ms.batmass.gui.viewers.spectrum</package>
                 <package>umich.ms.batmass.gui.viewers.spectrum.actions</package>
                 <package>umich.ms.batmass.gui.viewers.spectrum.components</package>
-                <package>umich.ms.batmass.gui.viewers.spectrum.todelete</package>
                 <package>umich.ms.batmass.gui.viewers.treetable</package>
                 <package>umich.ms.batmass.gui.viewers.treetable.components</package>
-                <package>umich.ms.batmass.gui.viewers.treetable.data</package>
                 <package>umich.ms.batmass.gui.viewers.util</package>
             </public-packages>
         </data>

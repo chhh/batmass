@@ -98,7 +98,7 @@ public abstract class BMProject implements Project {
         // extension point for adding other possible service locations in layer.
         // register a LayerPathProvider in Projects/PROJECT_TYPE/Lookup via
         // @ProjectServiceProvider annotation.
-        List<String> servicePaths = new ArrayList<>();
+        List<String> servicePaths = new ArrayList<String>();
         Lookup anyPrjSvcsLkp = Lookups.forPath(getLayerServicesPath(TYPE_ANY));
         Lookup thisPrjSvcsLkp = Lookups.forPath(getLayerServicesPath(getType()));
 
@@ -107,7 +107,7 @@ public abstract class BMProject implements Project {
         Lookup lkpWithServices = LookupProviderSupport
                 .createCompositeLookup(baseLookup, new ProxyLookup(anyPrjSvcsLkp, thisPrjSvcsLkp));
 
-        List<LayerPathProvider> pathProviders = new ArrayList<>();
+        List<LayerPathProvider> pathProviders = new ArrayList<LayerPathProvider>();
         pathProviders.addAll(lkpWithServices.lookupAll(ProjectServicesPathProvider.class));
         for (LayerPathProvider pathProvider : pathProviders) {
             servicePaths.addAll(Arrays.asList(pathProvider.getPaths()));

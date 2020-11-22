@@ -83,11 +83,11 @@ public class BMProjectMoveOrRenameoperation implements MoveOrRenameOperationImpl
 
     @Override
     public List<FileObject> getMetadataFiles() {
-        return new ArrayList<>();
+        return new ArrayList<FileObject>();
     }
 
     @Override
     public List<FileObject> getDataFiles() {
-        return new ArrayList<>();
+        return new ArrayList<FileObject>();
     }
 }

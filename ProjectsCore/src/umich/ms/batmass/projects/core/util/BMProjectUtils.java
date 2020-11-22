@@ -95,7 +95,7 @@ public abstract class BMProjectUtils {
     public static String[] aggregateLayerPaths(
             Collection<? extends LayerPathProvider> pathProviders,
             String[] otherPaths) {
-        ArrayList<String> list = new ArrayList<>();
+        ArrayList<String> list = new ArrayList<String>();
 
         for (LayerPathProvider pathProvider : pathProviders) {
             list.addAll(Arrays.asList(pathProvider.getPaths()));
@@ -128,14 +128,14 @@ public abstract class BMProjectUtils {
         if (pathProviders.isEmpty())
             return otherPaths;
 
-        ArrayList<LayerMappedPathProvider> capable = new ArrayList<>(pathProviders.size());
+        ArrayList<LayerMappedPathProvider> capable = new ArrayList<LayerMappedPathProvider>(pathProviders.size());
         for (LayerMappedPathProvider pathProvider : pathProviders) {
             if (filter.isAssignableFrom(pathProvider.getClassType())) {
                 capable.add(pathProvider);
             }
         }
         if (!capable.isEmpty()) {
-            ArrayList<String> list = new ArrayList<>(capable.size() + otherPaths.length);
+            ArrayList<String> list = new ArrayList<String>(capable.size() + otherPaths.length);
             for (LayerMappedPathProvider p : capable) {
                 list.addAll(Arrays.asList(p.getPaths()));
             }

@@ -152,6 +152,7 @@
                 <package>umich.ms.batmass.projects.core.nodes.support</package>
                 <package>umich.ms.batmass.projects.core.services.spi</package>
                 <package>umich.ms.batmass.projects.core.type</package>
+                <package>umich.ms.batmass.projects.core.type.defaultoperations</package>
                 <package>umich.ms.batmass.projects.core.util</package>
             </public-packages>
         </data>

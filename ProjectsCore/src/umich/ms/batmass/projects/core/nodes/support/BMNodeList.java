@@ -38,15 +38,15 @@ public abstract class BMNodeList implements NodeList<FileObject> {
     private FileObject rootDir = null;
 
     public BMNodeList(Project p, Class<? extends ProjectSubfolderProvider> fpClass) {
-        this.projRef = new WeakReference<>(p);
+        this.projRef = new WeakReference<Project>(p);
         ProjectSubfolderProvider folderProvider = p.getLookup().lookup(fpClass);
-        this.folderProividerRef = new WeakReference<>(folderProvider);
+        this.folderProividerRef = new WeakReference<ProjectSubfolderProvider>(folderProvider);
         rootDir = folderProvider.getFolder();
     }
 
     @Override
     public List<FileObject> keys() {
-        ArrayList<FileObject> list = new ArrayList<>();
+        ArrayList<FileObject> list = new ArrayList<FileObject>();
         list.add(rootDir);
         return list;
     }

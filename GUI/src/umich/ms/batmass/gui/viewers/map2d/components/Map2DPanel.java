@@ -30,6 +30,7 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.Shape;
+import java.awt.event.ActionEvent;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.InputEvent;
@@ -46,6 +47,7 @@ import java.util.Map;
 import java.util.NavigableMap;
 import java.util.Objects;
 import java.util.TreeMap;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -62,6 +64,11 @@ import net.engio.mbassy.bus.config.IBusConfiguration;
 import net.engio.mbassy.bus.error.IPublicationErrorHandler;
 import net.engio.mbassy.bus.error.PublicationError;
 import net.engio.mbassy.listener.Handler;
+import rx.Observable.OnSubscribe;
+import rx.Subscriber;
+import rx.Subscription;
+import rx.swing.sources.ComponentEventSource;
+import rx.swing.sources.ComponentEventSource.Predicate;
 import umich.ms.batmass.data.core.lcms.features.Features;
 import umich.ms.batmass.data.core.lcms.features.ILCMSFeature2D;
 import umich.ms.batmass.data.core.lcms.features.api.FeatureUtils;
@@ -171,7 +178,18 @@ public class Map2DPanel extends JPanel {
         // listener list has already been initialized, safe to add to it
         busHandler = new BusHandler();
         addZoomEventListener(busHandler);
-
+        
+        
+//        rx.swing.sources.ComponentEventSource.fromComponentEventsOf(this)
+//                .filter((ComponentEvent e) -> {
+//                    return e.getID() == ComponentEvent.COMPONENT_SHOWN
+//                            || e.getID() == ComponentEvent.COMPONENT_RESIZED;
+//                })
+//                .debounce(50, TimeUnit.MILLISECONDS)
+//                .subscribe(e -> {
+//                   initMap(); 
+//                });
+        
         this.addComponentListener(new ComponentListener() {
 
             @Override
@@ -361,10 +379,12 @@ public class Map2DPanel extends JPanel {
         return features;
     }
 
+    @SuppressWarnings("rawtypes")
     public void addPassiveOverlayProvider(PassiveMap2DOverlayProvider provider) {
         passiveOverlays.put(provider.getKey(), provider);
     }
     
+    @SuppressWarnings("rawtypes")
     public boolean removePassiveOverlayProvider(PassiveMap2DOverlayProvider provider) {
         PassiveMap2DOverlayProvider<?> removed = passiveOverlays.remove(provider.getKey());
         return removed != null;
@@ -617,7 +637,9 @@ public class Map2DPanel extends JPanel {
         // passive overlays
         OutputWndPrinter.printOut(TOPIC, "Painting passive overlays ====================");
         for (Map.Entry<PassiveOverlayKey, PassiveMap2DOverlayProvider<?>> e : passiveOverlays.entrySet()) {
+            @SuppressWarnings("rawtypes")
             PassiveMap2DOverlayProvider value = e.getValue();
+            @SuppressWarnings({"rawtypes", "unchecked"})
             RTree<PassiveMap2DOverlay, com.github.davidmoten.rtree.geometry.Rectangle> tree = value.getIndex();
             MzRtRegion viewDims = curZoomLvl.getAxes().getMapDimensions();
             

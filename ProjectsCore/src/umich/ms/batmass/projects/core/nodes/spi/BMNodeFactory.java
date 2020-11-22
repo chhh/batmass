@@ -120,7 +120,7 @@ public abstract class BMNodeFactory<T extends ProjectSubfolderProvider> implemen
      */
     @Override
     public NodeList<?> createNodes(Project p) {
-        projectRef = new WeakReference<>(p);
+        projectRef = new WeakReference<Project>(p);
         NodeList<?> errorNode = beforeCreateNodesCheck(p);
         if (errorNode != null) {
             return errorNode;

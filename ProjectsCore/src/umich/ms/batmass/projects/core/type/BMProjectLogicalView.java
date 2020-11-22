@@ -64,7 +64,7 @@ public class BMProjectLogicalView implements LogicalViewProvider {
         Children projectChildren = NodeFactorySupport.createCompositeChildren(project, layerNodesFolder);
 
         BMProjectNode root = new BMProjectNode(new AbstractNode(projectChildren), project);
-        rootNodeRef = new WeakReference<>(root);
+        rootNodeRef = new WeakReference<BMProjectNode>(root);
 
         return root;
     }

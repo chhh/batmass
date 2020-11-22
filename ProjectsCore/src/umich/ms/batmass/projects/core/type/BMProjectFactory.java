@@ -130,8 +130,15 @@ public abstract class BMProjectFactory implements ProjectFactory2 {
                         .getConstructor(FileObject.class, ProjectState.class);
                 BMProject proj = projectClass.cast(c.newInstance(projectDirectory, projectState));
                 return proj;
-            } catch (NoSuchMethodException | SecurityException | InstantiationException |
-                     IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+            } catch (NoSuchMethodException ex) {
+                Exceptions.printStackTrace(ex);
+            } catch (InstantiationException ex) {
+                Exceptions.printStackTrace(ex);
+            } catch (IllegalAccessException ex) {
+                Exceptions.printStackTrace(ex);
+            } catch (IllegalArgumentException ex) {
+                Exceptions.printStackTrace(ex);
+            } catch (InvocationTargetException ex) {
                 Exceptions.printStackTrace(ex);
             }
         }
