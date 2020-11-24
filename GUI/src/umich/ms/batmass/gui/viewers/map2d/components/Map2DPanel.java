@@ -30,7 +30,6 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.Shape;
-import java.awt.event.ActionEvent;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.InputEvent;
@@ -40,14 +39,11 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.NavigableMap;
-import java.util.Objects;
 import java.util.TreeMap;
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -64,15 +60,9 @@ import net.engio.mbassy.bus.config.IBusConfiguration;
 import net.engio.mbassy.bus.error.IPublicationErrorHandler;
 import net.engio.mbassy.bus.error.PublicationError;
 import net.engio.mbassy.listener.Handler;
-import rx.Observable.OnSubscribe;
-import rx.Subscriber;
-import rx.Subscription;
-import rx.swing.sources.ComponentEventSource;
-import rx.swing.sources.ComponentEventSource.Predicate;
 import umich.ms.batmass.data.core.lcms.features.Features;
 import umich.ms.batmass.data.core.lcms.features.ILCMSFeature2D;
 import umich.ms.batmass.data.core.lcms.features.api.FeatureUtils;
-import umich.ms.batmass.gui.core.api.comm.dnd.DnDViewerLinker;
 import umich.ms.batmass.gui.core.api.comm.eventbus.AbstractBusPubSub;
 import umich.ms.batmass.gui.core.api.data.MzRtPoint;
 import umich.ms.batmass.gui.core.api.data.MzRtRegion;
@@ -86,7 +76,6 @@ import umich.ms.batmass.gui.viewers.map2d.messages.MsgPassiveOverlay;
 import umich.ms.batmass.gui.viewers.map2d.messages.MsgPassiveOverlayAction;
 import umich.ms.batmass.gui.viewers.map2d.messages.MsgZoom1D;
 import umich.ms.batmass.gui.viewers.map2d.messages.MsgZoom2D;
-import umich.ms.batmass.gui.viewers.map2d.noise.DenoiseLongEluting;
 import umich.ms.batmass.nbputils.OutputWndPrinter;
 import umich.ms.datatypes.scan.IScan;
 import umich.ms.datatypes.scan.props.PrecursorInfo;
@@ -652,12 +641,11 @@ public class Map2DPanel extends JPanel {
             Observable<Entry<PassiveMap2DOverlay, com.github.davidmoten.rtree.geometry.Rectangle>> search = tree.search(rectTree);            
             
             final Graphics2D g = (Graphics2D) img.getGraphics();
-            OutputWndPrinter.printOut(TOPIC, "  RTree size: " + tree.size() + " -------------");
+            OutputWndPrinter.printOut(TOPIC, "  Drawing RTree of size: " + tree.size() + " -------------");
             // render each passive overlay
             try {
-                tree.entries().forEach((treeEntry) -> {
+                search.forEach((treeEntry) -> {
                     
-                    OutputWndPrinter.printOut(TOPIC, "    overlay bounding box: " + treeEntry.geometry().toString());
                     PassiveMap2DOverlay overlay = treeEntry.value();
                     com.github.davidmoten.rtree.geometry.Rectangle box = treeEntry.geometry();
 

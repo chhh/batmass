@@ -136,6 +136,8 @@ public final class BaseMap2D {
      */
     public BaseMap2D(int availableWidth, int availableHeight, MzRtRegion mapDimensions, 
             int msLevel, Interval1D<Double> precursorMzRange, MBassador<Object> bus) {
+        OutputWndPrinter.printOut(BaseMap2D.class.getSimpleName(), 
+                BaseMap2D.class.getSimpleName() + " ctor invoked for mzRtRegion=" + mapDimensions.toString());
         this.rtHi = mapDimensions.getRtHi();
         this.rtLo = mapDimensions.getRtLo();
         this.mzHi = mapDimensions.getMzHi();
@@ -284,6 +286,7 @@ public final class BaseMap2D {
                 DenoiseLongEluting longEluting = DenoiseLongEluting.from(scansByRtSpanAtMsLevel);
                 denoiser = longEluting;
                 bus.post(new MsgPassiveOverlay(MsgPassiveOverlay.Action.ADD, longEluting)).now();
+                
                 break;
                 
             default:
