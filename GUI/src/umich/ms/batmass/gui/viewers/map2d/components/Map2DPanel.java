@@ -86,6 +86,7 @@ import umich.ms.batmass.gui.viewers.map2d.messages.MsgPassiveOverlay;
 import umich.ms.batmass.gui.viewers.map2d.messages.MsgPassiveOverlayAction;
 import umich.ms.batmass.gui.viewers.map2d.messages.MsgZoom1D;
 import umich.ms.batmass.gui.viewers.map2d.messages.MsgZoom2D;
+import umich.ms.batmass.gui.viewers.map2d.noise.DenoiseLongEluting;
 import umich.ms.batmass.nbputils.OutputWndPrinter;
 import umich.ms.datatypes.scan.IScan;
 import umich.ms.datatypes.scan.props.PrecursorInfo;

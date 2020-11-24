@@ -18,23 +18,33 @@ package umich.ms.batmass.gui.viewers.map2d.components;
 
 import java.awt.Color;
 import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.NavigableMap;
 import java.util.TreeMap;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import net.engio.mbassy.bus.MBassador;
 import org.apache.commons.configuration.CompositeConfiguration;
 import org.apache.commons.configuration.ConfigurationException;
+import org.netbeans.api.progress.ProgressHandle;
+import org.netbeans.api.progress.ProgressHandleFactory;
+import org.netbeans.api.progress.aggregate.AggregateProgressFactory;
+import org.openide.util.Cancellable;
 import org.openide.util.Exceptions;
 import umich.ms.batmass.gui.core.api.data.MzRtRegion;
 import umich.ms.batmass.gui.core.api.util.ArrayUtils;
+import umich.ms.batmass.gui.management.BusUi;
+import umich.ms.batmass.gui.messages.MsgProgressUi;
 import umich.ms.batmass.gui.viewers.map2d.PassiveOverlayKey;
 import umich.ms.batmass.gui.viewers.map2d.messages.MsgPassiveOverlay;
 import umich.ms.batmass.gui.viewers.map2d.messages.MsgPassiveOverlayAction;
 import umich.ms.batmass.gui.viewers.map2d.noise.AbMzRtTransformNoop;
 import umich.ms.batmass.gui.viewers.map2d.noise.DenoiseIsoSpacing;
+import umich.ms.batmass.gui.viewers.map2d.noise.DenoiseLongEluting;
 import umich.ms.batmass.gui.viewers.map2d.noise.DenoiseMexHat;
 import umich.ms.batmass.gui.viewers.map2d.noise.IAbMzRtTransform;
 import umich.ms.batmass.gui.viewers.map2d.options.Map2DOptions;
@@ -192,6 +202,7 @@ public final class BaseMap2D {
         height = pixelsVertical;
         width = availableWidth;
 
+        
         NavigableMap<Integer, IScan> scansByRtSpanAtMsLevel = scans.getScansByRtSpanAtMsLevel(rtLo, rtHi, msLevel);;
         if (!precursorMzRange.equals(Map2DPanel.OPT_DISPLAY_ALL_MZ_REGIONS)) {
             // if only scans from specific precursor m/z window were requested
@@ -242,16 +253,39 @@ public final class BaseMap2D {
                     String.format("BaseMap2D: Denoise type [%s]", denoiseType));
         }
         
+        final Cancellable cancellable = new Cancellable() {
+            @Override
+            public boolean cancel() {
+                OutputWndPrinter.printOut("Denoising", "Cancellable interface method called");
+                return true;
+            }
+        };
+        
+        final Action linkAction = new AbstractAction("Link action of Denoising: " + denoiseType) {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        OutputWndPrinter.printOut("Denoising", "Link action triggered");
+                    }
+                };
+        
         IAbMzRtTransform denoiser;
         switch (denoiseType) {
             case DenoiseIsoSpacing.NAME:
-                denoiser = DenoiseIsoSpacing.from(scansByRtSpanAtMsLevel);
+                BusUi.publish(new MsgProgressUi("Denoise", denoiseType, 10));
+                denoiser = DenoiseIsoSpacing.from(scansByRtSpanAtMsLevel);                
+                BusUi.publish(new MsgProgressUi("Denoise", denoiseType, 100));
                 break;
             case DenoiseMexHat.NAME:
                 DenoiseMexHat mexHat = DenoiseMexHat.from(scansByRtSpanAtMsLevel);
                 denoiser = mexHat;
                 bus.post(new MsgPassiveOverlay(MsgPassiveOverlay.Action.ADD, mexHat)).now();
                 break;
+            case DenoiseLongEluting.NAME:
+                DenoiseLongEluting longEluting = DenoiseLongEluting.from(scansByRtSpanAtMsLevel);
+                denoiser = longEluting;
+                bus.post(new MsgPassiveOverlay(MsgPassiveOverlay.Action.ADD, longEluting)).now();
+                break;
+                
             default:
                 denoiser = new AbMzRtTransformNoop();
                 MsgPassiveOverlayAction msg = new MsgPassiveOverlayAction(
