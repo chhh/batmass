@@ -35,6 +35,7 @@ import umich.ms.batmass.gui.viewers.map2d.PassiveOverlayKey;
 import umich.ms.batmass.nbputils.OutputWndPrinter;
 import umich.ms.datatypes.scan.IScan;
 import umich.ms.datatypes.spectrum.ISpectrum;
+import umich.ms.datatypes.spectrum.impl.SpectrumDefault;
 import umich.ms.fileio.exceptions.FileParsingException;
 import umich.ms.util.SpectrumUtils;
 
@@ -77,16 +78,31 @@ public class DenoiseLongEluting implements IAbMzRtTransform, PassiveMap2DOverlay
         final AtomicInteger scanCounter = new AtomicInteger(0);
         while (itScans.hasNext()) {
             
-            // Get next spectrum
+            // Get next scan
             final IScan scan = itScans.next();
             final int scanIndex = scanCounter.getAndIncrement();
             if (scanIndex % 10 == 0) {
                 OutputWndPrinter.printOut(CATEGORY, DenoiseLongEluting.class.getSimpleName() + 
                 ": iterating over scan index " + Integer.toString(scanIndex));
             }
-            final ISpectrum spec;
+            
+            // Get the spectrum, possibly centroiding
+            ISpectrum spec;
             try {
                 spec = scan.fetchSpectrum();
+                if (!scan.isCentroided()) {
+                    double[] mzsRaw = spec.getMZs();
+                    double[] absRaw = spec.getIntensities();
+                    List<Centroider.PeakMz> centroids = Centroider.DetectPeaks(
+                            0, mzsRaw.length, mzsRaw, absRaw, 3, 0);
+                    double[] mzs = new double[centroids.size()];
+                    double[] abs = new double[centroids.size()];
+                    for (int i = 0; i < centroids.size(); i++) {
+                        mzs[i] = centroids.get(i).mz;
+                        abs[i] = centroids.get(i).intensity;
+                    }
+                    spec = new SpectrumDefault(mzs, abs, null);
+                }
             } catch (FileParsingException ex) {
                 OutputWndPrinter.printErr(CATEGORY, DenoiseLongEluting.class.getSimpleName() 
                         + " error fetching spectrum for scan " + scan.toString() );

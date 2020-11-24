@@ -30,11 +30,9 @@ import java.util.TreeMap;
 import javax.swing.Action;
 import javax.swing.ActionMap;
 import javax.swing.Box;
-import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
@@ -43,8 +41,6 @@ import javax.swing.JTextField;
 import javax.swing.JToggleButton;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 import org.netbeans.api.annotations.common.StaticResource;
@@ -57,7 +53,6 @@ import umich.ms.batmass.gui.core.awt.ModifiedFlowLayout;
 import umich.ms.batmass.gui.viewers.map2d.actions.GoToAction;
 import umich.ms.batmass.gui.viewers.map2d.actions.HomeMapAction;
 import umich.ms.batmass.gui.viewers.map2d.actions.UpdateMapAction;
-import umich.ms.batmass.gui.viewers.map2d.options.Map2DOptions;
 import umich.ms.datatypes.LCMSData;
 import umich.ms.datatypes.scan.IScan;
 import umich.ms.datatypes.scancollection.IScanCollection;
@@ -178,7 +173,7 @@ public class Map2DToolbar extends BMToolBar implements PropertyChangeListener {
             Map2DPanelOptions.Denoise.NONE,
             Map2DPanelOptions.Denoise.ISO_SPACING,
             Map2DPanelOptions.Denoise.MEX_HAT,
-            Map2DPanelOptions.Denoise.ANOTHER,
+            Map2DPanelOptions.Denoise.LONG_ELUTING,
         });
         comboDenoise = new JComboBox<String>(modelComboDenoise);
         final String tipDenoise = "Apply denoising to map";

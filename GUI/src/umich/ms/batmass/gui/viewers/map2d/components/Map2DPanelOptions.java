@@ -23,6 +23,7 @@ import org.apache.commons.beanutils.BeanUtils;
 import org.openide.util.Exceptions;
 import umich.ms.batmass.gui.viewers.map2d.noise.AbMzRtTransformNoop;
 import umich.ms.batmass.gui.viewers.map2d.noise.DenoiseIsoSpacing;
+import umich.ms.batmass.gui.viewers.map2d.noise.DenoiseLongEluting;
 import umich.ms.batmass.gui.viewers.map2d.noise.DenoiseMexHat;
 import umich.ms.util.DoubleRange;
 
@@ -50,7 +51,7 @@ public class Map2DPanelOptions {
         public static final String NONE = AbMzRtTransformNoop.NAME;
         public static final String ISO_SPACING = DenoiseIsoSpacing.NAME;
         public static final String MEX_HAT = DenoiseMexHat.NAME;
-        public static final String ANOTHER = "Another";
+        public static final String LONG_ELUTING = DenoiseLongEluting.NAME;
     }
 
     private transient final PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
