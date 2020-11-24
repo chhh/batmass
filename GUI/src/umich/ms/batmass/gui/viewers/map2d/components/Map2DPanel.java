@@ -60,6 +60,8 @@ import net.engio.mbassy.bus.config.IBusConfiguration;
 import net.engio.mbassy.bus.error.IPublicationErrorHandler;
 import net.engio.mbassy.bus.error.PublicationError;
 import net.engio.mbassy.listener.Handler;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import umich.ms.batmass.data.core.lcms.features.Features;
 import umich.ms.batmass.data.core.lcms.features.ILCMSFeature2D;
 import umich.ms.batmass.data.core.lcms.features.api.FeatureUtils;
@@ -68,6 +70,7 @@ import umich.ms.batmass.gui.core.api.data.MzRtPoint;
 import umich.ms.batmass.gui.core.api.data.MzRtRegion;
 import umich.ms.batmass.gui.core.api.util.ScreenUtils;
 import umich.ms.batmass.gui.core.api.util.color.ColorMap;
+import umich.ms.batmass.gui.management.EBus;
 import umich.ms.batmass.gui.viewers.featuretable.messages.MsgFeatureClick;
 import umich.ms.batmass.gui.viewers.map2d.PassiveMap2DOverlay;
 import umich.ms.batmass.gui.viewers.map2d.PassiveMap2DOverlayProvider;
@@ -136,7 +139,7 @@ public class Map2DPanel extends JPanel {
     protected static int MIN_ALLOWED_COMPONENT_PIXEL_SIZE = 10;
     protected static double MASS_PROTON = 1.007276466879;
     protected static double MASS_NEUTRON = 1.00866491588;
-    private MBassador<Object> busLocal;
+    private EBus busLocal;
                                           
 
     public Map2DPanel() {
@@ -205,22 +208,9 @@ public class Map2DPanel extends JPanel {
     }
     
     private void initLocalBus() {
-        IBusConfiguration busConf = new BusConfiguration()
-                .addFeature(Feature.SyncPubSub.Default())
-                .addFeature(Feature.AsynchronousHandlerInvocation.Default())
-                .addFeature(Feature.AsynchronousMessageDispatch.Default())
-                .setProperty(Properties.Handler.PublicationError, new IPublicationErrorHandler() {
-                    @Override
-                    public void handleError(final PublicationError error) {
-                        LOG.log(Level.SEVERE, "Mbassador pub/sub error: " + error.getMessage(), error.getCause());
-                        OutputWndPrinter.printErr("Map2D", error.getMessage());
-                    }
-                });
-        // TODO: sub ourselves to the bus
-        MBassador<Object> bus = new MBassador<>(busConf);
-        busLocal = bus;
+        busLocal = new EBus();
         busLocalHandler = new BusLocalHandler();
-        busLocal.subscribe(busLocalHandler);
+        busLocal.register(busLocalHandler);
     }
 
     public BusHandler getBusHandler() {
@@ -1051,9 +1041,9 @@ public class Map2DPanel extends JPanel {
     }
 
 
-    public class BusLocalHandler extends AbstractBusPubSub {
+    public class BusLocalHandler {
 
-        @Handler
+        @Subscribe(threadMode = ThreadMode.MAIN)  
         public void onMsgStaticOverlay(MsgPassiveOverlay m) {
             OutputWndPrinter.printOut(TOPIC, "Got MsgStaticOverlay");
             switch (m.whatToDo) {
@@ -1068,7 +1058,7 @@ public class Map2DPanel extends JPanel {
             }
         }
         
-        @Handler
+        @Subscribe(threadMode = ThreadMode.MAIN)
         public void onMsgStaticOverlayAction(MsgPassiveOverlayAction m) {
             OutputWndPrinter.printOut(TOPIC, "Got MsgPassiveOverlayAction");
             switch (m.action) {

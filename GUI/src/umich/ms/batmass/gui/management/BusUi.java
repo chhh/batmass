@@ -15,12 +15,10 @@
  */
 package umich.ms.batmass.gui.management;
 
-import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 import javax.swing.ProgressMonitor;
 import net.engio.mbassy.bus.IMessagePublication;
 import net.engio.mbassy.bus.MBassador;
@@ -37,9 +35,6 @@ import org.netbeans.api.progress.aggregate.AggregateProgressHandle;
 import org.netbeans.api.progress.aggregate.ProgressContributor;
 import umich.ms.batmass.gui.core.api.comm.eventbus.AbstractBusPubSub;
 import umich.ms.batmass.gui.messages.MsgProgressUi;
-import umich.ms.batmass.gui.viewers.map2d.components.Map2DPanel;
-import umich.ms.batmass.gui.viewers.map2d.messages.MsgPassiveOverlay;
-import umich.ms.batmass.gui.viewers.map2d.messages.MsgPassiveOverlayAction;
 import umich.ms.batmass.nbputils.OutputWndPrinter;
 
 /**

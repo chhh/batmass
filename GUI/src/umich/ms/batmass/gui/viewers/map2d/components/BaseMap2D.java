@@ -30,6 +30,7 @@ import javax.swing.Action;
 import net.engio.mbassy.bus.MBassador;
 import org.apache.commons.configuration.CompositeConfiguration;
 import org.apache.commons.configuration.ConfigurationException;
+import org.greenrobot.eventbus.EventBus;
 import org.netbeans.api.progress.ProgressHandle;
 import org.netbeans.api.progress.ProgressHandleFactory;
 import org.netbeans.api.progress.aggregate.AggregateProgressFactory;
@@ -38,6 +39,7 @@ import org.openide.util.Exceptions;
 import umich.ms.batmass.gui.core.api.data.MzRtRegion;
 import umich.ms.batmass.gui.core.api.util.ArrayUtils;
 import umich.ms.batmass.gui.management.BusUi;
+import umich.ms.batmass.gui.management.EBus;
 import umich.ms.batmass.gui.messages.MsgProgressUi;
 import umich.ms.batmass.gui.viewers.map2d.PassiveOverlayKey;
 import umich.ms.batmass.gui.viewers.map2d.messages.MsgPassiveOverlay;
@@ -96,7 +98,7 @@ public final class BaseMap2D {
     private String doDenoise = Map2DPanelOptions.Denoise.NONE;
 
     private final MzRtRegion mapDimensions;
-    private final MBassador<Object> bus;
+    private final EBus bus;
 
     // these are set in options
     // TODO: These values specified here are useless, because anyway
@@ -135,7 +137,7 @@ public final class BaseMap2D {
      * @param bus Can be null, otherwise will be used for communication
      */
     public BaseMap2D(int availableWidth, int availableHeight, MzRtRegion mapDimensions, 
-            int msLevel, Interval1D<Double> precursorMzRange, MBassador<Object> bus) {
+            int msLevel, Interval1D<Double> precursorMzRange, EBus bus) {
         OutputWndPrinter.printOut(BaseMap2D.class.getSimpleName(), 
                 BaseMap2D.class.getSimpleName() + " ctor invoked for mzRtRegion=" + mapDimensions.toString());
         this.rtHi = mapDimensions.getRtHi();
@@ -280,12 +282,12 @@ public final class BaseMap2D {
             case DenoiseMexHat.NAME:
                 DenoiseMexHat mexHat = DenoiseMexHat.from(scansByRtSpanAtMsLevel);
                 denoiser = mexHat;
-                bus.post(new MsgPassiveOverlay(MsgPassiveOverlay.Action.ADD, mexHat)).now();
+                bus.post(new MsgPassiveOverlay(MsgPassiveOverlay.Action.ADD, mexHat));
                 break;
             case DenoiseLongEluting.NAME:
                 DenoiseLongEluting longEluting = DenoiseLongEluting.from(scansByRtSpanAtMsLevel);
                 denoiser = longEluting;
-                bus.post(new MsgPassiveOverlay(MsgPassiveOverlay.Action.ADD, longEluting)).now();
+                bus.post(new MsgPassiveOverlay(MsgPassiveOverlay.Action.ADD, longEluting));
                 
                 break;
                 
@@ -293,7 +295,7 @@ public final class BaseMap2D {
                 denoiser = new AbMzRtTransformNoop();
                 MsgPassiveOverlayAction msg = new MsgPassiveOverlayAction(
                         MsgPassiveOverlayAction.Action.CLEAR_CATEGORY, new PassiveOverlayKey("*", "Denoise"));
-                bus.post(msg).now();
+                bus.post(msg);
         }
         
         for (Map.Entry<Integer, IScan> num2scan : scansByRtSpanAtMsLevel.entrySet()) {

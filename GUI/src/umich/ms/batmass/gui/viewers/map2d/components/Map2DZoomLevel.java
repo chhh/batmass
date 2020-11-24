@@ -20,14 +20,12 @@ import java.awt.Color;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
-import net.engio.mbassy.bus.MBassador;
 import org.apache.commons.configuration.CompositeConfiguration;
 import org.apache.commons.configuration.ConfigurationException;
-import org.apache.commons.math3.util.FastMath;
 import umich.ms.batmass.gui.core.api.data.MzRtRegion;
 import umich.ms.batmass.gui.core.api.util.color.ColorMap;
+import umich.ms.batmass.gui.management.EBus;
 import umich.ms.batmass.gui.viewers.map2d.norm.RangeNormalizers;
 import umich.ms.batmass.gui.viewers.map2d.options.Map2DOptions;
 import umich.ms.datatypes.scancollection.IScanCollection;
@@ -48,7 +46,7 @@ public class Map2DZoomLevel {
     private Map2DAxes axes;
     private int msLevel;
     private Interval1D<Double> precursorMzRange;
-    private MBassador<Object> bus;
+    private EBus bus;
 
     private int width;
     private int height;
@@ -66,7 +64,7 @@ public class Map2DZoomLevel {
      *          will be rendered.
      */
     public Map2DZoomLevel(int zoomLevel, IScanCollection scans, MzRtRegion mapDimaensions, Rectangle screenBounds, 
-            int msLevel, Interval1D<Double> precursorMzRange, String doDenoise, MBassador<Object> bus) {
+            int msLevel, Interval1D<Double> precursorMzRange, String doDenoise, EBus bus) {
         this.level = zoomLevel;
         this.msLevel = msLevel;
         this.precursorMzRange = precursorMzRange;
@@ -76,7 +74,7 @@ public class Map2DZoomLevel {
 
     private void initMapAxesColors(Rectangle screenBounds, MzRtRegion mapDimensions, 
             IScanCollection scans, int msLevel, Interval1D<Double> precursorMzRange, 
-            String doDenoise, MBassador<Object> bus) {
+            String doDenoise, EBus bus) {
         this.width = screenBounds.width;
         this.height = screenBounds.height;
         axes = new Map2DAxes(mapDimensions, screenBounds);
