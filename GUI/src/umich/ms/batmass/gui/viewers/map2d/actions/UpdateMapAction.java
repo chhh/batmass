@@ -35,14 +35,24 @@ import org.openide.util.ImageUtilities;
 import org.openide.util.NbBundle;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.Utilities;
+import umich.ms.batmass.gui.management.EBus;
+import umich.ms.batmass.gui.viewers.map2d.PassiveOverlayKey;
 import static umich.ms.batmass.gui.viewers.map2d.actions.GoToAction.ACCELERATOR;
 import umich.ms.batmass.gui.viewers.map2d.components.Map2DComponent;
 import umich.ms.batmass.gui.viewers.map2d.components.Map2DPanel;
 import umich.ms.batmass.gui.viewers.map2d.components.Map2DPanelOptions;
 import umich.ms.batmass.gui.viewers.map2d.components.Map2DZoomLevel;
+import umich.ms.batmass.gui.viewers.map2d.messages.MsgPassiveOverlay;
+import umich.ms.batmass.gui.viewers.map2d.messages.MsgPassiveOverlayAction;
+import umich.ms.batmass.gui.viewers.map2d.noise.AbMzRtTransformNoop;
+import umich.ms.batmass.gui.viewers.map2d.noise.DenoiseIsoSpacing;
+import umich.ms.batmass.gui.viewers.map2d.noise.DenoiseLongEluting;
+import umich.ms.batmass.gui.viewers.map2d.noise.DenoiseMexHat;
+import umich.ms.batmass.gui.viewers.map2d.noise.IAbMzRtTransform;
 import umich.ms.batmass.nbputils.SwingHelper;
 import umich.ms.batmass.nbputils.actions.ActionUtils;
 import umich.ms.datatypes.LCMSDataSubset;
+import umich.ms.datatypes.scancollection.ScanIndex;
 import umich.ms.fileio.exceptions.FileParsingException;
 import umich.ms.util.DoubleRange;
 
@@ -118,6 +128,40 @@ public class UpdateMapAction extends AbstractAction {
         };
         DiffNode msLevelChange = diff.getChild("msLevel");
         DiffNode mzRangeChange = diff.getChild("mzRange");
+        
+        ScanIndex scansAtMsLevel = mapPanel.getScans().getMapMsLevel2index().get(optionsNew.getMsLevel());
+        IAbMzRtTransform denoiser = null;
+        final EBus bus = mapPanel.getBusLocal();
+        switch (optionsNew.getDoDenoise()) {
+            
+            case AbMzRtTransformNoop.NAME:
+                PassiveOverlayKey keyClear = new PassiveOverlayKey(null, DenoiseLongEluting.CATEGORY);
+                MsgPassiveOverlayAction msgClear = new MsgPassiveOverlayAction(MsgPassiveOverlayAction.Action.CLEAR_CATEGORY, keyClear);
+                bus.post(msgClear);
+                break;
+            
+            case DenoiseIsoSpacing.NAME:
+                denoiser = DenoiseIsoSpacing.from(scansAtMsLevel.getNum2scan());
+                break;
+            
+            case DenoiseMexHat.NAME:
+                DenoiseMexHat mexHat = DenoiseMexHat.from(scansAtMsLevel.getNum2scan());
+                denoiser = mexHat;
+                bus.post(new MsgPassiveOverlay(MsgPassiveOverlay.Action.ADD, mexHat));
+                break;
+            
+            case DenoiseLongEluting.NAME:
+                DenoiseLongEluting longEluting = DenoiseLongEluting.from(scansAtMsLevel.getNum2scan());
+                denoiser = longEluting;
+                bus.post(new MsgPassiveOverlay(MsgPassiveOverlay.Action.ADD, longEluting));
+                break;
+        }
+        if (denoiser == null) {
+            bus.removeStickyEvent(AbMzRtTransformNoop.class);
+        } else {
+            bus.postSticky(denoiser);
+        }
+        
         if ((msLevelChange != null && msLevelChange.isChanged())
                 || (mzRangeChange != null && mzRangeChange.isChanged())) {
 

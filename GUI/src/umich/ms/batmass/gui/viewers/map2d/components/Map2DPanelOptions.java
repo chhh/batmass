@@ -149,12 +149,13 @@ public class Map2DPanelOptions {
 
     /**
      * Set the value of isDoDenoise
-     *
-     * @param doDenoise new value of doDenoise
      */
     public void setDoDenoise(String denoise) {
         String old = this.denoise;
         this.denoise = denoise;
+        if (old != null && old.equals(denoise)) {
+            return;
+        }
         propertyChangeSupport.firePropertyChange(PROP_DODENOISE, old, this.denoise);
     }
 

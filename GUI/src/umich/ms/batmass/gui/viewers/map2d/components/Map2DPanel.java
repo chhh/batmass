@@ -213,10 +213,14 @@ public class Map2DPanel extends JPanel {
         busLocal.register(busLocalHandler);
     }
 
+    public EBus getBusLocal() {
+        return busLocal;
+    }
+    
     public BusHandler getBusHandler() {
         return busHandler;
     }
-
+    
     public Map2DPanelOptions getOptions() {
         return displayedOptions;
     }
@@ -229,6 +233,8 @@ public class Map2DPanel extends JPanel {
         displayedOptions = newOptions.copy();
     }
 
+    
+    
     /**
      * Set viewport to which this panel will be reset when a complete zoom-out is
      * requested.
@@ -398,7 +404,7 @@ public class Map2DPanel extends JPanel {
         if (curZoomLvl == null) {
             MzRtRegion mapDims = defaultViewport;
             curZoomLvl = new Map2DZoomLevel(0, scans, mapDims, screenBounds,
-                    getOptions().getMsLevel(), getOptions().getMzRange(), getOptions().getDoDenoise(), busLocal);
+                    getOptions().getMsLevel(), getOptions().getMzRange(), busLocal);
             zoomLevels.add(curZoomLvl);
             curZoomLevel = curZoomLvl;
         }
@@ -407,7 +413,7 @@ public class Map2DPanel extends JPanel {
         Rectangle curMapBox = curZoomLvl.getAxes().getMapReferenceFrame().getBounds();
         Rectangle baseMapImageSize = curZoomLvl.getBaseMap().getImageSize();
         curZoomLvl.rebuildMapAxesColors(screenBounds, scans, 
-                getOptions().getMsLevel(), getOptions().getMzRange(), getOptions().getDoDenoise());
+                getOptions().getMsLevel(), getOptions().getMzRange());
 
         /*
         // check if the available Map2DPanel area has changed (in pixels)
@@ -879,7 +885,7 @@ public class Map2DPanel extends JPanel {
         //  - the second level (1) would be the current viewport
         int zoomLvl = curZoomLvl.getLevel() + 1 > 0 ? 1 : 0;
         curZoomLvl = new Map2DZoomLevel(zoomLvl, scans, mzRtInterval, screenBounds,
-                getOptions().getMsLevel(), getOptions().getMzRange(), getOptions().getDoDenoise(), busLocal);
+                getOptions().getMsLevel(), getOptions().getMzRange(), busLocal);
         if (!curZoomLvl.isMapFilledSuccess()) {
             OutputWndPrinter.printOut("Map2D", String.format("\tZoom cancelled, zoomed map could not be filled"));
             return;
@@ -926,7 +932,7 @@ public class Map2DPanel extends JPanel {
             ColorMap origColorMap = zoomLevels.getFirst().getColorMap();
             if (!curColorMap.equals(origColorMap)) {
                 curZoomLevel = new Map2DZoomLevel(0, scans, defaultViewport, ScreenUtils.getScreenBounds(this), 
-                        getOptions().getMsLevel(), getOptions().getMzRange(), getOptions().getDoDenoise(), busLocal);
+                        getOptions().getMsLevel(), getOptions().getMzRange(), busLocal);
             } else {
                 curZoomLevel = zoomLevels.getFirst();
             }

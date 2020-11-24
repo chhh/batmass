@@ -64,23 +64,21 @@ public class Map2DZoomLevel {
      *          will be rendered.
      */
     public Map2DZoomLevel(int zoomLevel, IScanCollection scans, MzRtRegion mapDimaensions, Rectangle screenBounds, 
-            int msLevel, Interval1D<Double> precursorMzRange, String doDenoise, EBus bus) {
+            int msLevel, Interval1D<Double> precursorMzRange, EBus bus) {
         this.level = zoomLevel;
         this.msLevel = msLevel;
         this.precursorMzRange = precursorMzRange;
         this.bus = bus;
-        initMapAxesColors(screenBounds, mapDimaensions, scans, msLevel, precursorMzRange, doDenoise, bus);
+        initMapAxesColors(screenBounds, mapDimaensions, scans, msLevel, precursorMzRange, bus);
     }
 
     private void initMapAxesColors(Rectangle screenBounds, MzRtRegion mapDimensions, 
-            IScanCollection scans, int msLevel, Interval1D<Double> precursorMzRange, 
-            String doDenoise, EBus bus) {
+            IScanCollection scans, int msLevel, Interval1D<Double> precursorMzRange, EBus bus) {
         this.width = screenBounds.width;
         this.height = screenBounds.height;
         axes = new Map2DAxes(mapDimensions, screenBounds);
         Rectangle ref = axes.getMapReferenceFrame();
         baseMap = new BaseMap2D(ref.width, ref.height, mapDimensions, msLevel, precursorMzRange, bus);
-        baseMap.setDoDenoise(doDenoise);
         isMapFilledSuccess = baseMap.fillMapFromScans(scans);
         double minNonZero = baseMap.getTotalIntensityMinNonZero();
         double max = baseMap.getTotalIntensityMax();
@@ -102,11 +100,11 @@ public class Map2DZoomLevel {
      * @param scans
      */
     public void rebuildMapAxesColors(Rectangle screenBounds, IScanCollection scans, 
-            int msLevel, Interval1D<Double> precursorMzRange, String doDenoise) {
+            int msLevel, Interval1D<Double> precursorMzRange) {
         this.msLevel = msLevel;
         this.precursorMzRange = precursorMzRange;
         MzRtRegion mapDims = new MzRtRegion(baseMap.getMzStart(), baseMap.getMzEnd(), baseMap.getRtStart(), baseMap.getRtEnd());
-        initMapAxesColors(screenBounds, mapDims, scans, msLevel, precursorMzRange, doDenoise, bus);
+        initMapAxesColors(screenBounds, mapDims, scans, msLevel, precursorMzRange, bus);
         img = null;
     }
 
@@ -124,7 +122,7 @@ public class Map2DZoomLevel {
             int msLevel, Interval1D<Double> precursorMzRange, String doDenoise) {
         this.msLevel = msLevel;
         this.precursorMzRange = precursorMzRange;
-        initMapAxesColors(screenBounds, mapDimensions, scans, msLevel, precursorMzRange, doDenoise, bus);
+        initMapAxesColors(screenBounds, mapDimensions, scans, msLevel, precursorMzRange, bus);
         img = null;
     }
     
