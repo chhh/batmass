@@ -57,7 +57,7 @@ public class Centroider {
         public int numPts;
     }
 
-    public static List<PeakMz> DetectPeaks(int from, int to, double[] mzs, double[] abs, int minPts, double cutoff) {
+    public static List<PeakMz> detectPeaks(int from, int to, double[] mzs, double[] abs, int minPts, double cutoff) {
         if (to - from < 3) {
             return Collections.EMPTY_LIST;
         }
@@ -118,9 +118,8 @@ public class Centroider {
                             // finalize the current peak and possibly add it to the list of detected peaks
                             p.idxHi = i;
                             p.valHi = abs[i];
-                            if (cutoff > p.valTop || p.numNonZeroPts < minPts) {
+                            if (!finalizePeak(p, minPts, cutoff))
                                 continue;
-                            }
                             if (p.numNonZeroPts == 1) {
                                 p.mzInterpolated = mzs[p.idxTopLo];
                             } else {
@@ -174,6 +173,26 @@ public class Centroider {
         return peaks;
     }
     
+    private static boolean finalizePeak(Peak p, int minNumPts, double cutoff) {
+        if (p.valTop < cutoff) {
+            return false;
+        }
+        
+        int numPts = p.idxHi - p.idxLo + 1;
+        p.idxLoNonZero = p.idxLo;
+        p.idxHiNonZero = p.idxHi;
+        if (p.valLo == 0) {
+            numPts--;
+            p.idxLoNonZero += 1;
+        }
+        if (p.valHi == 0) {
+            numPts--;
+            p.idxHiNonZero -= 1;
+        }
+        p.numNonZeroPts = numPts;
+        return numPts >= minNumPts;
+    }
+    
     private static void FitParabolaToPeak(Peak p, double[] x, double[] y, double[] parabola, double[] mzs, double[] abs)
         {
             if (p.idxTopLo == p.idxTopHi)
@@ -192,19 +211,21 @@ public class Centroider {
             }
             else
             {
-                throw new RuntimeException("Commented out code that required QR decomp");
-//                x = new double[4];
-//                y = new double[4];
-//                int lo = p.idxTopLo - 1;
-//                int hi = p.idxTopHi + 1;
-//                x[0] = mzs[lo];
-//                x[1] = mzs[p.idxTopLo];
-//                x[2] = mzs[p.idxTopHi];
-//                x[3] = mzs[hi];
-//                y[0] = abs[lo];
-//                y[1] = p.valTop;
-//                y[2] = p.valTop;
-//                y[3] = abs[hi];
+//                throw new RuntimeException("Commented out code that required QR decomp");
+                x = new double[4];
+                y = new double[4];
+                int lo = p.idxTopLo - 1;
+                int hi = p.idxTopHi + 1;
+                x[0] = mzs[lo];
+                x[1] = mzs[p.idxTopLo];
+                x[2] = mzs[p.idxTopHi];
+                x[3] = mzs[hi];
+                y[0] = abs[lo];
+                y[1] = p.valTop;
+                y[2] = p.valTop;
+                y[3] = abs[hi];
+                
+                p.mzInterpolated = (x[1] + x[2]) / 2.0;
 //                double[] poly2 = PolynomialUtils.Polynomial(x, y, 2);
 //                p.mzInterpolated = PolynomialUtils.ParabolaVertexX(poly2[2], poly2[1]);
             }

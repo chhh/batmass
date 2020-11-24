@@ -84,6 +84,9 @@ public class DenoiseLongEluting implements IAbMzRtTransform, PassiveMap2DOverlay
             if (scanIndex % 10 == 0) {
                 OutputWndPrinter.printOut(CATEGORY, DenoiseLongEluting.class.getSimpleName() + 
                 ": iterating over scan index " + Integer.toString(scanIndex));
+                OutputWndPrinter.printErr(CATEGORY, DenoiseLongEluting.class.getSimpleName() 
+                        + String.format(" currently tracking: tracesAll=%d, tracesComplete=%d",
+                                tracesAll.size(), tracesComplete.size()));
             }
             
             // Get the spectrum, possibly centroiding
@@ -93,8 +96,7 @@ public class DenoiseLongEluting implements IAbMzRtTransform, PassiveMap2DOverlay
                 if (!scan.isCentroided()) {
                     double[] mzsRaw = spec.getMZs();
                     double[] absRaw = spec.getIntensities();
-                    List<Centroider.PeakMz> centroids = Centroider.DetectPeaks(
-                            0, mzsRaw.length, mzsRaw, absRaw, 3, 0);
+                    List<Centroider.PeakMz> centroids = Centroider.detectPeaks(0, mzsRaw.length, mzsRaw, absRaw, 3, 0);
                     double[] mzs = new double[centroids.size()];
                     double[] abs = new double[centroids.size()];
                     for (int i = 0; i < centroids.size(); i++) {
@@ -117,21 +119,39 @@ public class DenoiseLongEluting implements IAbMzRtTransform, PassiveMap2DOverlay
         tracesComplete.addAll(tracesAll.values());
         tracesComplete.sort((o1, o2) -> Integer.compare(o2.ptr, o1.ptr));
 
+        OutputWndPrinter.printErr(CATEGORY, DenoiseLongEluting.class.getSimpleName() 
+                        + " RTree creation started for [" + tracesComplete.size() + "] traces" );
+        
         RTree<Data, Rectangle> tree = createRtree(tracesComplete);
         return new DenoiseLongEluting(tree);
     }
 
     private static RTree<Data, Rectangle> createRtree(List<Trace> traces) {
+        
+        OutputWndPrinter.printErr(CATEGORY, DenoiseLongEluting.class.getSimpleName() 
+                        + " RTree creation started for [" + traces.size() + "] traces" );
+        
         RTree<Data, Rectangle> tree = RTree.star().create();
         for (Trace t : traces) {
-            
             double mzLo = Double.POSITIVE_INFINITY;
             double mzHi = Double.NEGATIVE_INFINITY;
             for (int i = 0; i < t.size(); i++) {
-                if (t.mzs[i] > mzLo) mzLo = t.mzs[i];
-                if (t.mzs[i] < mzHi) mzHi = t.mzs[i];
+                if (t.mzs[i] < mzLo) mzLo = t.mzs[i];
+                if (t.mzs[i] > mzHi) mzHi = t.mzs[i];
             }
-            tree = tree.add(new Data(), Geometries.rectangle(mzLo, t.rtLo, mzHi, t.rtHi));
+            double rtLo = t.rtLo;
+            double rtHi = t.rtHi;
+            
+            double mzSpan = mzHi - mzLo;
+            double rtSpan = rtHi - rtLo;
+            if (mzSpan <= 0 || rtSpan <= 0) {
+                continue;
+            }
+            if (rtSpan < 5.0) {
+                continue;
+            }
+            
+            tree = tree.add(new Data(), Geometries.rectangle(mzLo, rtLo, mzHi, rtHi));
         }
         return tree;
     }
@@ -230,7 +250,7 @@ public class DenoiseLongEluting implements IAbMzRtTransform, PassiveMap2DOverlay
     
     @Override
     public double apply(double mz, double ab) {
-        return mz; // no-op for now
+        return ab; // no-op for now
     }
 
     @Override
