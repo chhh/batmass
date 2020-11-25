@@ -15,6 +15,7 @@
  */
 package umich.ms.batmass.gui.viewers.map2d.noise;
 
+import com.github.davidmoten.rtree.Entry;
 import com.github.davidmoten.rtree.RTree;
 import com.github.davidmoten.rtree.geometry.Geometries;
 import com.github.davidmoten.rtree.geometry.Rectangle;
@@ -29,6 +30,8 @@ import java.util.concurrent.ConcurrentNavigableMap;
 import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
+import rx.Observable;
+import rx.schedulers.Schedulers;
 import umich.ms.batmass.gui.viewers.map2d.BasePassiveMap2DOverlay;
 import umich.ms.batmass.gui.viewers.map2d.PassiveMap2DOverlayProvider;
 import umich.ms.batmass.gui.viewers.map2d.PassiveOverlayKey;
@@ -261,34 +264,37 @@ public class DenoiseLongEluting implements IAbMzRtTransform, PassiveMap2DOverlay
     
     @Override
     public double apply(double mz, double ab) {
-        if (configuredScan == null)
-            return ab;
-        boolean isHit = rtree.search(Geometries.point(mz, configuredScan.getRt()))
-        .toBlocking().getIterator().hasNext();
-        return isHit ? 0 : ab;
-//        Interval1D<Double> search = itree.search(new DoubleInterval(mz, mz));
-//        if (search == null)
-//            return ab; // no-op for now
-//        return 0;
+//        if (configuredScan == null)
+//            return ab;
+//        boolean isHit = rtree.search(Geometries.point(mz, configuredScan.getRt()))
+//        .toBlocking().getIterator().hasNext();
+//        return isHit ? 0 : ab;
+        Interval1D<Double> search = itree.search(new DoubleInterval(mz, mz));
+        if (search == null)
+            return ab; // no-op for now
+        return 0;
     }
 
     @Override
     public void configure(IScan scan) {
         configuredScan = scan;
-//        Double rt = scan.getRt();
-//        Double mzHi = scan.getScanMzWindowUpper();
-//        mzHi = mzHi == null ? 10000.0 : mzHi;
-//        double eps = 1e-6;
-//        Observable<Entry<Data, Rectangle>> search = rtree
-//                .search(Geometries.rectangle(0, rt-eps, mzHi, rt+eps));
-//        search.toList().subscribeOn(Schedulers.immediate()).subscribe((list) -> {
-//            DenoiseLongEluting.this.itree.clear();
-//            for (Entry<Data, Rectangle> e : list) {
-//                double mz1 = e.geometry().x1();
-//                double mz2 = e.geometry().x2();
-//                itree.put(new DoubleInterval(mz1, mz2), e.value());
-//            }
-//        });
+        
+        
+        Double rt = scan.getRt();
+        Double mzHi = scan.getScanMzWindowUpper();
+        mzHi = mzHi == null ? 10000.0 : mzHi;
+        double eps = 1e-6;
+        Observable<Entry<Data, Rectangle>> search = rtree
+                .search(Geometries.rectangle(0, rt-eps, mzHi, rt+eps));
+        search.toList().subscribeOn(Schedulers.immediate()).subscribe((list) -> {
+            
+            itree.clear();
+            for (Entry<Data, Rectangle> e : list) {
+                double mz1 = e.geometry().x1();
+                double mz2 = e.geometry().x2();
+                itree.put(new DoubleInterval(mz1, mz2), e.value());
+            }
+        });
         
     }
 

@@ -232,7 +232,7 @@ public final class BaseMap2D {
         
         
         MsgDenoiser msgDenoiser = bus.getStickyEvent(MsgDenoiser.class);
-        final IAbMzRtTransform denoiser = msgDenoiser.denoiser;
+        final IAbMzRtTransform denoiser = msgDenoiser == null ? null : msgDenoiser.denoiser;
         OutputWndPrinter.printErr(TOPIC, (denoiser == null ? "Denoiser was null" : "Denoiser was " + denoiser));
         
         
