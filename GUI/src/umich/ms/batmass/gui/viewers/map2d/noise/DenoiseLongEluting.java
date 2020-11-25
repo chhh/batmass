@@ -15,6 +15,7 @@
  */
 package umich.ms.batmass.gui.viewers.map2d.noise;
 
+import com.github.davidmoten.rtree.Entry;
 import com.github.davidmoten.rtree.RTree;
 import com.github.davidmoten.rtree.geometry.Geometries;
 import com.github.davidmoten.rtree.geometry.Rectangle;
@@ -29,6 +30,9 @@ import java.util.concurrent.ConcurrentNavigableMap;
 import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
+import rx.Observable;
+import rx.schedulers.Schedulers;
+import umich.ms.batmass.data.core.lcms.features.api.FeatureUtils;
 import umich.ms.batmass.gui.viewers.map2d.BasePassiveMap2DOverlay;
 import umich.ms.batmass.gui.viewers.map2d.PassiveMap2DOverlayProvider;
 import umich.ms.batmass.gui.viewers.map2d.PassiveOverlayKey;
@@ -37,6 +41,8 @@ import umich.ms.datatypes.scan.IScan;
 import umich.ms.datatypes.spectrum.ISpectrum;
 import umich.ms.datatypes.spectrum.impl.SpectrumDefault;
 import umich.ms.fileio.exceptions.FileParsingException;
+import umich.ms.util.Interval1D;
+import umich.ms.util.IntervalST;
 import umich.ms.util.SpectrumUtils;
 
 /**
@@ -48,15 +54,17 @@ public class DenoiseLongEluting implements IAbMzRtTransform, PassiveMap2DOverlay
     public static final String CATEGORY = "Denoise";
 
     private final RTree<Data, Rectangle> rtree;
-
+    private IntervalST<Double, Data> itree = new IntervalST<>();
+    IScan configuredScan = null;
+    
     public DenoiseLongEluting(RTree<Data, Rectangle> rtree) {
         this.rtree = rtree;
     }
     
     public static class TracingOpts {
         double mzTolPpm = 30;
-        int maxGapLen = 5;
-        int minPtsToAdd = 3;
+        int maxGapLen = 15;
+        int minPtsToAdd = 10;
     }
 
     public static DenoiseLongEluting from(NavigableMap<Integer, IScan> scansByRtSpanAtMsLevel) {
@@ -76,19 +84,19 @@ public class DenoiseLongEluting implements IAbMzRtTransform, PassiveMap2DOverlay
         
         final Iterator<IScan> itScans = scansByRtSpanAtMsLevel.values().iterator();
         final AtomicInteger scanCounter = new AtomicInteger(0);
+        long timeLo = System.nanoTime();
         while (itScans.hasNext()) {
             
             // Get next scan
             final IScan scan = itScans.next();
             final int scanIndex = scanCounter.getAndIncrement();
-            if (scanIndex % 10 == 0) {
-                OutputWndPrinter.printOut(CATEGORY, DenoiseLongEluting.class.getSimpleName() + 
-                ": iterating over scan index " + Integer.toString(scanIndex));
-                OutputWndPrinter.printErr(CATEGORY, DenoiseLongEluting.class.getSimpleName() 
-                        + String.format(" currently tracking: tracesAll=%d, tracesComplete=%d",
-                                tracesAll.size(), tracesComplete.size()));
-            }
             
+            if (scanIndex % 1000 == 0) {
+                OutputWndPrinter.printOut(CATEGORY, DenoiseLongEluting.class.getSimpleName()
+                        + String.format("scan index=%d, currently tracking: tracesAll=%d, tracesComplete=%d",
+                                scanIndex, tracesAll.size(), tracesComplete.size()));
+            }
+
             // Get the spectrum, possibly centroiding
             ISpectrum spec;
             try {
@@ -114,7 +122,12 @@ public class DenoiseLongEluting implements IAbMzRtTransform, PassiveMap2DOverlay
             createOrUpdateTraces(spec, scan, opts, pool, tracesAll, tracesNew);
             maintenance(scan, opts, traceKeyExtractor, tracesAll, tracesNew, tracesUpdated, tracesComplete);
         }
-        
+        long timeHi = System.nanoTime();
+        if (true) {
+            OutputWndPrinter.printOut(CATEGORY, DenoiseLongEluting.class.getSimpleName()
+                    + String.format(": feature tracing took [%.4fs]", (timeHi - timeLo)/1e9d));
+        }
+
         // in the end add all currently active traces to Completed list as well
         tracesComplete.addAll(tracesAll.values());
         tracesComplete.sort((o1, o2) -> Integer.compare(o2.ptr, o1.ptr));
@@ -127,6 +140,8 @@ public class DenoiseLongEluting implements IAbMzRtTransform, PassiveMap2DOverlay
     }
 
     private static RTree<Data, Rectangle> createRtree(List<Trace> traces) {
+//        if (true)
+//            return RTree.star().create();
         
         OutputWndPrinter.printErr(CATEGORY, DenoiseLongEluting.class.getSimpleName() 
                         + " RTree creation started for [" + traces.size() + "] traces" );
@@ -147,9 +162,9 @@ public class DenoiseLongEluting implements IAbMzRtTransform, PassiveMap2DOverlay
             if (mzSpan <= 0 || rtSpan <= 0) {
                 continue;
             }
-            if (rtSpan < 5.0) {
-                continue;
-            }
+//            if (rtSpan < 5.0) {
+//                continue;
+//            }
             
             tree = tree.add(new Data(), Geometries.rectangle(mzLo, rtLo, mzHi, rtHi));
         }
@@ -250,12 +265,35 @@ public class DenoiseLongEluting implements IAbMzRtTransform, PassiveMap2DOverlay
     
     @Override
     public double apply(double mz, double ab) {
-        return ab; // no-op for now
+        if (configuredScan == null)
+            return ab;
+        boolean isHit = rtree.search(Geometries.point(mz, configuredScan.getRt()))
+        .toBlocking().getIterator().hasNext();
+        return isHit ? 0 : ab;
+//        Interval1D<Double> search = itree.search(new DoubleInterval(mz, mz));
+//        if (search == null)
+//            return ab; // no-op for now
+//        return 0;
     }
 
     @Override
     public void configure(IScan scan) {
-        // no-op for now
+        configuredScan = scan;
+//        Double rt = scan.getRt();
+//        Double mzHi = scan.getScanMzWindowUpper();
+//        mzHi = mzHi == null ? 10000.0 : mzHi;
+//        double eps = 1e-6;
+//        Observable<Entry<Data, Rectangle>> search = rtree
+//                .search(Geometries.rectangle(0, rt-eps, mzHi, rt+eps));
+//        search.toList().subscribeOn(Schedulers.immediate()).subscribe((list) -> {
+//            DenoiseLongEluting.this.itree.clear();
+//            for (Entry<Data, Rectangle> e : list) {
+//                double mz1 = e.geometry().x1();
+//                double mz2 = e.geometry().x2();
+//                itree.put(new DoubleInterval(mz1, mz2), e.value());
+//            }
+//        });
+        
     }
 
     @Override
@@ -280,7 +318,7 @@ public class DenoiseLongEluting implements IAbMzRtTransform, PassiveMap2DOverlay
 
         @Override
         public Color getFillColor() {
-            return Color.RED;
+            return Color.MAGENTA;
         }
 
         @Override
@@ -290,4 +328,10 @@ public class DenoiseLongEluting implements IAbMzRtTransform, PassiveMap2DOverlay
 
     }
     
+    public static class DoubleInterval extends Interval1D<Double> {
+
+        public DoubleInterval(Double left, Double right) {
+            super(left, right);
+        }
+    }
 }

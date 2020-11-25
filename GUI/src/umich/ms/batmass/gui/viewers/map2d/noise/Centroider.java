@@ -65,7 +65,7 @@ public class Centroider {
             throw new RuntimeException("M/z array must be of the same length as the abundances array");
         }
 
-        List<PeakMz> peaks = new ArrayList<PeakMz>(Math.min(100, (to-from)/30));
+        List<PeakMz> peaks = new ArrayList<>(Math.min(100, (to-from)/30));
         Peak p = null;
         State s0 = State.FLAT;
 
@@ -123,7 +123,7 @@ public class Centroider {
                             if (p.numNonZeroPts == 1) {
                                 p.mzInterpolated = mzs[p.idxTopLo];
                             } else {
-                                FitParabolaToPeak(p, x, y, parabola, mzs, abs);
+                                fitParabolaToPeak(p, x, y, parabola, mzs, abs);
                             }
                             PeakMz peakMz = new PeakMz();
                             peakMz.mz = p.mzInterpolated;
@@ -193,7 +193,7 @@ public class Centroider {
         return numPts >= minNumPts;
     }
     
-    private static void FitParabolaToPeak(Peak p, double[] x, double[] y, double[] parabola, double[] mzs, double[] abs)
+    private static void fitParabolaToPeak(Peak p, double[] x, double[] y, double[] parabola, double[] mzs, double[] abs)
         {
             if (p.idxTopLo == p.idxTopHi)
             {
@@ -206,8 +206,8 @@ public class Centroider {
                 y[0] = abs[lo];
                 y[1] = p.valTop;
                 y[2] = abs[hi];
-                PolynomialUtils.FitParabola(x, y, parabola);
-                p.mzInterpolated = PolynomialUtils.ParabolaVertexX(parabola[2], parabola[1]);
+                PolynomialUtils.fitParabola(x, y, parabola);
+                p.mzInterpolated = PolynomialUtils.parabolaVertexX(parabola[2], parabola[1]);
             }
             else
             {

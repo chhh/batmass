@@ -59,7 +59,7 @@ public class PolynomialUtils {
             y[1] = p.val;
             y[2] = abs[hi];
             double[] parabola = new double[3];
-            parabola = FitParabola(x, y, parabola);
+            parabola = fitParabola(x, y, parabola);
             return parabola;
         } else {
             throw new RuntimeException("Commented out the piece of code that required QR decomposition");
@@ -119,7 +119,7 @@ public class PolynomialUtils {
     /// <param name="y">array of y coordinates, length 3</param>
     /// <param name="parabola">an array of 4 values, will be populated with c,b,a (in that order!) and the x0 of the apex (a*x^2 + b*x + c)</param>
     /// <returns></returns>
-    public static double[] FitParabola(double[] x, double[] y, double[] parabola) {
+    public static double[] fitParabola(double[] x, double[] y, double[] parabola) {
         if (x.length != 3) {
             throw new RuntimeException("Length of input data arrays must be 3.");
         }
@@ -144,7 +144,7 @@ public class PolynomialUtils {
     /// <param name="a">a*x^2</param>
     /// <param name="b">b*x</param>
     /// <returns></returns>
-    public static double ParabolaVertexX(double a, double b) {
+    public static double parabolaVertexX(double a, double b) {
         return -1 * b / (2.0 * a);
     }
 
