@@ -144,8 +144,8 @@ public class Map2DPanel extends JPanel {
     private EBus busLocal;
                                           
 
-    public Map2DPanel() {
-        constructorInit();
+    public Map2DPanel(EBus bus) {
+        constructorInit(bus);
     }
 
     /**
@@ -154,10 +154,10 @@ public class Map2DPanel extends JPanel {
      * Showing/Moving/Resizing/Hiding, Showing and Resizing do trigger
      * map creation/revalidation.
      */
-    private void constructorInit() {
+    private void constructorInit(EBus bus) {
         Map2DPanelOptions opts = new Map2DPanelOptions();
         displayedOptions = opts;
-        initLocalBus();
+        initLocalBus(bus);
         
         zoomLevels = new LinkedList<>();
         infoDisplayer = new Map2DInfoDisplayerDefault();
@@ -209,8 +209,10 @@ public class Map2DPanel extends JPanel {
         passiveOverlays = new LinkedHashMap<>();
     }
     
-    private void initLocalBus() {
-        busLocal = new EBus();
+    private void initLocalBus(EBus bus) {
+        //busLocal = new EBus();
+        busLocal = bus;
+        
         busLocalHandler = new BusLocalHandler();
         busLocal.register(busLocalHandler);
     }
@@ -1113,7 +1115,7 @@ public class Map2DPanel extends JPanel {
         @Override
         public void mouseClicked(MouseEvent e) {
             if (SwingUtilities.isLeftMouseButton(e) && e.getClickCount() >= 2) {
-                OutputWndPrinter.printOut("Map2D", String.format("Double click: [%d, %d]", e.getX(), e.getY()));
+                OutputWndPrinter.printOut(TOPIC, String.format("Double click: [%d, %d]", e.getX(), e.getY()));
             }
 
             // zooming out on single left mouse click
@@ -1146,53 +1148,56 @@ public class Map2DPanel extends JPanel {
         public void mousePressed(MouseEvent e) {
             // undo selection, if we were dragging mouse. ZoomIn won't kick in in this case.
             if (selectionBounds != null && SwingUtilities.isRightMouseButton(e)) {
-                OutputWndPrinter.printOut("Map2D", String.format("Mouse pressed: [%d, %d], "
+                OutputWndPrinter.printOut(TOPIC, String.format("Mouse pressed: [%d, %d], "
                         + "Returning early", e.getX(), e.getY()));
                 selectionBounds = null;
                 repaint();
                 return;
             }
             clickPoint = e.getPoint();
-            OutputWndPrinter.printOut("Map2D", String.format("Mouse pressed: [%d, %d]", e.getX(), e.getY()));
+            OutputWndPrinter.printOut(TOPIC, String.format("Mouse pressed: [%d, %d]", e.getX(), e.getY()));
         }
 
         @Override
         public void mouseReleased(MouseEvent e) {
-            OutputWndPrinter.printOut("Map2D", String.format("Mouse released: [%d, %d]", e.getX(), e.getY()));
-            // if we have a selection (mouse was dragged) when mouse is released, then zoom into that region
-            if (selectionBounds != null) {
-                repaint(selectionBounds);
-                OutputWndPrinter.printOut("Map2D", String.format("\tBefore zoom started, zoom box: tlc[%d, %d], brc[%d, %d]",
-                        selectionBounds.x, selectionBounds.y, selectionBounds.x + selectionBounds.width, selectionBounds.y + selectionBounds.height));
-                MzRtRegion mzRtIntervalOfZoom = getCurrentZoomLevel().getAxes().convertZoomBoxToMzRtRegion(selectionBounds);
-                if (selectionBounds.width > 0 && selectionBounds.height > 0) {
-                    OutputWndPrinter.printOut("Map2D", String.format("\tZooming in: mz[ from: %.6f, to: %.6f, span: %.6f], rt[from: %.3f, to: %.3f, span: %.3f]", mzRtIntervalOfZoom.getMzLo(), mzRtIntervalOfZoom.getMzHi(), mzRtIntervalOfZoom.getMzSpan(), mzRtIntervalOfZoom.getRtLo(), mzRtIntervalOfZoom.getRtHi(), mzRtIntervalOfZoom.getRtSpan()));
-                    zoom(mzRtIntervalOfZoom);
+            OutputWndPrinter.printOut(TOPIC, String.format("Mouse released: [%d, %d]", e.getX(), e.getY()));
+            try {
+                // if we have a selection (mouse was dragged) when mouse is released, then zoom into that region
+                if (selectionBounds != null) {
+                    repaint(selectionBounds);
+                    OutputWndPrinter.printOut(TOPIC, String.format("\tMouse released, selected box: tlc[%d, %d], brc[%d, %d]",
+                            selectionBounds.x, selectionBounds.y, selectionBounds.x + selectionBounds.width, selectionBounds.y + selectionBounds.height));
+                    MzRtRegion mzRtSelection = getCurrentZoomLevel().getAxes().convertZoomBoxToMzRtRegion(selectionBounds);
+                    if (selectionBounds.width > 0 && selectionBounds.height > 0) {
+                        OutputWndPrinter.printOut(TOPIC, String.format("\tZooming in: mz[ from: %.6f, to: %.6f, span: %.6f], rt[from: %.3f, to: %.3f, span: %.3f]", mzRtSelection.getMzLo(), mzRtSelection.getMzHi(), mzRtSelection.getMzSpan(), mzRtSelection.getRtLo(), mzRtSelection.getRtHi(), mzRtSelection.getRtSpan()));
+                        zoom(mzRtSelection);
+                    }
+                } else {
+                    OutputWndPrinter.printOut(TOPIC, "No selection was made");
                 }
-            } else {
-                OutputWndPrinter.printOut("Map2D", "No selection was made");
-            }
 
-            // if we were in drag-move mode, we need to rebuild the map for the
-            // new coordinates
-            if (dragMoveInfo != null) {
-                Map2DZoomLevel curZoomLvl = getCurrentZoomLevel();
-                fireZoomEvent(new ZoomEvent(curZoomLevel, ZoomEvent.TYPE.ZOOM_START));
-                // check if the new area is out of the bounds of the original experiment
-                MzRtRegion mzRtRegionFull = zoomLevels.getFirst().getBaseMap().getMzRtRegion();
-                MzRtRegion mapDims = curZoomLvl.getAxes().getMapDimensions();
-                MzRtRegion mzRtRegionNew = new MzRtRegion(mzRtRegionFull.createIntersection(mapDims));
-                curZoomLvl.rebuildMapAxesColors(curZoomLevel.getScreenBounds(), mzRtRegionNew, scans, 
-                        getOptions().getMsLevel(), getOptions().getMzRange(), getOptions().getDoDenoise());
-                setCursor(Cursor.getDefaultCursor());
-                repaintAndUpdateInfoDisplay(curZoomLevel);
+                // if we were in drag-move mode, we need to rebuild the map for the
+                // new coordinates
+                if (dragMoveInfo != null) {
+                    Map2DZoomLevel curZoomLvl = getCurrentZoomLevel();
+                    fireZoomEvent(new ZoomEvent(curZoomLevel, ZoomEvent.TYPE.ZOOM_START));
+                    // check if the new area is out of the bounds of the original experiment
+                    MzRtRegion mzRtRegionFull = zoomLevels.getFirst().getBaseMap().getMzRtRegion();
+                    MzRtRegion mapDims = curZoomLvl.getAxes().getMapDimensions();
+                    MzRtRegion mzRtRegionNew = new MzRtRegion(mzRtRegionFull.createIntersection(mapDims));
+                    curZoomLvl.rebuildMapAxesColors(curZoomLevel.getScreenBounds(), mzRtRegionNew, scans,
+                            getOptions().getMsLevel(), getOptions().getMzRange(), getOptions().getDoDenoise());
+                    setCursor(Cursor.getDefaultCursor());
+                    repaintAndUpdateInfoDisplay(curZoomLevel);
+                }
+                
+            } finally {
+                // whenever any mouse button is released, reset everything
+                clickPoint = null;
+                lastDragPoint = null;
+                dragMoveInfo = null;
+                selectionBounds = null;
             }
-            
-            // whenever any mouse button is released, reset everything
-            clickPoint = null;
-            lastDragPoint = null;
-            dragMoveInfo = null;
-            selectionBounds = null;
         }
 
         @Override

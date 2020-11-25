@@ -50,9 +50,11 @@ import umich.ms.batmass.gui.core.api.comm.eventbus.ViewerLinkSupport;
 import umich.ms.batmass.gui.core.api.swing.BMToolBar;
 import umich.ms.batmass.gui.core.api.swing.CustomComboBoxRenderer;
 import umich.ms.batmass.gui.core.awt.ModifiedFlowLayout;
+import umich.ms.batmass.gui.management.EBus;
 import umich.ms.batmass.gui.viewers.map2d.actions.GoToAction;
 import umich.ms.batmass.gui.viewers.map2d.actions.HomeMapAction;
 import umich.ms.batmass.gui.viewers.map2d.actions.UpdateMapAction;
+import umich.ms.batmass.gui.viewers.map2d.messages.MsgMouseAction;
 import umich.ms.datatypes.LCMSData;
 import umich.ms.datatypes.scan.IScan;
 import umich.ms.datatypes.scancollection.IScanCollection;
@@ -73,7 +75,7 @@ public class Map2DToolbar extends BMToolBar implements PropertyChangeListener {
     protected JComboBox<DoubleRange> cmbMzRange;
     protected DefaultComboBoxModel<DoubleRange> mzRangesModel;
 
-    protected JComboBox<String> comboDenoise;    
+    protected JComboBox<String> comboDenoise;
     protected JFormattedTextField fmtIntensityCutoff;
 
     protected JButton btnUpdate;
@@ -83,6 +85,7 @@ public class Map2DToolbar extends BMToolBar implements PropertyChangeListener {
     protected JToggleButton btnMsNDisplay;
 
     protected ViewerLinkSupport linkSupport;
+    protected EBus bus;
     protected DnDButton btnLinkDnD;
     protected JButton btnUnlink;
 
@@ -94,6 +97,7 @@ public class Map2DToolbar extends BMToolBar implements PropertyChangeListener {
     private HomeMapAction homeAction;
 
     protected static final int toolbarBtnHSpacing = 3;
+    private final JComboBox<String> comboMouseAction;
    
     
     /**
@@ -101,8 +105,9 @@ public class Map2DToolbar extends BMToolBar implements PropertyChangeListener {
      * @param linkSupport 
      */
     @SuppressWarnings({"unchecked"})
-    public Map2DToolbar(ViewerLinkSupport linkSupport) {
+    public Map2DToolbar(ViewerLinkSupport linkSupport, EBus bus) {
         this.linkSupport = linkSupport;
+        this.bus = bus;
 
         // Creating the toolbar
         setBorder(new EmptyBorder(0, toolbarBtnHSpacing, toolbarBtnHSpacing, toolbarBtnHSpacing));
@@ -178,11 +183,25 @@ public class Map2DToolbar extends BMToolBar implements PropertyChangeListener {
         comboDenoise = new JComboBox<String>(modelComboDenoise);
         final String tipDenoise = "Apply denoising to map";
         final JLabel lblDenoise = new JLabel("Denoise");
-        
         comboDenoise.setToolTipText(tipDenoise);
         lblDenoise.setToolTipText(tipDenoise);
         add(lblDenoise);
         add(comboDenoise);
+        add(Box.createHorizontalStrut(toolbarBtnHSpacing));
+        
+        
+        
+        DefaultComboBoxModel<String> modelComboMouseAction = new DefaultComboBoxModel<>(new String[] {
+            Map2DPanelOptions.MouseAction.ZOOM,
+            Map2DPanelOptions.MouseAction.SELECT,
+        });
+        comboMouseAction = new JComboBox<String>(modelComboMouseAction);
+        final String tipMouseAction = "What happens when you click-drag with mouse";
+        final JLabel lblMosueAction = new JLabel("Mouse");
+        comboDenoise.setToolTipText(tipMouseAction);
+        lblMosueAction.setToolTipText(tipMouseAction);
+        add(lblMosueAction);
+        add(comboMouseAction);
         add(Box.createHorizontalStrut(toolbarBtnHSpacing));
         
         String fmtIntensityCutoffTooltip = "Apply hard cutoff at the specified intensity level.";
@@ -215,9 +234,10 @@ public class Map2DToolbar extends BMToolBar implements PropertyChangeListener {
             if (JComboBox.class.isAssignableFrom(comp.getClass())) {
                 // combo-boxes should be focusable, so you could use the keybord
                 comp.setFocusable(true);
-            } else {
-                comp.setFocusable(false);
+                comp.setEnabled(true);
+                continue;
             }
+            comp.setFocusable(false);
             comp.setEnabled(false);
         }
     }
@@ -368,6 +388,10 @@ public class Map2DToolbar extends BMToolBar implements PropertyChangeListener {
             options.setDoDenoise((String)comboDenoise.getSelectedItem());
         });
         comboDenoise.setEnabled(true);
+        
+        comboMouseAction.addItemListener(e -> {
+            bus.postSticky(new MsgMouseAction((String)comboMouseAction.getSelectedItem()));
+        });
         
         // Cutoff value
         fmtIntensityCutoff.setValue(options.getCutoff());

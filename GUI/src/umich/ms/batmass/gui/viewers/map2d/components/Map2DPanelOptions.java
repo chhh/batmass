@@ -46,6 +46,11 @@ public class Map2DPanelOptions {
     public static final String PROP_CUTOFF = "cutoff";
     protected Boolean ms2Overlay;
     public static final String PROP_MSNOVERLAY = "msnOverlay";
+
+    public static class MouseAction {
+        public static final String ZOOM = "zoom";
+        public static final String SELECT = "select";
+    }
     
     public static class Denoise {
         public static final String NONE = AbMzRtTransformNoop.NAME;

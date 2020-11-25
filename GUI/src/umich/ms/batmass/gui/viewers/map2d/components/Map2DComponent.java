@@ -37,6 +37,7 @@ import umich.ms.batmass.data.core.lcms.features.Features;
 import umich.ms.batmass.data.core.lcms.features.ILCMSFeature2D;
 import umich.ms.batmass.gui.core.api.BMComponentJPanel;
 import umich.ms.batmass.gui.core.api.comm.eventbus.ViewerLinkSupport;
+import umich.ms.batmass.gui.management.EBus;
 import umich.ms.batmass.gui.viewers.map2d.actions.GoToAction;
 import umich.ms.batmass.gui.viewers.map2d.actions.HomeMapAction;
 import umich.ms.batmass.gui.viewers.map2d.actions.UpdateMapAction;
@@ -57,6 +58,7 @@ public class Map2DComponent extends BMComponentJPanel {
     // main display components
     protected Map2DToolbar toolbar;
     protected Map2DPanel map2DPanel;
+    protected EBus bus;
     protected Map2DInfoLabel map2DInfoLabel;
 
     // actions
@@ -189,7 +191,8 @@ public class Map2DComponent extends BMComponentJPanel {
         removeAll();
         setLayout(new BorderLayout());
 
-        map2DPanel = new Map2DPanel();
+        initLocalBus();
+        map2DPanel = new Map2DPanel(bus);
         map2DPanel.setBorder(new EmptyBorder(4, 4, 2, 4));
 
         map2DInfoLabel = new Map2DInfoLabel();
@@ -204,11 +207,16 @@ public class Map2DComponent extends BMComponentJPanel {
                 this
         );
 
-        toolbar = new Map2DToolbar(linkSupport);
-
+        toolbar = new Map2DToolbar(linkSupport, bus);
+        
+        
         add(toolbar, BorderLayout.NORTH);
         add(map2DPanel, BorderLayout.CENTER);
         add(map2DInfoLabel, BorderLayout.SOUTH);
+    }
+    
+    private void initLocalBus() {
+        bus = new EBus();
     }
     
     public Map2DPanel getMap2DPanel() {

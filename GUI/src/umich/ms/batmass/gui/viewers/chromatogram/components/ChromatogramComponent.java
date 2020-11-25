@@ -15,14 +15,26 @@
  */
 package umich.ms.batmass.gui.viewers.chromatogram.components;
 
+import java.awt.BorderLayout;
+import java.util.Collections;
 import java.util.Map;
 import java.util.TreeMap;
 import javax.swing.DefaultComboBoxModel;
+import net.engio.mbassy.bus.MBassador;
+import net.engio.mbassy.listener.Handler;
 import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
 import umich.ms.batmass.gui.core.api.BMComponentJPanel;
+import umich.ms.batmass.gui.core.api.comm.eventbus.AbstractBusPubSub;
+import umich.ms.batmass.gui.core.api.comm.eventbus.ViewerLinkSupport;
+import umich.ms.batmass.gui.core.api.data.MzRtRegion;
 import umich.ms.batmass.gui.core.components.chromatogram.ChromatogramPanel;
+import umich.ms.batmass.gui.management.EBus;
 import umich.ms.batmass.gui.viewers.chromatogram.actions.ExtractChromatogramAction;
+import umich.ms.batmass.gui.viewers.featuretable.components.FeatureTable;
+import umich.ms.batmass.gui.viewers.featuretable.components.FeatureTableComponent;
+import umich.ms.batmass.gui.viewers.featuretable.components.FeatureTableToolbar;
+import umich.ms.batmass.gui.viewers.featuretable.messages.MsgFeatureClick;
 import umich.ms.batmass.nbputils.OutputWndPrinter;
 import umich.ms.datatypes.scan.IScan;
 import umich.ms.datatypes.scancollection.IScanCollection;
@@ -40,8 +52,12 @@ public class ChromatogramComponent extends BMComponentJPanel {
     private final DefaultComboBoxModel<PlotType> comboModel;
     private ChromatogramPanel chromoPanel;
     private Viewport view;
+    private EBus bus;
 
     private ExtractChromatogramAction extractChromatogramAction;
+    private final ChromatogramToolbar toolbar;
+    private final ViewerLinkSupport linkSupport;
+    private final BusHandler busHandler;
 
     public enum PlotType {
         TIC, BPC, BPCbyTIC, TICbyBPC, BPCbyMIN, MIN;
@@ -86,7 +102,17 @@ public class ChromatogramComponent extends BMComponentJPanel {
     public ChromatogramComponent() {
         ic.add(ic); // needed for D&D linking between viewers
         initComponents();
-
+        
+        busHandler = new BusHandler();
+        linkSupport = new ViewerLinkSupport(
+                        Collections.singleton(ChromatogramComponent.this), // highlight components
+                        Collections.singleton(busHandler), // subscribers (have @Handler methods to recieve messages)
+                        Collections.singleton(busHandler),
+                        ChromatogramComponent.this
+                );
+        toolbar = new ChromatogramToolbar(linkSupport);
+        add(toolbar, BorderLayout.NORTH);
+        
         plotType = PlotType.TIC;
 
         // set up the plot type combo box model
@@ -100,6 +126,18 @@ public class ChromatogramComponent extends BMComponentJPanel {
         this.validate();
     }
 
+    private String topic() {
+        return this.getClass().getSimpleName();
+    }
+    
+    protected class BusHandler extends AbstractBusPubSub {
+        
+        @Handler
+        public void onMsgObject(Object m) {
+            OutputWndPrinter.printOut(topic(), "Got msg: " + m.getClass().getSimpleName());
+        }
+    }
+    
     public void setScanCollection(IScanCollection scans) {
         this.scans = scans;
         this.view = new Viewport(1);
