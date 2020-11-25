@@ -29,6 +29,8 @@ import org.apache.commons.configuration.ConfigurationException;
 import org.openide.util.Exceptions;
 import umich.ms.batmass.gui.core.api.data.MzRtRegion;
 import umich.ms.batmass.gui.management.EBus;
+import umich.ms.batmass.gui.viewers.map2d.actions.MsgDenoiser;
+import umich.ms.batmass.gui.viewers.map2d.noise.DenoiseLongEluting;
 import umich.ms.batmass.gui.viewers.map2d.noise.IAbMzRtTransform;
 import umich.ms.batmass.gui.viewers.map2d.options.Map2DOptions;
 import umich.ms.batmass.nbputils.OutputWndPrinter;
@@ -45,7 +47,7 @@ import umich.ms.util.IntervalST;
  * @author Dmitry Avtonomov
  */
 public final class BaseMap2D {
-
+    private static final String TOPIC = BaseMap2D.class.getSimpleName();
     /**
      * Rows are retention time slots
      * Columns are mass bins, mapping m/z to pixels on screen
@@ -229,7 +231,9 @@ public final class BaseMap2D {
         int idx = 0;
         
         
-        IAbMzRtTransform denoiser = bus.getStickyEvent(IAbMzRtTransform.class);
+        MsgDenoiser msgDenoiser = bus.getStickyEvent(MsgDenoiser.class);
+        final IAbMzRtTransform denoiser = msgDenoiser.denoiser;
+        OutputWndPrinter.printErr(TOPIC, (denoiser == null ? "Denoiser was null" : "Denoiser was " + denoiser));
         
         
         for (Map.Entry<Integer, IScan> num2scan : scansByRtSpanAtMsLevel.entrySet()) {

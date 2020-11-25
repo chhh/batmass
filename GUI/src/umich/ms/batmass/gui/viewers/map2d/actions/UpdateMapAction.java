@@ -49,6 +49,7 @@ import umich.ms.batmass.gui.viewers.map2d.noise.DenoiseIsoSpacing;
 import umich.ms.batmass.gui.viewers.map2d.noise.DenoiseLongEluting;
 import umich.ms.batmass.gui.viewers.map2d.noise.DenoiseMexHat;
 import umich.ms.batmass.gui.viewers.map2d.noise.IAbMzRtTransform;
+import umich.ms.batmass.nbputils.OutputWndPrinter;
 import umich.ms.batmass.nbputils.SwingHelper;
 import umich.ms.batmass.nbputils.actions.ActionUtils;
 import umich.ms.datatypes.LCMSDataSubset;
@@ -159,7 +160,8 @@ public class UpdateMapAction extends AbstractAction {
         if (denoiser == null) {
             bus.removeStickyEvent(AbMzRtTransformNoop.class);
         } else {
-            bus.postSticky(denoiser);
+            OutputWndPrinter.printOut("Denoise", "Posting sticky with denoiser (IAbMzRtTransform): " + denoiser);
+            bus.postSticky(new MsgDenoiser(denoiser));
         }
         
         if ((msLevelChange != null && msLevelChange.isChanged())

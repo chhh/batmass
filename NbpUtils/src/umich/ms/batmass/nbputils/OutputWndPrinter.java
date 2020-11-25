@@ -15,6 +15,8 @@
  */
 package umich.ms.batmass.nbputils;
 
+import java.time.LocalTime;
+import java.util.function.Function;
 import org.openide.windows.IOProvider;
 import org.openide.windows.InputOutput;
 import org.openide.windows.OutputWriter;
@@ -24,6 +26,9 @@ import org.openide.windows.OutputWriter;
  * @author Dmitry Avtonomov
  */
 abstract public class OutputWndPrinter {
+    private static Function<String, String> t = (s) -> {
+        return prependTime(s);
+    };
     
     /**
      * Write an message to the output window, the message will be colored red.
@@ -35,7 +40,7 @@ abstract public class OutputWndPrinter {
     public static void printErr(String topic, boolean useNewWindow, String msg) {
         InputOutput io = IOProvider.getDefault().getIO(topic, useNewWindow);
         try (OutputWriter ow = io.getErr()) {
-            ow.println(msg);
+            ow.println(t.apply(msg));
         }
     }
 
@@ -58,7 +63,7 @@ abstract public class OutputWndPrinter {
     public static void printOut(String topic, boolean useNewWindow, String msg) {
         InputOutput io = IOProvider.getDefault().getIO(topic, useNewWindow);
         try (OutputWriter ow = io.getOut()) {
-            ow.println(msg);
+            ow.println(t.apply(msg));
         }
     }
 
@@ -69,5 +74,10 @@ abstract public class OutputWndPrinter {
      */
     public static void printOut(String topic, String msg) {
         printOut(topic, false, msg);
+    }
+    
+    private static String prependTime(String s) {
+        LocalTime now = java.time.LocalTime.now();
+        return now.toString() + ": " + s;
     }
 }

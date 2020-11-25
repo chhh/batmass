@@ -15,7 +15,6 @@
  */
 package umich.ms.batmass.gui.viewers.map2d.noise;
 
-import com.github.davidmoten.rtree.Entry;
 import com.github.davidmoten.rtree.RTree;
 import com.github.davidmoten.rtree.geometry.Geometries;
 import com.github.davidmoten.rtree.geometry.Rectangle;
@@ -30,9 +29,6 @@ import java.util.concurrent.ConcurrentNavigableMap;
 import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
-import rx.Observable;
-import rx.schedulers.Schedulers;
-import umich.ms.batmass.data.core.lcms.features.api.FeatureUtils;
 import umich.ms.batmass.gui.viewers.map2d.BasePassiveMap2DOverlay;
 import umich.ms.batmass.gui.viewers.map2d.PassiveMap2DOverlayProvider;
 import umich.ms.batmass.gui.viewers.map2d.PassiveOverlayKey;

@@ -74,11 +74,13 @@ import umich.ms.batmass.gui.management.EBus;
 import umich.ms.batmass.gui.viewers.featuretable.messages.MsgFeatureClick;
 import umich.ms.batmass.gui.viewers.map2d.PassiveMap2DOverlay;
 import umich.ms.batmass.gui.viewers.map2d.PassiveMap2DOverlayProvider;
+import umich.ms.batmass.gui.viewers.map2d.actions.MsgDenoiser;
 import umich.ms.batmass.gui.viewers.map2d.events.ZoomEvent;
 import umich.ms.batmass.gui.viewers.map2d.messages.MsgPassiveOverlay;
 import umich.ms.batmass.gui.viewers.map2d.messages.MsgPassiveOverlayAction;
 import umich.ms.batmass.gui.viewers.map2d.messages.MsgZoom1D;
 import umich.ms.batmass.gui.viewers.map2d.messages.MsgZoom2D;
+import umich.ms.batmass.gui.viewers.map2d.noise.IAbMzRtTransform;
 import umich.ms.batmass.nbputils.OutputWndPrinter;
 import umich.ms.datatypes.scan.IScan;
 import umich.ms.datatypes.scan.props.PrecursorInfo;
@@ -1081,6 +1083,11 @@ public class Map2DPanel extends JPanel {
                 default:
                     throw new AssertionError(m.action.name());
             }
+        }
+        
+        @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+        public void onMsgDenoiser(MsgDenoiser m) {
+            OutputWndPrinter.printErr(TOPIC, "Got message MsgDenoiser: " + m.denoiser.getClass().getSimpleName());
         }
     }
 
