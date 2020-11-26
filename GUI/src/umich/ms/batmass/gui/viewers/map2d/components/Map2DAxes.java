@@ -701,10 +701,29 @@ public final class Map2DAxes {
     }
 
     AffineTransform computeTransformDomainToScreen() {
+        Rectangle rScreen = screenBounds;
+        double dx = mapDimensions.getMzLo();
+        double dy = mapDimensions.getRtLo();
+        double dw = mapDimensions.getMzSpan();
+        double dh = mapDimensions.getRtSpan();
+        Rectangle2D.Double rDomain = new Rectangle2D.Double(dx, dy, dw, dh);
+        boolean flipX = false;
+        boolean flipY = true;
         AffineTransform t = new AffineTransform();
-        throw new UnsupportedOperationException("Coord conversion as affine transform not implemented yet");
+        
+        AffineTransform t1 = AffineTransform.getTranslateInstance(-rDomain.getX(), -rDomain.getY());
+        AffineTransform t2 = AffineTransform.getScaleInstance(rScreen.getWidth() / rDomain.getWidth(), rScreen.getHeight() / rDomain.getHeight());
+        AffineTransform t3 = AffineTransform.getScaleInstance(1, -1);
+        AffineTransform t4 = AffineTransform.getTranslateInstance(0, rScreen.getHeight());
+        AffineTransform t5 = AffineTransform.getTranslateInstance(rScreen.getX(), rScreen.getY());
+        t.preConcatenate(t1);
+        t.preConcatenate(t2);
+        t.preConcatenate(t3);
+        t.preConcatenate(t4);
+        t.preConcatenate(t5);
+        
+        return t;
     }
-
     
     /**
      * Convenience method to convert the Rectangle of the zoom box to mz and rt

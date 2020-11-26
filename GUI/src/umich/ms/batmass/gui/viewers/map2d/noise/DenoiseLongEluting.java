@@ -20,6 +20,7 @@ import com.github.davidmoten.rtree.RTree;
 import com.github.davidmoten.rtree.geometry.Geometries;
 import com.github.davidmoten.rtree.geometry.Rectangle;
 import java.awt.Color;
+import java.awt.Shape;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -89,6 +90,9 @@ public class DenoiseLongEluting implements IAbMzRtTransform, PassiveMap2DOverlay
             // Get next scan
             final IScan scan = itScans.next();
             final int scanIndex = scanCounter.getAndIncrement();
+            
+            if (scan.getRt() < 10 || scan.getRt() > 25)
+                continue;
             
             if (scanIndex % 1000 == 0) {
                 OutputWndPrinter.printOut(CATEGORY, DenoiseLongEluting.class.getSimpleName()
@@ -314,9 +318,18 @@ public class DenoiseLongEluting implements IAbMzRtTransform, PassiveMap2DOverlay
     }
 
     public static class Data extends BasePassiveMap2DOverlay {
-
-        public Data() {
+        private Trace trace;
+        
+        public Data(Trace trace) {
+            this.trace = trace;
         }
+
+        @Override
+        public Shape getShape() {
+            
+        }
+        
+        
 
         @Override
         public Color getFillColor() {

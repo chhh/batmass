@@ -669,7 +669,8 @@ public class Map2DPanel extends JPanel {
                     } else {
                         
                         
-                        boolean useProperImpl = false;
+                        boolean useProperImpl = true;
+                        
                         if (useProperImpl) {
                             g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, overlay.getBorderAlpha()));
                             g.setColor(overlay.getBorderColor());
