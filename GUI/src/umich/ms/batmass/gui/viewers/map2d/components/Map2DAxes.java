@@ -701,7 +701,7 @@ public final class Map2DAxes {
     }
 
     AffineTransform computeTransformDomainToScreen() {
-        Rectangle rScreen = screenBounds;
+        Rectangle rScreen = new Rectangle(0, 0, mapReferenceFrame.width, mapReferenceFrame.height);
         double dx = mapDimensions.getMzLo();
         double dy = mapDimensions.getRtLo();
         double dw = mapDimensions.getMzSpan();
@@ -716,11 +716,13 @@ public final class Map2DAxes {
         AffineTransform t3 = AffineTransform.getScaleInstance(1, -1);
         AffineTransform t4 = AffineTransform.getTranslateInstance(0, rScreen.getHeight());
         AffineTransform t5 = AffineTransform.getTranslateInstance(rScreen.getX(), rScreen.getY());
+        //AffineTransform t6 = AffineTransform.getTranslateInstance(mapReferenceFrame.getX(), mapReferenceFrame.getY());
         t.preConcatenate(t1);
         t.preConcatenate(t2);
         t.preConcatenate(t3);
         t.preConcatenate(t4);
         t.preConcatenate(t5);
+//        t.preConcatenate(t6);
         
         return t;
     }

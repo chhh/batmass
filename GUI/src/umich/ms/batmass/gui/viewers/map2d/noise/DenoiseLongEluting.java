@@ -91,7 +91,8 @@ public class DenoiseLongEluting implements IAbMzRtTransform, PassiveMap2DOverlay
             final IScan scan = itScans.next();
             final int scanIndex = scanCounter.getAndIncrement();
             
-            if (scan.getRt() < 10 || scan.getRt() > 25)
+            // TODO: ACHTUNG: Remove this artificial limit of time span
+            if (scan.getRt() < 10 || scan.getRt() > 15)
                 continue;
             
             if (scanIndex % 1000 == 0) {
@@ -169,7 +170,7 @@ public class DenoiseLongEluting implements IAbMzRtTransform, PassiveMap2DOverlay
 //                continue;
 //            }
             
-            tree = tree.add(new Data(), Geometries.rectangle(mzLo, rtLo, mzHi, rtHi));
+            tree = tree.add(new Data(t), Geometries.rectangle(mzLo, rtLo, mzHi, rtHi));
         }
         return tree;
     }
@@ -326,10 +327,10 @@ public class DenoiseLongEluting implements IAbMzRtTransform, PassiveMap2DOverlay
 
         @Override
         public Shape getShape() {
-            
+            // once null is changed to shape, passive overlays
+            // will start being drawn properly by Map2D
+            return null;
         }
-        
-        
 
         @Override
         public Color getFillColor() {

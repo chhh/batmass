@@ -643,28 +643,42 @@ public class Map2DPanel extends JPanel {
             Observable<Entry<PassiveMap2DOverlay, com.github.davidmoten.rtree.geometry.Rectangle>> search = tree.search(rectTree);            
             
             final Graphics2D g = (Graphics2D) img.getGraphics();
+            
+            final AffineTransform transformOrig = g.getTransform();
+            MzRtRegion mzRtViewed = this.getCurrentZoomLevel().getAxes().getMapDimensions();
+            final AffineTransform transformDomainToScreen = this.getCurrentZoomLevel().getAxes().computeTransformDomainToScreen();
+            g.transform(transformDomainToScreen);
+            
+            OutputWndPrinter.printOut(TOPIC, "  mzRtViewed: " + mzRtViewed + " -------------");
             OutputWndPrinter.printOut(TOPIC, "  Drawing RTree of size: " + tree.size() + " -------------");
+            
+            // TODO: ACHTUNG: continue here, print out the transform for drawing
+            
             // render each passive overlay
             try {
-                search.forEach((treeEntry) -> {
+                
+                search.forEach((Entry<PassiveMap2DOverlay, com.github.davidmoten.rtree.geometry.Rectangle> treeEntry) -> {
                     
                     PassiveMap2DOverlay overlay = treeEntry.value();
                     
 
                     Shape overlayShape = overlay.getShape();
                     if (overlayShape == null) {
-                        com.github.davidmoten.rtree.geometry.Rectangle box = treeEntry.geometry();
-                        overlayShape = baseMap.convertMzRtBoxToPixelCoords(
-                                box.x1(), box.x2(), box.y1(), box.y2(), 0d);
+                        com.github.davidmoten.rtree.geometry.Rectangle rTreeBox = treeEntry.geometry();
+                        Rectangle2D awtBox = FeatureUtils.geometryRtreeToAwt(rTreeBox);
+//                        asd
+//                        overlayShape = baseMap.convertMzRtBoxToPixelCoords(
+//                                box.x1(), box.x2(), box.y1(), box.y2(), 0d);
+                        
                         // fill inside of an overlay
                         g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, overlay.getFillAlpha()));
                         g.setColor(overlay.getFillColor());
-                        g.fill(overlayShape);
+                        g.fill(awtBox);
 
                         // draw the border of an overlay
                         g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, overlay.getBorderAlpha()));
                         g.setColor(overlay.getBorderColor());
-                        g.draw(overlayShape);
+                        g.draw(awtBox);
                     
                     } else {
                         
