@@ -53,7 +53,8 @@ public class Centroider {
         public double mz;
         public double intensity;
         public double noise;
-        public double mzWidth;
+        public double mzHi;
+        public double mzLo;
         public int numPts;
     }
 
@@ -132,7 +133,9 @@ public class Centroider {
                             }
                             peakMz.intensity = p.valTop;
                             //peakMz.mzWidth = Double.NaN; // undefined
-                            peakMz.mzWidth = mzs[p.idxHiNonZero] - mzs[p.idxLoNonZero];
+                            //peakMz.mzWidth = mzs[p.idxHiNonZero] - mzs[p.idxLoNonZero];
+                            peakMz.mzHi = mzs[p.idxHiNonZero];
+                            peakMz.mzLo = mzs[p.idxLoNonZero];
                             peakMz.numPts = p.numNonZeroPts;
                             peakMz.noise = p.noise;
                             peaks.add(peakMz);

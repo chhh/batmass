@@ -36,6 +36,7 @@ import java.awt.event.InputEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.LinkedHashMap;
@@ -47,6 +48,7 @@ import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JToolTip;
 import javax.swing.SwingUtilities;
@@ -647,24 +649,52 @@ public class Map2DPanel extends JPanel {
                 search.forEach((treeEntry) -> {
                     
                     PassiveMap2DOverlay overlay = treeEntry.value();
-                    com.github.davidmoten.rtree.geometry.Rectangle box = treeEntry.geometry();
-
+                    
 
                     Shape overlayShape = overlay.getShape();
                     if (overlayShape == null) {
+                        com.github.davidmoten.rtree.geometry.Rectangle box = treeEntry.geometry();
                         overlayShape = baseMap.convertMzRtBoxToPixelCoords(
                                 box.x1(), box.x2(), box.y1(), box.y2(), 0d);
+                        // fill inside of an overlay
+                        g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, overlay.getFillAlpha()));
+                        g.setColor(overlay.getFillColor());
+                        g.fill(overlayShape);
+
+                        // draw the border of an overlay
+                        g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, overlay.getBorderAlpha()));
+                        g.setColor(overlay.getBorderColor());
+                        g.draw(overlayShape);
+                    
+                    } else {
+                        
+                        
+                        boolean useProperImpl = false;
+                        if (useProperImpl) {
+                            g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, overlay.getBorderAlpha()));
+                            g.setColor(overlay.getBorderColor());
+                            
+                            final AffineTransform atOrig = g.getTransform();
+                            final AffineTransform at = this.getCurrentZoomLevel().getAxes().computeTransformDomainToScreen();
+                            g.transform(at);
+                            g.draw(overlayShape);
+
+                            g.setTransform(atOrig); // restore original transform!
+                        } else {
+                            overlayShape = overlayShape.getBounds2D();
+                            // fill inside of an overlay
+                            g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, overlay.getFillAlpha()));
+                            g.setColor(overlay.getFillColor());
+                            g.fill(overlayShape);
+
+                            // draw the border of an overlay
+                            g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, overlay.getBorderAlpha()));
+                            g.setColor(overlay.getBorderColor());
+                            g.draw(overlayShape);
+                        }
                     }
 
-                    // fill inside of an overlay
-                    g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, overlay.getFillAlpha()));
-                    g.setColor(overlay.getFillColor());
-                    g.fill(overlayShape);
-
-                    // draw the border of an overlay
-                    g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, overlay.getBorderAlpha()));
-                    g.setColor(overlay.getBorderColor());
-                    g.draw(overlayShape);
+                    
 
                 });
             } finally {

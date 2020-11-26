@@ -54,7 +54,6 @@ public final class Map2DAxes {
     private Rectangle xAxisReferenceFrame;
     private Rectangle yAxisReferenceFrame;
 
-
     private enum Axis {X, Y};
 
     // TODO: these might be configurable by some API. Hardcoded for now.
@@ -701,6 +700,12 @@ public final class Map2DAxes {
         return new MzRtPoint((leftTop.x + bottomRight.x) / 2.0d, (leftTop.y + bottomRight.y) / 2.0d);
     }
 
+    AffineTransform computeTransformDomainToScreen() {
+        AffineTransform t = new AffineTransform();
+        throw new UnsupportedOperationException("Coord conversion as affine transform not implemented yet");
+    }
+
+    
     /**
      * Convenience method to convert the Rectangle of the zoom box to mz and rt
      * intervals. Used by MouseAdapter when mouse is released after dragging.
