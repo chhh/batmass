@@ -694,6 +694,8 @@ public class Map2DPanel extends JPanel {
                         
                         if (useProperImpl) {
                             Rectangle2D overlayShapeBounds = overlayShape.getBounds2D();
+                            
+                            
                             final double[] coords = new double[] {
                                 overlayShapeBounds.getMinX(),overlayShapeBounds.getMinY(),
                                 overlayShapeBounds.getMaxX(),overlayShapeBounds.getMaxY(),
@@ -705,14 +707,15 @@ public class Map2DPanel extends JPanel {
                                     "To:" + Arrays.toString(coordsTransformed) + "\n\t"
                             );
                             
-                            g.transform(transformDomainToScreen);
+//                            g.transform(transformDomainToScreen);
                             
                             g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, overlay.getBorderAlpha()));
                             g.setColor(overlay.getBorderColor());                            
                             OutputWndPrinter.printOut(TOPIC, "  Overlay shape was NOT null, auto conversion: " 
                                     + overlayShape + " -------------");
-                            g.draw(overlayShape);
-                            g.setTransform(transformOrig); // restore original transform!
+                            g.draw(overlayShape); // original method, that drew on screen with the whole graphics object transformed by the AffineTransform
+                            g.draw(transformDomainToScreen.createTransformedShape(overlayShape));
+//                            g.setTransform(transformOrig); // restore original transform!
 
                         } else {
                             Rectangle2D overlayShapeBounds = overlayShape.getBounds2D();

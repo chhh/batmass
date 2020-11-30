@@ -25,6 +25,7 @@ import java.util.StringJoiner;
 public class Trace {
   double[] mzs;
   float[] abs;
+  float[] rts;
   int[] scanNums;
   int countNonZeros;
   int zeroAbStretch;
@@ -40,6 +41,7 @@ public class Trace {
   public Trace(int initSize) {
     mzs = new double[initSize];
     abs = new float[initSize];
+    rts = new float[initSize];
     scanNums = new int[initSize];
   }
 
@@ -52,6 +54,7 @@ public class Trace {
     ptr += 1;
     mzs[ptr] = mz;
     abs[ptr] = ab;
+    rts[ptr] = rt;
     scanNums[ptr] = scanNum;
 
     if (ab > 0) {
@@ -76,6 +79,7 @@ public class Trace {
       int newLen = mzs.length + extendBy;
       mzs = Arrays.copyOf(mzs, newLen);
       abs = Arrays.copyOf(abs, newLen);
+      rts = Arrays.copyOf(rts, newLen);
       scanNums = Arrays.copyOf(scanNums, newLen);
     }
   }
@@ -105,6 +109,7 @@ public class Trace {
     }
     return new StringJoiner(", ", Trace.class.getSimpleName() + "[", "]")
         .add(String.format("mz: %.4f", mzs[0]))
+        .add(String.format("@t: %.2f", rts[0]))
         .add(String.format("@#: %d", scanNums[0]))
         .add(String.format("len: %d", ptr + 1))
         .add(String.format("capacity: %d", mzs.length))

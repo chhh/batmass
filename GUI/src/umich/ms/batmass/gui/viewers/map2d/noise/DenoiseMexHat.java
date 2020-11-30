@@ -20,6 +20,7 @@ import com.github.davidmoten.rtree.geometry.Geometries;
 import com.github.davidmoten.rtree.geometry.Rectangle;
 import java.awt.Color;
 import java.awt.Shape;
+import java.awt.geom.Path2D;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.NavigableMap;
@@ -99,7 +100,17 @@ public class DenoiseMexHat implements IAbMzRtTransform, PassiveMap2DOverlayProvi
         @Override
         public Shape getShape() {
 //            return null;
-            return new java.awt.geom.Rectangle2D.Double(mzLo, rtLo, mzWi, rtWi);
+//            return new java.awt.geom.Rectangle2D.Double(mzLo, rtLo, mzWi, rtWi);
+
+            // this impl produces strange traces
+            final Path2D.Double p = new Path2D.Double();
+            p.moveTo(mzLo, rtLo);
+            p.lineTo(mzLo, rtLo+rtWi/2);
+            p.lineTo(mzLo+mzWi/2, rtLo+rtWi/2);
+            p.lineTo(mzLo+mzWi, rtLo+rtWi);
+            
+            return p;
+
         }
         
         @Override
