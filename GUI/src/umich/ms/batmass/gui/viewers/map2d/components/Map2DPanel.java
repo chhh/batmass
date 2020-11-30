@@ -644,10 +644,10 @@ public class Map2DPanel extends JPanel {
             
             final Graphics2D g = (Graphics2D) img.getGraphics();
             
+            final MzRtRegion mzRtViewed = this.getCurrentZoomLevel().getAxes().getMapDimensions();
+            
             final AffineTransform transformOrig = g.getTransform();
-            MzRtRegion mzRtViewed = this.getCurrentZoomLevel().getAxes().getMapDimensions();
             final AffineTransform transformDomainToScreen = this.getCurrentZoomLevel().getAxes().computeTransformDomainToScreen();
-            g.transform(transformDomainToScreen);
             
             OutputWndPrinter.printOut(TOPIC, "  mzRtViewed: " + mzRtViewed + " -------------");
             OutputWndPrinter.printOut(TOPIC, "  Drawing RTree of size: " + tree.size() + " -------------");
@@ -661,51 +661,70 @@ public class Map2DPanel extends JPanel {
                     
                     PassiveMap2DOverlay overlay = treeEntry.value();
                     
-
-                    Shape overlayShape = overlay.getShape();
-                    if (overlayShape == null) {
+                    final boolean doDrawRtree = true;
+                    if (doDrawRtree || overlay.getShape() == null) {
                         com.github.davidmoten.rtree.geometry.Rectangle rTreeBox = treeEntry.geometry();
                         Rectangle2D awtBox = FeatureUtils.geometryRtreeToAwt(rTreeBox);
-//                        asd
-//                        overlayShape = baseMap.convertMzRtBoxToPixelCoords(
-//                                box.x1(), box.x2(), box.y1(), box.y2(), 0d);
+                        Shape overlayShape = baseMap.convertMzRtBoxToPixelCoords(
+                                rTreeBox.x1(), rTreeBox.x2(), rTreeBox.y1(), rTreeBox.y2(), 0d);
+                        OutputWndPrinter.printErr(TOPIC, "  Overlay shape was null, manual conversion:\n\t" 
+                                    + rTreeBox + " ---> \n\t" + awtBox + " ---> \n\t" + overlayShape + " -------------");
+                        OutputWndPrinter.printErr(TOPIC, String.format(
+                                "  Overlay shape was null, manual conversion args: %.1f, %.1f, %.1f, %.1f", 
+                                rTreeBox.x1(), rTreeBox.x2(), rTreeBox.y1(), rTreeBox.y2()));
                         
                         // fill inside of an overlay
                         g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, overlay.getFillAlpha()));
                         g.setColor(overlay.getFillColor());
-                        g.fill(awtBox);
+                        g.fill(overlayShape);
 
                         // draw the border of an overlay
                         g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, overlay.getBorderAlpha()));
                         g.setColor(overlay.getBorderColor());
-                        g.draw(awtBox);
+                        g.draw(overlayShape);
                     
-                    } else {
+                    } 
+                    
+                    if (overlay.getShape() != null) {
                         
                         
-                        boolean useProperImpl = true;
+                        boolean useProperImpl = false;
+                        Shape overlayShape = overlay.getShape();
                         
                         if (useProperImpl) {
-                            g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, overlay.getBorderAlpha()));
-                            g.setColor(overlay.getBorderColor());
+//                            final AffineTransform atOrig = g.getTransform();
+//                            final AffineTransform at = this.getCurrentZoomLevel().getAxes().computeTransformDomainToScreen();
+                            g.transform(transformDomainToScreen);
                             
-                            final AffineTransform atOrig = g.getTransform();
-                            final AffineTransform at = this.getCurrentZoomLevel().getAxes().computeTransformDomainToScreen();
-                            g.transform(at);
+                            g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, overlay.getBorderAlpha()));
+                            g.setColor(overlay.getBorderColor());                            
+                            OutputWndPrinter.printOut(TOPIC, "  Overlay shape was NOT null, auto conversion: " 
+                                    + overlayShape + " -------------");
                             g.draw(overlayShape);
+                            g.setTransform(transformOrig); // restore original transform!
 
-                            g.setTransform(atOrig); // restore original transform!
                         } else {
-                            overlayShape = overlayShape.getBounds2D();
+                            Rectangle2D overlayShapeBounds = overlayShape.getBounds2D();
+                            
+                            Rectangle boundBoxInImageCoords = baseMap.convertMzRtBoxToPixelCoords(
+                                    overlayShapeBounds.getMinX(), overlayShapeBounds.getMaxX(), overlayShapeBounds.getMinY(), overlayShapeBounds.getMaxY(), 0d);
+                            
+                            OutputWndPrinter.printErr(TOPIC, "  Overlay shape was NOT null, manual conversion:\n\t" 
+                                    + overlayShape + " ---> \n\t" + overlayShapeBounds + " ---> \n\t" + boundBoxInImageCoords + " -------------");
+                            OutputWndPrinter.printErr(TOPIC, String.format(
+                                "  Overlay shape was NOT null, manual conversion args: %.1f, %.1f, %.1f, %.1f", 
+                                overlayShapeBounds.getMinX(), overlayShapeBounds.getMaxX(), overlayShapeBounds.getMinY(), overlayShapeBounds.getMaxY()));
+                            
+                            
                             // fill inside of an overlay
                             g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, overlay.getFillAlpha()));
                             g.setColor(overlay.getFillColor());
-                            g.fill(overlayShape);
+                            g.fill(boundBoxInImageCoords);
 
                             // draw the border of an overlay
                             g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, overlay.getBorderAlpha()));
                             g.setColor(overlay.getBorderColor());
-                            g.draw(overlayShape);
+                            g.draw(boundBoxInImageCoords);
                         }
                     }
 

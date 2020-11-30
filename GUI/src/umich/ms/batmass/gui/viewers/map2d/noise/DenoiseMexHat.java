@@ -19,6 +19,7 @@ import com.github.davidmoten.rtree.RTree;
 import com.github.davidmoten.rtree.geometry.Geometries;
 import com.github.davidmoten.rtree.geometry.Rectangle;
 import java.awt.Color;
+import java.awt.Shape;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.NavigableMap;
@@ -90,15 +91,30 @@ public class DenoiseMexHat implements IAbMzRtTransform, PassiveMap2DOverlayProvi
         public long id;
 
         @Override
+        public Shape getShape() {
+//            return null;
+            return new java.awt.geom.Rectangle2D.Double(1000, 30, 100, 15);
+        }
+        
+        @Override
         public Color getFillColor() {
-            return Color.RED;
+            return Color.GREEN;
         }
 
         @Override
         public float getFillAlpha() {
-            return 0.7f;
+            return 0.6f;
         }
 
+        @Override
+        public Color getBorderColor() {
+            return Color.ORANGE;
+        }
+
+        @Override
+        public float getBorderAlpha() {
+            return 0.8f;
+        }
     }
     
 }
