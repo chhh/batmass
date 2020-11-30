@@ -36,6 +36,11 @@ public class DenoiseMexHat implements IAbMzRtTransform, PassiveMap2DOverlayProvi
     public static final String NAME = "MexHat";
     public static final String CATEGORY = "Denoise";
     private final RTree<Data, Rectangle> rtree;
+    
+    final static double mzLo = 1000;
+    final static double mzWi = 100;
+    final static double rtLo = 30;
+    final static double rtWi = 15;
 
     public DenoiseMexHat(RTree<Data, Rectangle> rtree) {
         this.rtree = rtree;
@@ -56,7 +61,8 @@ public class DenoiseMexHat implements IAbMzRtTransform, PassiveMap2DOverlayProvi
             }
         }
         
-        tree = tree.add(new Data(), Geometries.rectangle(600, 40, 650, 70));
+//        tree = tree.add(new Data(), Geometries.rectangle(600, 40, 650, 70));
+        tree = tree.add(new Data(), Geometries.rectangle(mzLo+mzWi/3, rtLo+rtWi/3, mzLo+mzWi-mzWi/3 , rtLo+rtWi-rtWi/3));
         
         return new DenoiseMexHat(tree);
     }
@@ -93,7 +99,7 @@ public class DenoiseMexHat implements IAbMzRtTransform, PassiveMap2DOverlayProvi
         @Override
         public Shape getShape() {
 //            return null;
-            return new java.awt.geom.Rectangle2D.Double(1000, 30, 100, 15);
+            return new java.awt.geom.Rectangle2D.Double(mzLo, rtLo, mzWi, rtWi);
         }
         
         @Override

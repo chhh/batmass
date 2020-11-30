@@ -39,6 +39,7 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -688,12 +689,22 @@ public class Map2DPanel extends JPanel {
                     if (overlay.getShape() != null) {
                         
                         
-                        boolean useProperImpl = false;
-                        Shape overlayShape = overlay.getShape();
+                        boolean useProperImpl = true;
+                        final Shape overlayShape = overlay.getShape();
                         
                         if (useProperImpl) {
-//                            final AffineTransform atOrig = g.getTransform();
-//                            final AffineTransform at = this.getCurrentZoomLevel().getAxes().computeTransformDomainToScreen();
+                            Rectangle2D overlayShapeBounds = overlayShape.getBounds2D();
+                            final double[] coords = new double[] {
+                                overlayShapeBounds.getMinX(),overlayShapeBounds.getMinY(),
+                                overlayShapeBounds.getMaxX(),overlayShapeBounds.getMaxY(),
+                            };
+                            final double[] coordsTransformed = new double[coords.length];
+                            transformDomainToScreen.transform(coords, 0, coordsTransformed, 0, coords.length/2);
+                            OutputWndPrinter.printErr(TOPIC + "-DEBUG", 
+                                    "From:" + Arrays.toString(coords) + "\n\t" +
+                                    "To:" + Arrays.toString(coordsTransformed) + "\n\t"
+                            );
+                            
                             g.transform(transformDomainToScreen);
                             
                             g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, overlay.getBorderAlpha()));

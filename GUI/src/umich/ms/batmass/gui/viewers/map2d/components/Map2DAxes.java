@@ -701,7 +701,10 @@ public final class Map2DAxes {
     }
 
     AffineTransform computeTransformDomainToScreen() {
-        Rectangle rScreen = new Rectangle(0, 0, mapReferenceFrame.width, mapReferenceFrame.height);
+        
+        double plotPixelWidth = mapReferenceFrame.width;
+        double plotPixelHeight = mapReferenceFrame.height;
+        
         double dx = mapDimensions.getMzLo();
         double dy = mapDimensions.getRtLo();
         double dw = mapDimensions.getMzSpan();
@@ -712,16 +715,16 @@ public final class Map2DAxes {
         AffineTransform t = new AffineTransform();
         
         AffineTransform t1 = AffineTransform.getTranslateInstance(-rDomain.getX(), -rDomain.getY());
-        AffineTransform t2 = AffineTransform.getScaleInstance(rScreen.getWidth() / rDomain.getWidth(), rScreen.getHeight() / rDomain.getHeight());
+        AffineTransform t2 = AffineTransform.getScaleInstance(plotPixelWidth / rDomain.getWidth(), plotPixelHeight / rDomain.getHeight());
         AffineTransform t3 = AffineTransform.getScaleInstance(1, -1);
-        AffineTransform t4 = AffineTransform.getTranslateInstance(0, rScreen.getHeight());
-        AffineTransform t5 = AffineTransform.getTranslateInstance(rScreen.getX(), rScreen.getY());
+        AffineTransform t4 = AffineTransform.getTranslateInstance(0, plotPixelHeight);
+//        AffineTransform t5 = AffineTransform.getTranslateInstance(rScreen.getX(), rScreen.getY());
         //AffineTransform t6 = AffineTransform.getTranslateInstance(mapReferenceFrame.getX(), mapReferenceFrame.getY());
         t.preConcatenate(t1);
         t.preConcatenate(t2);
         t.preConcatenate(t3);
         t.preConcatenate(t4);
-        t.preConcatenate(t5);
+//        t.preConcatenate(t5);
 //        t.preConcatenate(t6);
         
         return t;
